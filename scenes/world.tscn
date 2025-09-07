@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://cwgfvc4wnxa5d"]
+
+[ext_resource type="PackedScene" uid="uid://bmd35h5a4fcru" path="res://scenes/ui/lobby.tscn" id="1_nnsk1"]
+
+[node name="World" type="Node2D"]
+
+[node name="lobby_ui" parent="." instance=ExtResource("1_nnsk1")]

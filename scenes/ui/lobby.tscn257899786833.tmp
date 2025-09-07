@@ -1,0 +1,141 @@
+[gd_scene load_steps=3 format=3 uid="uid://bmd35h5a4fcru"]
+
+[ext_resource type="FontFile" uid="uid://c1l47aekqn13v" path="res://assets/fonts/m3x6.ttf" id="1_6oakf"]
+[ext_resource type="Script" uid="uid://d3imusmrwow82" path="res://scripts/lobby.gd" id="1_efll3"]
+
+[node name="lobby_ui" type="Node2D"]
+script = ExtResource("1_efll3")
+
+[node name="create_button" type="Button" parent="."]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 84.0
+offset_bottom = 25.0
+theme_override_fonts/font = ExtResource("1_6oakf")
+theme_override_font_sizes/font_size = 16
+text = "Create Lobby"
+
+[node name="lobby_code_text_area" type="TextEdit" parent="."]
+offset_left = 90.0
+offset_top = 4.0
+offset_right = 170.0
+offset_bottom = 25.0
+theme_override_fonts/font = ExtResource("1_6oakf")
+theme_override_font_sizes/font_size = 16
+placeholder_text = "lobby name"
+scroll_past_end_of_file = true
+
+[node name="join_button" type="Button" parent="."]
+offset_left = 4.0
+offset_top = 30.0
+offset_right = 84.0
+offset_bottom = 51.0
+theme_override_fonts/font = ExtResource("1_6oakf")
+text = "Join Lobby"
+
+[node name="start_button" type="Button" parent="."]
+offset_left = 237.0
+offset_top = 30.0
+offset_right = 317.0
+offset_bottom = 51.0
+theme_override_fonts/font = ExtResource("1_6oakf")
+text = "Start Game"
+
+[node name="players_panel" type="Panel" parent="."]
+custom_minimum_size = Vector2(60, 0)
+offset_left = 4.0
+offset_top = 57.0
+offset_right = 84.0
+offset_bottom = 148.0
+
+[node name="players_count" type="Label" parent="players_panel"]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 1.0
+offset_right = 60.0
+offset_bottom = 17.0
+theme_override_fonts/font = ExtResource("1_6oakf")
+theme_override_font_sizes/font_size = 16
+text = "Players (0)"
+
+[node name="players_list" type="RichTextLabel" parent="players_panel"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 18.0
+offset_right = 76.0
+offset_bottom = 84.0
+
+[node name="steam_name" type="Label" parent="."]
+offset_left = 250.0
+offset_right = 320.0
+offset_bottom = 14.0
+theme_override_fonts/font = ExtResource("1_6oakf")
+theme_override_font_sizes/font_size = 16
+text = "Steam Name"
+horizontal_alignment = 2
+
+[node name="leave_button" type="Button" parent="."]
+offset_left = 4.0
+offset_top = 152.0
+offset_right = 84.0
+offset_bottom = 173.0
+theme_override_fonts/font = ExtResource("1_6oakf")
+disabled = true
+text = "Leave Lobby"
+
+[node name="lobbies_popup_panel" type="PopupPanel" parent="."]
+initial_position = 1
+size = Vector2i(140, 120)
+
+[node name="lobbies_panel" type="Panel" parent="lobbies_popup_panel"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="lobbies_label" type="Label" parent="lobbies_popup_panel/lobbies_panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -14.0
+offset_right = 14.0
+offset_bottom = 14.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("1_6oakf")
+text = "Lobbies"
+
+[node name="lobbies_scroll_container" type="ScrollContainer" parent="lobbies_popup_panel/lobbies_panel"]
+layout_mode = 1
+offset_left = 10.0
+offset_top = 15.0
+offset_right = 130.0
+offset_bottom = 105.0
+
+[node name="lobbies_vbox" type="VBoxContainer" parent="lobbies_popup_panel/lobbies_panel/lobbies_scroll_container"]
+layout_mode = 2
+
+[node name="lobbies_close_button" type="Button" parent="lobbies_popup_panel/lobbies_panel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -26.5
+offset_top = -21.0
+offset_right = 26.5
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("1_6oakf")
+text = "Close"
+
+[connection signal="pressed" from="create_button" to="." method="_on_create_pressed"]
+[connection signal="pressed" from="join_button" to="." method="_on_join_pressed"]
+[connection signal="pressed" from="leave_button" to="." method="_on_leave_pressed"]
+[connection signal="pressed" from="lobbies_popup_panel/lobbies_panel/lobbies_close_button" to="." method="_on_lobbies_close_button_pressed"]
