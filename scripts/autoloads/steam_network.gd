@@ -33,21 +33,14 @@ func _ready() -> void:
 func _on_peer_connected(this_peer_id: int) -> void:
 	Log.pr("A peer connected with id " + str(this_peer_id))
 	
-	# Let the player know about us by contacting them directly with an RCP direct to their id (rpc_id)
+	# Let the player know about us by contacting them directly with an RPC direct to their id (rpc_id)
 	register_player.rpc_id(this_peer_id, my_player_info)
 
 
 func _on_peer_disconnected(this_peer_id: int) -> void:
 	Log.pr("A peer disconnected with id " + str(this_peer_id))
 	
-	# If the disconnecting peer was the server, well, it's game-over, so close the networking, and start again.
-	if this_peer_id == 1:
-		Log.pr("The Host Server has left the game.")
-		#remove_multiplayer_peer()
-		#host_server_disconnected.emit()
-	else:
-		# Unregister the player from the game
-		players.erase(this_peer_id)
+	players.erase(this_peer_id)
 	
 	Log.prn(players)
 
@@ -63,13 +56,12 @@ func _on_connected_to_server() -> void:
 	
 func _on_connection_failed() -> void:
 	Log.pr("_on_connection_failed")
-	
 	remove_multiplayer_peer()
 	
 	
 func _on_server_disconnected() -> void:
 	Log.pr("_on_server_disconnected")
-	
+	host_server_disconnected.emit()
 	remove_multiplayer_peer()
 
 
@@ -79,7 +71,7 @@ func _on_server_disconnected() -> void:
 func create_network() -> void:
 	Log.pr("Creating Network as Host...")
 	var multiplayer_peer = SteamMultiplayerPeer.new()
-	multiplayer_peer.set_debug_level(SteamMultiplayerPeer.DEBUG_LEVEL_PEER)
+	#multiplayer_peer.set_debug_level(SteamMultiplayerPeer.DEBUG_LEVEL_PEER)
 	var err = multiplayer_peer.create_host()
 	if err == OK:
 		multiplayer.multiplayer_peer = multiplayer_peer
@@ -96,7 +88,7 @@ func create_network() -> void:
 func join_network(host_steam_id: int) -> void:
 	Log.pr("Joining Network as client of Host " + str(host_steam_id))
 	var multiplayer_peer = SteamMultiplayerPeer.new()
-	multiplayer_peer.set_debug_level(SteamMultiplayerPeer.DEBUG_LEVEL_PEER)
+	#multiplayer_peer.set_debug_level(SteamMultiplayerPeer.DEBUG_LEVEL_PEER)
 	var err = multiplayer_peer.create_client(host_steam_id)
 	if err == OK:
 		multiplayer.multiplayer_peer = multiplayer_peer
@@ -105,7 +97,6 @@ func join_network(host_steam_id: int) -> void:
 		Log.pr("Error connecting to steam host " + str(host_steam_id) + ", Error: " + error_string(err))
 
 
-# Used if we intentionally leave the network or lobby 
 func remove_multiplayer_peer() -> void:
 	multiplayer.multiplayer_peer = null
 	players.clear()

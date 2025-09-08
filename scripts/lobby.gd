@@ -219,7 +219,8 @@ func _on_lobby_message(this_lobby_id: int, this_user: int, this_message: String,
 ################################
 func _on_host_server_disconnected() -> void:
 	Log.pr("_on_host_server_disconnected")
-	#leave_lobby()
+	leave_lobby()
+	display_message("The Host Server disconnected")
 	
 
 ########################
@@ -301,8 +302,9 @@ func leave_lobby() -> void:
 		Log.pr("Leaving lobby")
 		Steam.leaveLobby(lobby_id)
 	
-		# Wipe the Steam lobby ID then display the default lobby ID and player list title
+		# Wipe the Steam lobby ID and the lobby owner ID
 		lobby_id = 0
+		lobby_owner_id = 0
 		
 		# Disconnect from Steam Network
 		SteamNetwork.remove_multiplayer_peer()
@@ -310,7 +312,6 @@ func leave_lobby() -> void:
 		# Clear the local lobby list
 		lobby_members.clear()
 		emit_signal("lobby_members_updated")
-		lobby_owner_id = 0
 
 
 func send_chat_message(this_message: String) -> void:

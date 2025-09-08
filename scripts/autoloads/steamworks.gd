@@ -37,7 +37,8 @@ func initialize_steam() -> void:
 	if not Steam.isSteamRunning():
 		Log.pr("Steam is not running. Shutting down Game.")
 		steamworks_error.emit("Steam is not running. Game will now shut down. Check your log files to find out more.")
-		return
+		
+		get_tree().quit()
 	
 	#if not Steam.restartAppIfNecessary(app_id):
 		#Log.pr("Game was not launched through the Steam client. Shutting down Game and relaunching through Steam.")
