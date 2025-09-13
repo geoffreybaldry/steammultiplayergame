@@ -1,4 +1,4 @@
-extends Node2D
+extends Control
 
 const PACKET_READ_LIMIT: int = 32
 const M_3X_6: Font = preload("res://assets/fonts/m3x6.ttf")
@@ -42,10 +42,10 @@ var lobby_members: Array = []
 @onready var create_lobby_button: Button = $top_buttons_hbox/create_lobby_button
 @onready var join_lobby_button: Button = $top_buttons_hbox/join_lobby_button
 @onready var send_message_button: Button = $players_and_chat_hbox/messaging_vbox/HBoxContainer/send_message_button
-@onready var leave_lobby_button: Button = $bottom_buttons_control/leave_lobby_button
-@onready var start_game_button: Button = $bottom_buttons_control/start_game_button
-@onready var ready_game_button: Button = $bottom_buttons_control/ready_game_button
-@onready var join_game_button: Button = $bottom_buttons_control/join_game_button
+@onready var leave_lobby_button: Button = $leave_lobby_button
+@onready var start_game_button: Button = $start_game_button
+#@onready var ready_game_button: Button = $bottom_buttons_control/ready_game_button
+#@onready var join_game_button: Button = $bottom_buttons_control/join_game_button
 
 
 func _ready() -> void:
@@ -330,7 +330,8 @@ func display_message(message: String) -> void:
 	
 
 func start_game() -> void:
-	Levels.goto_scene.rpc("res://scenes/levels/game_level_1.tscn")
+	#Levels.goto_scene.rpc("res://scenes/levels/game_level_1.tscn")
+	Levels.goto_scene.rpc("res://scenes/levels/test_level.tscn")
 	
 	
 func join_game() -> void:
@@ -391,21 +392,21 @@ func update_lobby_button_state(state: String) -> void:
 func update_game_button_state(state: String) -> void:
 	start_game_button.visible = false
 	start_game_button.disabled = true
-	join_game_button.visible = false
-	join_game_button.disabled = true
-	ready_game_button.visible = false
-	ready_game_button.disabled = true
+	#join_game_button.visible = false
+	#join_game_button.disabled = true
+	#ready_game_button.visible = false
+	#ready_game_button.disabled = true
 	
 	match state:
 		"START":
 			start_game_button.visible = true
 			start_game_button.disabled = false
-		"JOIN":
-			join_game_button.visible = true
-			join_game_button.disabled = false
-		"READY":
-			ready_game_button.visible = true
-			ready_game_button.disabled = false
+		#"JOIN":
+			#join_game_button.visible = true
+			#join_game_button.disabled = false
+		#"READY":
+			#ready_game_button.visible = true
+			#ready_game_button.disabled = false
 		"CLEAR":
 			pass
 	
