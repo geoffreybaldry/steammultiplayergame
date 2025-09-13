@@ -12,6 +12,8 @@ var players = {}
 # entered in a UI scene.
 var my_player_info = {"name": "Not yet set"}
 
+var players_loaded: int = 0
+
 signal host_server_disconnected
 
 
@@ -102,6 +104,9 @@ func remove_multiplayer_peer() -> void:
 	players.clear()
 
 
+##########################
+########## RPCs ##########
+##########################
 @rpc("call_local", "any_peer")
 func register_player(this_player_info) -> void:
 	Log.pr("Registering player with name " + this_player_info['name'])
@@ -109,3 +114,17 @@ func register_player(this_player_info) -> void:
 	players[new_player_id] = this_player_info
 	
 	Log.prn(players)
+	
+
+# Every peer will call this when they have loaded the game scene.
+# Only the server needs to keep track of the number of players loaded.
+@rpc("any_peer", "call_local", "reliable")
+func player_loaded():
+	Log.pr("Player loaded scene - Player ID : " + str(multiplayer.get_remote_sender_id()))
+	if multiplayer.is_server():
+		players_loaded += 1
+		Log.pr("Players in game : " + str(players_loaded) + "/" + str(players.size()))
+		if players_loaded == players.size():
+			#$/root/Game.start_game()
+			Log.pr("All required players in game : " + str(players_loaded) + "/" + str(players.size()))
+			players_loaded = 0

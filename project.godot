@@ -22,6 +22,7 @@ Steamworks="*res://scripts/autoloads/steamworks.gd"
 SteamNetwork="*res://scripts/autoloads/steam_network.gd"
 Config="*res://scripts/autoloads/config.gd"
 SaveLoad="*res://scripts/autoloads/save_load.gd"
+Levels="*res://scripts/autoloads/levels.gd"
 
 [debug]
 

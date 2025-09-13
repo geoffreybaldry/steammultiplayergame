@@ -29,7 +29,6 @@ var lobby_owner_id: int = 0:
 var lobby_members: Array = []
 
 
-
 # UI
 @onready var steam_name_label: Label = $user_info_vbox/steam_name_label
 @onready var steam_id_label: Label = $user_info_vbox/steam_id_label
@@ -208,6 +207,7 @@ func _on_lobby_chat_update(_this_lobby_id: int, changed_id: int, _making_change_
 func _on_lobby_data_update(success, this_lobby_id, this_member_id):
 	Log.pr("_on_lobby_data_update - Success: " + str(success), "Lobby ID: " + str(this_lobby_id), "Member ID: " + str(this_member_id))
 
+
 func _on_lobby_message(this_lobby_id: int, this_user: int, this_message: String, _chat_type: int) -> void:
 	# If this message was intended for our lobby id
 	if this_lobby_id == lobby_id:
@@ -330,7 +330,7 @@ func display_message(message: String) -> void:
 	
 
 func start_game() -> void:
-	pass
+	Levels.goto_scene.rpc("res://scenes/levels/game_level_1.tscn")
 	
 	
 func join_game() -> void:

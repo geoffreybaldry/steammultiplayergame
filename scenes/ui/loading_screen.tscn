@@ -1,0 +1,44 @@
+[gd_scene load_steps=4 format=3 uid="uid://bkqx3adxgrqvh"]
+
+[ext_resource type="Script" uid="uid://c4sh0v46ycdtr" path="res://scripts/ui/loading_screen.gd" id="1_rqdcv"]
+[ext_resource type="FontFile" uid="uid://idnu1i0hvyas" path="res://assets/fonts/m5x7.ttf" id="2_5fj0j"]
+[ext_resource type="FontFile" uid="uid://c1l47aekqn13v" path="res://assets/fonts/m3x6.ttf" id="3_s2kth"]
+
+[node name="loading_screen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_rqdcv")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -51.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="loading_label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("2_5fj0j")
+text = "Loading bro, just chill..."
+horizontal_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="VBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_fonts/font = ExtResource("3_s2kth")
+
+[node name="hint_label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_s2kth")
+text = "here is a nice hint about something"
+horizontal_alignment = 1
