@@ -14,29 +14,37 @@ const DECELERATION = 300.0
 @export var player_id: int = -1:
 	set(value):
 		player_id = value
-		$PlayerInputSynchronizer.set_multiplayer_authority(player_id)
+		#player_input.set_multiplayer_authority(player_id)
 	get:
 		return player_id
 
 
 func _ready() -> void:
-	# Might need to se the camera appropriately to follow this player - TBD
-	pass
+	# Take a breath for a frame to allow the network to establish IDs, etc
+	await get_tree().process_frame
+	
+	# Grant the particular player authority over this player node
+	set_multiplayer_authority(player_id)
+	
+	# Might need to set the camera appropriately to follow this player - TBD
+	
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	player_id_label.text = "id : " + str(player_id)
 	authority_id_label.text = "auth_id : " + str(get_multiplayer_authority())
 
 
 func _physics_process(delta: float) -> void:
 	# Only allow this player's authority to perform actions
-	set_process(get_multiplayer_authority() == multiplayer.get_unique_id())
+	#set_process(get_multiplayer_authority() == multiplayer.get_unique_id())
+	if not is_multiplayer_authority():
+		return
 	
 	# Get the input direction and handle the movement/deceleration.
-	var input_direction: Vector2 = Input.get_vector("move_left", "move_right", "move_up", "move_down")
-	if input_direction:
-		var target_velocity = SPEED * input_direction
+	#var input_direction: Vector2 = Input.get_vector("move_left", "move_right", "move_up", "move_down")
+	if player_input.input_direction:
+		var target_velocity = SPEED * player_input.input_direction
 		velocity = velocity.move_toward(target_velocity, ACCELERATION * delta)
 	else:
 		velocity = velocity.move_toward(Vector2.ZERO, DECELERATION * delta)

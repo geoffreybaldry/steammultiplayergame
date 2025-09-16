@@ -63,7 +63,8 @@ func spawn_player(this_id: int) -> void:
 	$spawned_players.add_child(player, true)
 	
 	# Hand over authority of managing the player node to the peer
-	player.set_multiplayer_authority(this_id)
+	# This is now done on the player itself in its ready function
+	# player.set_multiplayer_authority(this_id)
 
 
 func despawn_player(this_id: int) -> void:

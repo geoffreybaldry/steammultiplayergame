@@ -68,7 +68,7 @@ func load_scene(this_scene_filepath: String) -> void:
 
 func _on_scene_loaded(this_scene_filepath: String) -> void:	
 	# Pause for a short time, so the loading screen is visible
-	await get_tree().create_timer(1.5).timeout
+	await get_tree().create_timer(0.75).timeout
 
 	# Now it's time to switch from the current scene to the newly loaded one
 	deferred_goto_scene.call_deferred(this_scene_filepath)
