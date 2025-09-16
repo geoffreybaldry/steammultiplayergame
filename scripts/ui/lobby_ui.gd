@@ -26,7 +26,7 @@ var lobby_owner_id: int = 0:
 	get:
 		return lobby_owner_id
 		
-var lobby_members: Array = []
+var lobby_members: Array = [] # Format - [{"steam_id":member_steam_id, "steam_name":member_steam_name}]
 
 
 # UI
@@ -160,11 +160,9 @@ func _on_lobby_join_requested(this_lobby_id: int, friend_id: int) -> void:
 
 # A user's information has changed
 func _on_persona_change(this_steam_id: int, _flag: int) -> void:
-	Log.pr("_on_persona_change, steam_id: " + str(this_steam_id) + ", flag: " + str(_flag))
+	#Log.pr("_on_persona_change, steam_id: " + str(this_steam_id) + ", flag: " + str(_flag))
 	# Make sure you're in a lobby and this user is valid or Steam might spam your console log
-	if lobby_id > 0:
-		Log.pr("A user (%s) had information change, update the lobby list" % this_steam_id)
-	
+	if lobby_id > 0 and lobby_members.has(this_steam_id):	
 		# Update the player list
 		get_lobby_members()
 
@@ -186,14 +184,17 @@ func _on_lobby_chat_update(_this_lobby_id: int, changed_id: int, _making_change_
 	# Else if a player has disconnected without specifically leaving the lobby (network issue, etc)
 	elif chat_state == Steam.CHAT_MEMBER_STATE_CHANGE_DISCONNECTED:
 		Log.pr("%s has disconnected from the lobby." % changer_name)
+		display_message("%s has disconnected from the lobby." % changer_name)
 		
 	# Else if a player has been kicked
 	elif chat_state == Steam.CHAT_MEMBER_STATE_CHANGE_KICKED:
 		Log.pr("%s has been kicked from the lobby." % changer_name)
+		display_message("%s has been kicked from the lobby." % changer_name)
 	
 	# Else if a player has been banned
 	elif chat_state == Steam.CHAT_MEMBER_STATE_CHANGE_BANNED:
 		Log.pr("%s has been banned from the lobby." % changer_name)
+		display_message("%s has been banned from the lobby." % changer_name)
 	
 	# Else there was some unknown change
 	else:

@@ -15,6 +15,8 @@ var my_player_info = {"name": "Not yet set"}
 var players_loaded: int = 0
 
 signal host_server_disconnected
+signal peer_disconnected(peer_id: int)	# Emitted if a peer disconnectes so we can let the rest of the game know
+signal all_peers_loaded					# Emitted when all peers have loaded the chosen level
 
 
 func _ready() -> void:
@@ -42,6 +44,7 @@ func _on_peer_connected(this_peer_id: int) -> void:
 func _on_peer_disconnected(this_peer_id: int) -> void:
 	Log.pr("A peer disconnected with id " + str(this_peer_id))
 	
+	peer_disconnected.emit(this_peer_id)
 	players.erase(this_peer_id)
 	
 	Log.prn(players)
@@ -99,6 +102,7 @@ func join_network(host_steam_id: int) -> void:
 		Log.pr("Error connecting to steam host " + str(host_steam_id) + ", Error: " + error_string(err))
 
 
+# Used to reset the multiplayer peer back to starting state
 func remove_multiplayer_peer() -> void:
 	multiplayer.multiplayer_peer = null
 	players.clear()
@@ -125,6 +129,6 @@ func player_loaded():
 		players_loaded += 1
 		Log.pr("Players in game : " + str(players_loaded) + "/" + str(players.size()))
 		if players_loaded == players.size():
-			#$/root/Game.start_game()
 			Log.pr("All required players in game : " + str(players_loaded) + "/" + str(players.size()))
+			all_peers_loaded.emit()
 			players_loaded = 0

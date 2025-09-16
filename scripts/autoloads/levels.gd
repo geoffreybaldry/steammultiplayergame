@@ -11,7 +11,6 @@ var progress_value: float = 0.0:
 	set (value):
 		# If the progress changes, emit a signal for the progress UI
 		if value != progress_value:
-			Log.pr("New value: " + str(value))
 			scene_loading_progress_updated.emit(value)
 		progress_value = value
 	get:
@@ -22,8 +21,6 @@ var progress_value: float = 0.0:
 func _ready() -> void:
 	# Connect Local Signals
 	scene_loaded.connect(_on_scene_loaded)
-	
-	Log.pr("Current Scene : " + str(get_tree().current_scene))
 
 
 func _process(_delta: float) -> void:
@@ -69,9 +66,7 @@ func load_scene(this_scene_filepath: String) -> void:
 	scene_loading.emit()
 
 
-func _on_scene_loaded(this_scene_filepath: String) -> void:
-	Log.pr("Scene Loaded Asynchronously.")
-	
+func _on_scene_loaded(this_scene_filepath: String) -> void:	
 	# Pause for a short time, so the loading screen is visible
 	await get_tree().create_timer(1.5).timeout
 

@@ -1,20 +1,59 @@
-[gd_scene load_steps=4 format=3 uid="uid://cdg0vfkaa0w3v"]
+[gd_scene load_steps=8 format=3 uid="uid://cdg0vfkaa0w3v"]
 
 [ext_resource type="Script" uid="uid://g1v38iwbwey" path="res://scripts/player/player.gd" id="1_8afob"]
 [ext_resource type="Texture2D" uid="uid://bv0netwfa0sdd" path="res://assets/sprites/4_characters.png" id="2_dovo2"]
+[ext_resource type="Script" uid="uid://dlhab88x572jk" path="res://scripts/player/player_input.gd" id="3_gmlin"]
+[ext_resource type="FontFile" uid="uid://c1l47aekqn13v" path="res://assets/fonts/m3x6.ttf" id="4_lvxji"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8afob"]
 radius = 4.0
 
-[node name="CharacterBody2D" type="CharacterBody2D"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_dovo2"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:id")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_gmlin"]
+properties/0/path = NodePath("../player_input:input_direction")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+
+[node name="player" type="CharacterBody2D"]
 script = ExtResource("1_8afob")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_8afob")
 
-[node name="visual" type="Node2D" parent="."]
-
-[node name="Sprite2D" type="Sprite2D" parent="visual"]
+[node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_dovo2")
 hframes = 6
 vframes = 4
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_dovo2")
+
+[node name="PlayerInputSynchronizer" type="MultiplayerSynchronizer" parent="."]
+root_path = NodePath(".")
+replication_config = SubResource("SceneReplicationConfig_gmlin")
+
+[node name="player_id_label" type="Label" parent="."]
+offset_left = -6.0
+offset_top = -18.0
+offset_right = 6.0
+offset_bottom = -5.0
+theme_override_fonts/font = ExtResource("4_lvxji")
+text = "id : n/a"
+
+[node name="authority_id_label" type="Label" parent="."]
+offset_left = -6.0
+offset_top = -26.465
+offset_right = 6.0
+offset_bottom = -13.465
+theme_override_fonts/font = ExtResource("4_lvxji")
+text = "auth_id : n/a"
+
+[node name="player_input" type="Node" parent="."]
+script = ExtResource("3_gmlin")

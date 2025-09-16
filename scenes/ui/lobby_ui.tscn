@@ -162,6 +162,7 @@ disabled = true
 text = "Leave Lobby"
 
 [node name="start_game_button" type="Button" parent="."]
+visible = false
 custom_minimum_size = Vector2(70, 15)
 layout_mode = 1
 anchors_preset = 3

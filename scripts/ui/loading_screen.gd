@@ -10,5 +10,4 @@ func _ready() -> void:
 
 # Update the UI progress bar, casting the value to an int parameter
 func _on_scene_loading_progress_updated(this_progress_value: int) -> void:
-	Log.pr("Received new progress value : " + str(this_progress_value))
 	progress_bar.value = this_progress_value
