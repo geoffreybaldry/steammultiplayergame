@@ -49,28 +49,28 @@ func spawn_player(this_id: int) -> void:
 	
 	# Instantiate a player scene, give it the correct peer id, and grant authority to the client
 	var player = player_scene.instantiate()
+	
+	# Setting this player_id on the player object allows it to be given the correct multiplayer 
+	# authority once the player object is added to the scene tree with 
+	# $spawned_players.add_child(player, true) at the bottom.
 	player.player_id = this_id
 	
-	# Set the player's position to a random offset from an initial value
+	# Set the player's position to a random offset from an initial value - replace this with spawn pads later
 	var pos: Vector2 = Vector2.from_angle(randf() * 2 * PI)
-	Log.pr("Player pos : " + str(this_id) + " at position " + str(pos))
 	player.position = Vector2(50, 120) + Vector2(pos.x * SPAWN_RANDOM * randf(), pos.y * SPAWN_RANDOM * randf())
-	Log.pr("Player pos : " + str(this_id) + " at player.position " + str(player.position))
 	
 	# Add the player instance to the scene tree, under the MultiplayerSpawner's spawn path.
 	# This causes the instance to also be spawned on all the client peers too.
 	# We add the 'true' argument to force readable names - required by multiplayer.
 	$spawned_players.add_child(player, true)
 	
-	# Hand over authority of managing the player node to the peer
-	# This is now done on the player itself in its ready function
-	# player.set_multiplayer_authority(this_id)
 
 
 func despawn_player(this_id: int) -> void:
 	Log.pr("Despawning player with id : " + str(this_id))
+	# TBD - despawn the player - done on server only, I guess, but need to react to it on client
 	
-
+# Is this really needed?
 func _exit_tree() -> void:
 	# Disconnect signals
 	SteamNetwork.all_peers_loaded.disconnect(_on_all_peers_loaded)

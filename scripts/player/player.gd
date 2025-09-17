@@ -10,26 +10,27 @@ const DECELERATION = 300.0
 @onready var player_id_label: Label = $player_id_label
 @onready var authority_id_label: Label = $authority_id_label
 
+# Exporting this var makes it easily selectable in the MultiplayerSynchronizer
+@export var player_id: int = -1
 
-@export var player_id: int = -1:
-	set(value):
-		player_id = value
-		#player_input.set_multiplayer_authority(player_id)
-	get:
-		return player_id
+
+# _enter_tree() happens at the moment this object is added to the scene tree via
+# something calling add_child(this_object, true). In our case the level itself
+# instantiates the player, and sets its player_id before doing the add_child.
+func _enter_tree() -> void:
+	# Grant the particular player_id authority over this player node.
+	# This means we are doing "Client Authority", meaning that the client "owns"
+	# or "is the authority" over this player node in the scene tree.
+	set_multiplayer_authority(player_id)
 
 
 func _ready() -> void:
-	# Take a breath for a frame to allow the network to establish IDs, etc
-	await get_tree().process_frame
-	
-	# Grant the particular player authority over this player node
-	set_multiplayer_authority(player_id)
-	
+	pass
 	# Might need to set the camera appropriately to follow this player - TBD
-	
 
 
+# Temporary - used to show the player_id, and the id of the authority of the player node
+# Helps with debugging who is in charge of which player nodes.
 func _process(_delta: float) -> void:
 	player_id_label.text = "id : " + str(player_id)
 	authority_id_label.text = "auth_id : " + str(get_multiplayer_authority())
@@ -37,12 +38,10 @@ func _process(_delta: float) -> void:
 
 func _physics_process(delta: float) -> void:
 	# Only allow this player's authority to perform actions
-	#set_process(get_multiplayer_authority() == multiplayer.get_unique_id())
 	if not is_multiplayer_authority():
 		return
 	
-	# Get the input direction and handle the movement/deceleration.
-	#var input_direction: Vector2 = Input.get_vector("move_left", "move_right", "move_up", "move_down")
+	# Use the input direction from player_input node and handle the movement/deceleration.
 	if player_input.input_direction:
 		var target_velocity = SPEED * player_input.input_direction
 		velocity = velocity.move_toward(target_velocity, ACCELERATION * delta)

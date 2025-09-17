@@ -32,13 +32,6 @@ texture = ExtResource("2_dovo2")
 hframes = 6
 vframes = 4
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_dovo2")
-
-[node name="PlayerInputSynchronizer" type="MultiplayerSynchronizer" parent="."]
-root_path = NodePath(".")
-replication_config = SubResource("SceneReplicationConfig_gmlin")
-
 [node name="player_id_label" type="Label" parent="."]
 offset_left = -6.0
 offset_top = -18.0
@@ -57,3 +50,10 @@ text = "auth_id : n/a"
 
 [node name="player_input" type="Node" parent="."]
 script = ExtResource("3_gmlin")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_dovo2")
+
+[node name="PlayerInputSynchronizer" type="MultiplayerSynchronizer" parent="."]
+root_path = NodePath(".")
+replication_config = SubResource("SceneReplicationConfig_gmlin")
