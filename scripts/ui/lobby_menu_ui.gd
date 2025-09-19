@@ -5,6 +5,7 @@ const M_3X_6: Font = preload("res://assets/fonts/m3x6.ttf")
 const LOBBY_MEMBERS_MAX: int = 4
 
 signal lobby_members_updated
+signal main_menu_button_pressed
 
 var lobby_id: int = 0:
 	set(value):
@@ -44,6 +45,8 @@ var lobby_members: Array = [] # Format - [{"steam_id":member_steam_id, "steam_na
 @onready var send_message_button: Button = $players_and_chat_hbox/messaging_vbox/HBoxContainer/send_message_button
 @onready var leave_lobby_button: Button = $leave_lobby_button
 @onready var start_game_button: Button = $start_game_button
+@onready var main_menu_button: Button = $main_menu_button
+
 #@onready var ready_game_button: Button = $bottom_buttons_control/ready_game_button
 #@onready var join_game_button: Button = $bottom_buttons_control/join_game_button
 
@@ -373,6 +376,9 @@ func update_lobby_button_state(state: String) -> void:
 	create_lobby_button.disabled = true
 	join_lobby_button.disabled = true
 	leave_lobby_button.disabled = true
+	leave_lobby_button.visible = false
+	main_menu_button.disabled = true
+	main_menu_button.visible = false
 	send_message_button.disabled = true
 	message_line_edit.editable = false
 	lobby_code_text_area.editable = false
@@ -381,6 +387,7 @@ func update_lobby_button_state(state: String) -> void:
 	match state:
 		"IN-LOBBY":
 			leave_lobby_button.disabled = false
+			leave_lobby_button.visible = true
 			send_message_button.disabled = false
 			message_line_edit.editable = true
 		"NOT-IN-LOBBY":
@@ -389,6 +396,8 @@ func update_lobby_button_state(state: String) -> void:
 			lobby_code_text_area.editable = true
 			join_lobby_button.disabled = false
 			chat_messages.clear()
+			main_menu_button.disabled = false
+			main_menu_button.visible = true
 
 func update_game_button_state(state: String) -> void:
 	start_game_button.visible = false
@@ -443,9 +452,13 @@ func _on_start_game_button_pressed() -> void:
 	start_game()
 
 
-func _on_ready_game_button_pressed() -> void:
-	pass
+#func _on_ready_game_button_pressed() -> void:
+	#pass
+#
+#
+#func _on_join_game_button_pressed() -> void:
+	#join_game()
 
 
-func _on_join_game_button_pressed() -> void:
-	join_game()
+func _on_main_menu_button_pressed() -> void:
+	main_menu_button_pressed.emit()

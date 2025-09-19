@@ -1,10 +1,10 @@
 [gd_scene load_steps=4 format=3 uid="uid://bkqx3adxgrqvh"]
 
-[ext_resource type="Script" uid="uid://c4sh0v46ycdtr" path="res://scripts/ui/loading_screen.gd" id="1_rqdcv"]
+[ext_resource type="Script" uid="uid://c4sh0v46ycdtr" path="res://scripts/ui/loading_screen_ui.gd" id="1_rqdcv"]
 [ext_resource type="FontFile" uid="uid://idnu1i0hvyas" path="res://assets/fonts/m5x7.ttf" id="2_5fj0j"]
 [ext_resource type="FontFile" uid="uid://c1l47aekqn13v" path="res://assets/fonts/m3x6.ttf" id="3_s2kth"]
 
-[node name="loading_screen" type="Control"]
+[node name="loading_screen_ui" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

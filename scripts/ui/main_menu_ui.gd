@@ -1,6 +1,8 @@
 extends Control
 
 
+signal lobby_menu_button_pressed
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass # Replace with function body.
@@ -11,9 +13,8 @@ func _process(delta: float) -> void:
 	pass
 
 
-func _on_multiplayer_lobby_button_pressed() -> void:
-	pass
-	#Levels.goto_scene()
+func _on_lobby_menu_button_pressed() -> void:
+	lobby_menu_button_pressed.emit()
 
 
 # We're outta here

@@ -40,7 +40,7 @@ offset_bottom = 23.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="multiplayer_lobby_button" type="Button" parent="VBoxContainer"]
+[node name="lobby_menu_button" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_b8bkt")
 text = "Lobby"
@@ -61,5 +61,5 @@ grow_vertical = 0
 theme_override_fonts/font = ExtResource("2_b8bkt")
 text = "vX.Y"
 
-[connection signal="pressed" from="VBoxContainer/multiplayer_lobby_button" to="." method="_on_multiplayer_lobby_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/lobby_menu_button" to="." method="_on_lobby_menu_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/quit_game_button" to="." method="_on_quit_game_button_pressed"]

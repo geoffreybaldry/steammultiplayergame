@@ -2,15 +2,15 @@ extends Node
 
 ## This Autoload is in charge of loading and switching between scenes.
 ## The scenes it switches between are always added or removed as children of the 
-## main scene, World.
+## main scene called World.
 ## This means that the World scene persists through the entire length of the
 ## game's execution.
-
-var loading_screen = preload("res://scenes/ui/loading_screen.tscn")
 
 signal scene_loading
 signal scene_loading_progress_updated(progress_percent: int)
 signal scene_loaded(scene_filepath: String)
+
+var loading_screen_ui_scene = preload("res://scenes/ui/loading_screen_ui.tscn")
 
 var scene_filepath: String = ""
 var progress_value: float = 0.0:
@@ -57,8 +57,8 @@ func _process(_delta: float) -> void:
 # do Levels.goto_scene.rpc(scene_filepath)
 @rpc("call_local", "reliable")
 func goto_scene(this_scene_filepath: String) -> void:
-	# Show the Loading Screen Scene, which updates as the level is loaded
-	get_tree().change_scene_to_packed(loading_screen)
+	# Show the Loading Screen Scene, whiich updates as the level is loaded
+	get_tree().change_scene_to_packed(loading_screen_ui_scene)
 	
 	# Start the asynchronous loading of the desired scene
 	load_scene(this_scene_filepath)
