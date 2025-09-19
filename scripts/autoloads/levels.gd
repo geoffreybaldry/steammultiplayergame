@@ -1,5 +1,11 @@
 extends Node
 
+## This Autoload is in charge of loading and switching between scenes.
+## The scenes it switches between are always added or removed as children of the 
+## main scene, World.
+## This means that the World scene persists through the entire length of the
+## game's execution.
+
 var loading_screen = preload("res://scenes/ui/loading_screen.tscn")
 
 signal scene_loading
@@ -23,6 +29,8 @@ func _ready() -> void:
 	scene_loaded.connect(_on_scene_loaded)
 
 
+# This monitors the progress of any background scene loading taking place
+# It emits a scene loaded signal if it notices a background load has completed
 func _process(_delta: float) -> void:
 	if not scene_filepath:
 		return
@@ -41,8 +49,8 @@ func _process(_delta: float) -> void:
 			Log.pr("Failed to load scene (Load Failed): " + str(scene_filepath))
 		ResourceLoader.ThreadLoadStatus.THREAD_LOAD_LOADED:
 			progress_value = 100.0
-			scene_loaded.emit(scene_filepath)
 			scene_filepath = ""
+			scene_loaded.emit(scene_filepath)
 
 
 # When the server decides to start the game from a UI scene,
@@ -66,8 +74,8 @@ func load_scene(this_scene_filepath: String) -> void:
 	scene_loading.emit()
 
 
-func _on_scene_loaded(this_scene_filepath: String) -> void:	
-	# Pause for a short time, so the loading screen is visible
+func _on_scene_loaded(this_scene_filepath: String) -> void:
+	# Pause for a short time, so even if the load takes 0.01sec, the loading screen is visible
 	await get_tree().create_timer(0.75).timeout
 
 	# Now it's time to switch from the current scene to the newly loaded one

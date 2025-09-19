@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="SteamMultiplayerGame"
-run/main_scene="uid://dakmb72ihvjv4"
+run/main_scene="uid://cmrw5rswvfbdj"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 

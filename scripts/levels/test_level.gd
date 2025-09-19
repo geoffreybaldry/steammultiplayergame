@@ -70,6 +70,7 @@ func despawn_player(this_id: int) -> void:
 	Log.pr("Despawning player with id : " + str(this_id))
 	# TBD - despawn the player - done on server only, I guess, but need to react to it on client
 	
+	
 # Is this really needed?
 func _exit_tree() -> void:
 	# Disconnect signals

@@ -1,0 +1,65 @@
+[gd_scene load_steps=4 format=3 uid="uid://dy6qu38rl2hod"]
+
+[ext_resource type="FontFile" uid="uid://idnu1i0hvyas" path="res://assets/fonts/m5x7.ttf" id="1_3bauu"]
+[ext_resource type="Script" uid="uid://dp5lm7kwhsd62" path="res://scripts/ui/main_menu_ui.gd" id="1_b8bkt"]
+[ext_resource type="FontFile" uid="uid://c1l47aekqn13v" path="res://assets/fonts/m3x6.ttf" id="2_b8bkt"]
+
+[node name="main_menu_ui" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_b8bkt")
+
+[node name="game_name_label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -41.5
+offset_top = 10.0
+offset_right = 41.5
+offset_bottom = 33.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("1_3bauu")
+text = "MultiplayerGame"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -23.0
+offset_right = 20.0
+offset_bottom = 23.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="multiplayer_lobby_button" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_b8bkt")
+text = "Lobby"
+
+[node name="quit_game_button" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_b8bkt")
+text = "Quit"
+
+[node name="version_label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -13.0
+offset_right = 40.0
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("2_b8bkt")
+text = "vX.Y"
+
+[connection signal="pressed" from="VBoxContainer/multiplayer_lobby_button" to="." method="_on_multiplayer_lobby_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/quit_game_button" to="." method="_on_quit_game_button_pressed"]
