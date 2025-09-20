@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://cmrw5rswvfbdj"]
+[gd_scene load_steps=6 format=3 uid="uid://cmrw5rswvfbdj"]
 
 [ext_resource type="Script" uid="uid://dy34yfx3ut15n" path="res://scripts/world.gd" id="1_nnsk1"]
 [ext_resource type="PackedScene" uid="uid://dy6qu38rl2hod" path="res://scenes/ui/main_menu_ui.tscn" id="2_4wyf3"]
 [ext_resource type="PackedScene" uid="uid://dakmb72ihvjv4" path="res://scenes/ui/lobby_menu_ui.tscn" id="3_k0juu"]
-[ext_resource type="PackedScene" uid="uid://bkqx3adxgrqvh" path="res://scenes/ui/loading_screen_ui.tscn" id="4_k0juu"]
+[ext_resource type="PackedScene" uid="uid://bkqx3adxgrqvh" path="res://scenes/ui/scene_loading_ui.tscn" id="4_k0juu"]
+[ext_resource type="PackedScene" uid="uid://c6no7p4khy8a" path="res://scenes/ui/pause_menu_ui.tscn" id="5_71j4m"]
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_nnsk1")
@@ -15,6 +16,10 @@ script = ExtResource("1_nnsk1")
 [node name="lobby_menu_ui" parent="ui_canvas_layer" instance=ExtResource("3_k0juu")]
 visible = false
 
-[node name="loading_screen_ui" parent="ui_canvas_layer" instance=ExtResource("4_k0juu")]
+[node name="scene_loading_ui" parent="ui_canvas_layer" instance=ExtResource("4_k0juu")]
+visible = false
+
+[node name="pause_menu_ui" parent="ui_canvas_layer" instance=ExtResource("5_71j4m")]
+visible = false
 
 [node name="levels" type="Node2D" parent="."]

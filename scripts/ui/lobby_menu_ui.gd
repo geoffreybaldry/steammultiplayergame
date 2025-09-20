@@ -5,7 +5,6 @@ const M_3X_6: Font = preload("res://assets/fonts/m3x6.ttf")
 const LOBBY_MEMBERS_MAX: int = 4
 
 signal lobby_members_updated
-signal main_menu_button_pressed
 
 var lobby_id: int = 0:
 	set(value):
@@ -461,4 +460,4 @@ func _on_start_game_button_pressed() -> void:
 
 
 func _on_main_menu_button_pressed() -> void:
-	main_menu_button_pressed.emit()
+	GameState.change_game_state(GameState.GAME_STATES.MAIN_MENU)

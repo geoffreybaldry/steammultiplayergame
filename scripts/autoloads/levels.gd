@@ -6,13 +6,11 @@ extends Node
 ## This means that the World scene persists through the entire length of the
 ## game's execution.
 
-signal scene_loading
 signal scene_loading_progress_updated(progress_percent: int)
 signal scene_loaded(scene_filepath: String)
 
-var loading_screen_ui_scene = preload("res://scenes/ui/loading_screen_ui.tscn")
-
 var scene_filepath: String = ""
+var current_scene_name: String = ""
 var progress_value: float = 0.0:
 	set (value):
 		# If the progress changes, emit a signal for the progress UI
@@ -49,17 +47,15 @@ func _process(_delta: float) -> void:
 			Log.pr("Failed to load scene (Load Failed): " + str(scene_filepath))
 		ResourceLoader.ThreadLoadStatus.THREAD_LOAD_LOADED:
 			progress_value = 100.0
-			scene_filepath = ""
 			scene_loaded.emit(scene_filepath)
+			scene_filepath = ""
 
 
 # When the server decides to start the game from a UI scene,
 # do Levels.goto_scene.rpc(scene_filepath)
 @rpc("call_local", "reliable")
 func goto_scene(this_scene_filepath: String) -> void:
-	# Show the Loading Screen Scene, whiich updates as the level is loaded
-	get_tree().change_scene_to_packed(loading_screen_ui_scene)
-	
+	Log.pr("Loading scene : " + this_scene_filepath)
 	# Start the asynchronous loading of the desired scene
 	load_scene(this_scene_filepath)
 
@@ -70,8 +66,8 @@ func load_scene(this_scene_filepath: String) -> void:
 	if err != OK:
 		Log.pr("Error Loading Scene path " + str(scene_filepath) + " Error : " + error_string(err))
 
-	# Send this out so UI can present a Nice Loading Overlay, etc.
-	scene_loading.emit()
+	# Change the game_state so UI can present a nice Loading Overlay, etc.
+	GameState.change_game_state(GameState.GAME_STATES.SCENE_LOADING)
 
 
 func _on_scene_loaded(this_scene_filepath: String) -> void:
@@ -87,14 +83,14 @@ func deferred_goto_scene(this_scene_filepath: String) -> void:
 	var new_scene_resource = ResourceLoader.load_threaded_get(this_scene_filepath)
 	
 	# Instantiate the new scene
-	var new_scene = new_scene_resource.instantiate()
+	var new_scene_instance: Node2D = new_scene_resource.instantiate()
 	
-	# It is now safe to remove the current scene.
-	get_tree().current_scene.free()
+	# Remove the old level scene, if there is one
+	if current_scene_name:
+		get_tree().current_scene.get_node("levels").get_node(current_scene_name).queue_free()
 	
-	# Add the new scene as the active scene, as child of root.
-	get_tree().root.add_child(new_scene)
-
-	# Optionally, to make it compatible with the SceneTree.change_scene_to_file() API.
-	get_tree().current_scene = new_scene
+	# Add the new scene in its place
+	get_tree().current_scene.get_node("levels").add_child(new_scene_instance)
+	current_scene_name = new_scene_instance.name
 	
+	GameState.change_game_state(GameState.GAME_STATES.PLAYING)
