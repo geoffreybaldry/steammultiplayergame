@@ -3,8 +3,6 @@ extends Node
 ## This Autoload is in charge of loading and switching between scenes.
 ## The scenes it switches between are always added or removed as children of the 
 ## main scene called World.
-## This means that the World scene persists through the entire length of the
-## game's execution.
 
 signal scene_loading_progress_updated(progress_percent: int)
 signal scene_loaded(scene_filepath: String)
@@ -23,7 +21,8 @@ var progress_value: float = 0.0:
 
 
 func _ready() -> void:
-	# Connect Local Signals
+	# Connect Signals
+	GameState.game_state_changed.connect(_on_game_state_changed)
 	scene_loaded.connect(_on_scene_loaded)
 
 
@@ -49,6 +48,15 @@ func _process(_delta: float) -> void:
 			progress_value = 100.0
 			scene_loaded.emit(scene_filepath)
 			scene_filepath = ""
+
+
+# Watch for changes in game state, and react accordingly
+func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
+	match new_game_state:
+		GameState.GAME_STATES.MAIN_MENU:
+			# Unload any existing level scene
+			if current_scene_name:
+				remove_scene(current_scene_name)
 
 
 # When the server decides to start the game from a UI scene,
@@ -87,10 +95,15 @@ func deferred_goto_scene(this_scene_filepath: String) -> void:
 	
 	# Remove the old level scene, if there is one
 	if current_scene_name:
-		get_tree().current_scene.get_node("levels").get_node(current_scene_name).queue_free()
+		remove_scene(current_scene_name)
 	
 	# Add the new scene in its place
 	get_tree().current_scene.get_node("levels").add_child(new_scene_instance)
 	current_scene_name = new_scene_instance.name
 	
 	GameState.change_game_state(GameState.GAME_STATES.PLAYING)
+	
+	
+func remove_scene(this_scene_name: String) -> void:
+	get_tree().current_scene.get_node("levels").get_node(current_scene_name).queue_free()
+	current_scene_name = ""
