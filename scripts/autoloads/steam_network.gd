@@ -28,6 +28,7 @@ func _ready() -> void:
 	multiplayer.connection_failed.connect(_on_connection_failed)       # Failed to connect to a server
 	multiplayer.server_disconnected.connect(_on_server_disconnected)   # When this client disconnects from a server
 
+	GameState.game_state_changed.connect(_on_game_state_changed)
 
 ###################################
 ##### MultiplayerPeer signals #####
@@ -69,6 +70,14 @@ func _on_server_disconnected() -> void:
 	host_server_disconnected.emit()
 	remove_multiplayer_peer()
 
+
+# Watch for changes in the game state, and adjust steam networking to suit
+func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
+	#Log.pr("_on_game_state_changed : ", old_game_state, new_game_state)
+	
+	match new_game_state:
+		GameState.GAME_STATES.MAIN_MENU:
+			remove_multiplayer_peer()
 
 ##########################
 ##### Game Functions #####

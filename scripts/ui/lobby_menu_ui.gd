@@ -233,6 +233,9 @@ func _on_host_server_disconnected() -> void:
 func _on_game_state_changed(old_game_state: int, new_game_state: int) -> void:
 	Log.pr("_on_game_state_changed : ", old_game_state, new_game_state)
 	
+	match new_game_state:
+		GameState.GAME_STATES.MAIN_MENU:
+			leave_lobby()
 
 ########################
 ##### Game Signals #####
