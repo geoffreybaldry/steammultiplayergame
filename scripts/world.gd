@@ -31,25 +31,23 @@ func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
 	#Log.pr("_on_game_state_changed : ", old_game_state, new_game_state)
 	
 	main_menu_ui.visible = false
-	#main_menu_ui.set_process(false)
 	lobby_menu_ui.visible = false
-	#lobby_menu_ui.set_process(false)
 	scene_loading_ui.visible = false
-	#scene_loading_ui.set_process(false)
 	pause_menu_ui.visible = false
-	#pause_menu_ui.set_process(false) # This must always process to listen for the pause button
 	
 	match new_game_state:
 		GameState.GAME_STATES.MAIN_MENU:
 			main_menu_ui.visible = true
-			#main_menu_ui.set_process(true)
 		GameState.GAME_STATES.LOBBY_MENU:
 			lobby_menu_ui.visible = true
-			#lobby_menu_ui.set_process(true)
 		GameState.GAME_STATES.SCENE_LOADING:
 			scene_loading_ui.visible = true
-			#scene_loading_ui.set_process(true)
 		GameState.GAME_STATES.PLAYING:
 			pass
 		GameState.GAME_STATES.PAUSED:
 			pause_menu_ui.visible = true
+		GameState.GAME_STATES.QUITTING:
+			pass
+		_:
+			Log.error("New Game State Not recognised : " + str(new_game_state))
+			

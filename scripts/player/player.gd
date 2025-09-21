@@ -13,21 +13,16 @@ const DECELERATION = 300.0
 # Exporting this var makes it easily selectable in the MultiplayerSynchronizer
 @export var player_id: int = -1
 
-
-# _enter_tree() happens at the moment this object is added to the scene tree via
-# something calling add_child(this_object, true). In our case the level itself
-# instantiates the player, and sets its player_id before doing the add_child.
-#func _enter_tree() -> void:
+func _ready() -> void:
+	# Take a frame to allow the network to synchronize, etc.
+	# I tried using the _enter_tree() method instead, and it didn't work.
+	await get_tree().process_frame
+	
 	## Grant the particular player_id authority over this player node.
 	## This means we are doing "Client Authority", meaning that the client "owns"
 	## or "is the authority" over this player node in the scene tree.
-	#set_multiplayer_authority(player_id)
-
-
-func _ready() -> void:
-	await get_tree().process_frame
 	set_multiplayer_authority(player_id)
-	#pass
+	
 	# Might need to set the camera appropriately to follow this player - TBD
 
 
