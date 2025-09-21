@@ -9,6 +9,7 @@ const DECELERATION = 300.0
 
 @onready var player_id_label: Label = $player_id_label
 @onready var authority_id_label: Label = $authority_id_label
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
 
 # Exporting this var makes it easily selectable in the MultiplayerSynchronizer
 @export var player_id: int = -1
@@ -18,9 +19,9 @@ func _ready() -> void:
 	# I tried using the _enter_tree() method instead, and it didn't work.
 	await get_tree().process_frame
 	
-	## Grant the particular player_id authority over this player node.
-	## This means we are doing "Client Authority", meaning that the client "owns"
-	## or "is the authority" over this player node in the scene tree.
+	# Grant the particular player_id authority over this player node.
+	# This means we are doing "Client Authority", meaning that the client "owns"
+	# or "is the authority" over this player node in the scene tree.
 	set_multiplayer_authority(player_id)
 	
 	# Might need to set the camera appropriately to follow this player - TBD
@@ -46,3 +47,11 @@ func _physics_process(delta: float) -> void:
 		velocity = velocity.move_toward(Vector2.ZERO, DECELERATION * delta)
 
 	move_and_slide()
+	apply_animation()
+
+# Play the appropriate animation based on the player's 
+func apply_animation() -> void:
+	if velocity == Vector2.ZERO:
+		animation_player.play("idle")
+	else:
+		animation_player.play("walk")

@@ -68,7 +68,8 @@ func _ready() -> void:
 	# SteamNetwork signals
 	SteamNetwork.host_server_disconnected.connect(_on_host_server_disconnected)
 	
-	# Local signals
+	# Other signals
+	GameState.game_state_changed.connect(_on_game_state_changed)
 	lobby_members_updated.connect(_on_lobby_members_updated) # Update the player list, and in turn the UI.
 	
 	# Check for command line arguments
@@ -224,6 +225,13 @@ func _on_host_server_disconnected() -> void:
 	Log.pr("_on_host_server_disconnected")
 	leave_lobby()
 	display_message("The Host Server disconnected")
+	
+
+#########################
+##### Other Signals #####
+#########################
+func _on_game_state_changed(old_game_state: int, new_game_state: int) -> void:
+	Log.pr("_on_game_state_changed : ", old_game_state, new_game_state)
 	
 
 ########################
