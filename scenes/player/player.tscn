@@ -53,7 +53,6 @@ script = ExtResource("3_gmlin")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_dovo2")
-public_visibility = false
 
 [node name="PlayerInputSynchronizer" type="MultiplayerSynchronizer" parent="."]
 root_path = NodePath("../player_input")
