@@ -72,8 +72,8 @@ func despawn_player(this_id: int) -> void:
 	
 	
 # Is this really needed?
-func _exit_tree() -> void:
-	# Disconnect signals
-	SteamNetwork.all_peers_loaded.disconnect(_on_all_peers_loaded)
-	SteamNetwork.host_server_disconnected.disconnect(_on_host_server_disconnected)
-	SteamNetwork.peer_disconnected.disconnect(_on_peer_disconnected)
+#func _exit_tree() -> void:
+	## Disconnect signals
+	#SteamNetwork.all_peers_loaded.disconnect(_on_all_peers_loaded)
+	#SteamNetwork.host_server_disconnected.disconnect(_on_host_server_disconnected)
+	#SteamNetwork.peer_disconnected.disconnect(_on_peer_disconnected)

@@ -19,7 +19,6 @@ var progress_value: float = 0.0:
 		return progress_value
 		
 
-
 func _ready() -> void:
 	# Connect Signals
 	GameState.game_state_changed.connect(_on_game_state_changed)
@@ -56,7 +55,7 @@ func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
 		GameState.GAME_STATES.MAIN_MENU:
 			# Unload any existing level scene
 			if current_scene_name:
-				remove_scene(current_scene_name)
+				remove_current_scene()
 
 
 # When the server decides to start the game from a UI scene,
@@ -95,15 +94,15 @@ func deferred_goto_scene(this_scene_filepath: String) -> void:
 	
 	# Remove the old level scene, if there is one
 	if current_scene_name:
-		remove_scene(current_scene_name)
+		remove_current_scene()
 	
 	# Add the new scene in its place
-	get_tree().current_scene.get_node("levels").add_child(new_scene_instance)
+	get_tree().current_scene.get_node("levels").add_child(new_scene_instance, true)
 	current_scene_name = new_scene_instance.name
 	
 	GameState.change_game_state(GameState.GAME_STATES.PLAYING)
 	
 	
-func remove_scene(this_scene_name: String) -> void:
+func remove_current_scene() -> void:
 	get_tree().current_scene.get_node("levels").get_node(current_scene_name).queue_free()
 	current_scene_name = ""

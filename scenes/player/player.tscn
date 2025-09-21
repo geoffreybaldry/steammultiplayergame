@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cdg0vfkaa0w3v"]
+[gd_scene load_steps=7 format=3 uid="uid://cdg0vfkaa0w3v"]
 
 [ext_resource type="Script" uid="uid://g1v38iwbwey" path="res://scripts/player/player.gd" id="1_8afob"]
 [ext_resource type="Texture2D" uid="uid://bv0netwfa0sdd" path="res://assets/sprites/4_characters.png" id="2_dovo2"]
@@ -15,11 +15,6 @@ properties/0/replication_mode = 1
 properties/1/path = NodePath(".:player_id")
 properties/1/spawn = true
 properties/1/replication_mode = 1
-
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_gmlin"]
-properties/0/path = NodePath("../player_input:input_direction")
-properties/0/spawn = true
-properties/0/replication_mode = 1
 
 [node name="player" type="CharacterBody2D"]
 script = ExtResource("1_8afob")
@@ -53,7 +48,3 @@ script = ExtResource("3_gmlin")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_dovo2")
-
-[node name="PlayerInputSynchronizer" type="MultiplayerSynchronizer" parent="."]
-root_path = NodePath(".")
-replication_config = SubResource("SceneReplicationConfig_gmlin")
