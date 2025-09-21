@@ -43,7 +43,10 @@ func _on_peer_disconnected(this_peer_id: int) -> void:
 
 # This function is connected on all peers, so they can observe if the host server becomes lost.
 func _on_host_server_disconnected() -> void:
-	Log.pr("Host server disconnected. TBD - Implement game-over and back to Main Menu")
+	Log.error("Host server disconnected. Game-Over and back to Main Menu.")
+	
+	# During a level, if we lose the host server, we must abandon and go back to main menu.
+	GameState.change_game_state(GameState.GAME_STATES.MAIN_MENU)
 	
 
 # This function only happens on the server - the MultiplayerSpawner replicates any spawned player
