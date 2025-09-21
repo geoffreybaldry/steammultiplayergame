@@ -30,5 +30,5 @@ func change_game_state(new_game_state: int) -> void:
 		current_game_state = new_game_state
 		game_state_changed.emit(current_game_state, new_game_state)
 	else:
-		Log.error("Trying to change game_state from " + GAME_STATES.keys()[current_game_state] + " to " + GAME_STATES.keys()[new_game_state])
+		Log.warn("Trying to change game_state from " + GAME_STATES.keys()[current_game_state] + " to " + GAME_STATES.keys()[new_game_state])
 		

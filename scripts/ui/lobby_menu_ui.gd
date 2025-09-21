@@ -147,7 +147,7 @@ func _on_lobby_joined(this_lobby_id: int, _permissions: int, _locked: bool, resp
 			Steam.CHAT_ROOM_ENTER_RESPONSE_YOU_BLOCKED_MEMBER: fail_reason = "A user you have blocked is in the lobby."
 
 		var error_message = "Failed to join this chat room: %s" % fail_reason
-		Log.error(error_message)
+		Log.warn(error_message)
 		display_message(error_message)
 
 

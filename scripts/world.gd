@@ -52,5 +52,4 @@ func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
 		GameState.GAME_STATES.QUITTING:
 			pass
 		_:
-			Log.error("New Game State Not Recognised : " + str(new_game_state))
-			
+			Log.warn("New Game State Not Recognised : " + str(new_game_state))
