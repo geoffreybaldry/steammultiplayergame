@@ -4,6 +4,10 @@ const MAX_PEERS: int = 4
 
 # This will contain player info for every player,
 # with the keys being each player's unique IDs.
+# e.g 	{ 
+# 			"1" : {"name": "A Player's Name"},
+#			"694392204": { "name": JazzyGeoff }
+#		}
 var players = {}
 
 # This is the local player info. This should be modified locally
@@ -61,13 +65,14 @@ func _on_connected_to_server() -> void:
 	
 	
 func _on_connection_failed() -> void:
-	Log.pr("_on_connection_failed")
+	Log.warn("_on_connection_failed")
 	remove_multiplayer_peer()
 	
 	
 func _on_server_disconnected() -> void:
-	Log.pr("_on_server_disconnected")
+	Log.warn("_on_server_disconnected")
 	host_server_disconnected.emit()
+	Events.error_messages.error_message.emit("Host Server Disconnected from Steam Network")
 	remove_multiplayer_peer()
 
 
@@ -92,7 +97,7 @@ func create_network() -> void:
 		my_player_info["name"] = Steamworks.steam_username
 		players[1] = my_player_info # The game host is always id 1
 	else:
-		Log.pr("Error creating Host Network, Error: " + error_string(err))
+		Log.warn("Error creating Host Network, Error: " + error_string(err))
 	
 	Log.pr("Waiting for players to Join...")
 	
@@ -108,7 +113,7 @@ func join_network(host_steam_id: int) -> void:
 		multiplayer.multiplayer_peer = multiplayer_peer
 		my_player_info["name"] = Steamworks.steam_username
 	else:
-		Log.pr("Error connecting to steam host " + str(host_steam_id) + ", Error: " + error_string(err))
+		Log.warn("Error connecting to steam host " + str(host_steam_id) + ", Error: " + error_string(err))
 
 
 # Used to reset the multiplayer peer back to starting state

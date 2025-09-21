@@ -14,8 +14,14 @@ extends Node
 ## separation/classification.
 
 var mplayer = MultiplayerEvents.new()
+var error_messages = ErrorMessages.new()
 
 # Use it like Events.mplayer.player_joined.connect(id, name)
 class MultiplayerEvents:
 	@warning_ignore("unused_signal")
 	signal player_joined(player_id, player_display_name)
+	
+	
+class ErrorMessages:
+	@warning_ignore("unused_signal")
+	signal error_message(message)

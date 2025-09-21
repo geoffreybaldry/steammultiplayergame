@@ -230,8 +230,8 @@ func _on_host_server_disconnected() -> void:
 #########################
 ##### Other Signals #####
 #########################
-func _on_game_state_changed(old_game_state: int, new_game_state: int) -> void:
-	Log.pr("_on_game_state_changed : ", old_game_state, new_game_state)
+func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
+	#Log.pr("_on_game_state_changed : ", old_game_state, new_game_state)
 	
 	match new_game_state:
 		GameState.GAME_STATES.MAIN_MENU:
@@ -344,7 +344,6 @@ func display_message(message: String) -> void:
 	
 
 func start_game() -> void:
-	#Levels.goto_scene.rpc("res://scenes/levels/game_level_1.tscn")
 	Levels.goto_scene.rpc("res://scenes/levels/test_level.tscn")
 	
 	
