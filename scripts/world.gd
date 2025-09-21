@@ -8,7 +8,7 @@ extends Node2D
 ## 
 ## The draw-back of this is that we probably can't run the individual child
 ## "level" scenes on their own and expect them to work. However, in a 
-## multiplayer game there are so many other systems too, that it never going
+## multiplayer game there are so many other systems too, that it's never going
 ## to be easy to do that. 
 
 @onready var ui_canvas_layer: CanvasLayer = $ui_canvas_layer
@@ -20,21 +20,24 @@ extends Node2D
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	# Connect to signals	
+	# Connect to signals
 	GameState.game_state_changed.connect(_on_game_state_changed)
 	
 	# At this stage the game_state is now MAIN_MENU
 	GameState.change_game_state(GameState.GAME_STATES.MAIN_MENU)
 	
 
+# Show/Hide different UI scenes based on the game state
 func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
 	#Log.pr("_on_game_state_changed : ", old_game_state, new_game_state)
 	
+	# Hide all the UI scenes
 	main_menu_ui.visible = false
 	lobby_menu_ui.visible = false
 	scene_loading_ui.visible = false
 	pause_menu_ui.visible = false
 	
+	# Turn on the one we want
 	match new_game_state:
 		GameState.GAME_STATES.MAIN_MENU:
 			main_menu_ui.visible = true
@@ -49,5 +52,5 @@ func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
 		GameState.GAME_STATES.QUITTING:
 			pass
 		_:
-			Log.error("New Game State Not recognised : " + str(new_game_state))
+			Log.error("New Game State Not Recognised : " + str(new_game_state))
 			

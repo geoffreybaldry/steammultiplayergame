@@ -1,5 +1,18 @@
 extends CharacterBody2D
 
+## The player script - It handles the movement of the player, and applies
+## the appropriate animation.
+## In this game, the local client peers have "authority" over their player node,
+## which means that local players see their character move immediately, without
+## any associated "lag" that you get with server-authority.
+## The client peers send some of their important information to the server,
+## including their position, the player's input, etc, via the attached
+## MultiplayerSynchronizer nodes.
+## The server is still the "source-of-truth" for the overall state of
+## the game. This means that if both you and another peer both appear to 
+## collect a "pick-up" at the same time, it will be the server that decies which
+## peer really touched it first, and award the "pick-up" to them.
+
 const SPEED = 30.0
 const ACCELERATION = 300.0
 const DECELERATION = 300.0
@@ -49,7 +62,8 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	apply_animation()
 
-# Play the appropriate animation based on the player's 
+
+# Play the appropriate animation based on the player's velocity
 func apply_animation() -> void:
 	if velocity == Vector2.ZERO:
 		animation_player.play("idle")

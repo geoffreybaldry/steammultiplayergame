@@ -2,7 +2,7 @@ extends Node
 
 ## This Autoload is in charge of loading and switching between scenes.
 ## The scenes it switches between are always added or removed as children of the 
-## main scene called World.
+## main scene, called World.
 
 signal scene_loading_progress_updated(progress_percent: int)
 signal scene_loaded(scene_filepath: String)
