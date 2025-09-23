@@ -38,6 +38,7 @@ func _on_all_peers_loaded() -> void:
 
 # This function is only connected on the server 
 func _on_peer_disconnected(this_peer_id: int) -> void:
+	Events.error_messages.error_message.emit("Peer id " + str(this_peer_id) + " Disconnected from Steam Network")
 	despawn_player(this_peer_id)
 
 
