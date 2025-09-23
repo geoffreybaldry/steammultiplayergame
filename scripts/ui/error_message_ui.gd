@@ -13,8 +13,6 @@ func _ready() -> void:
 
 
 func _on_error_message(message: String) -> void:
-	Log.pr("_on_error_message")
-	
 	# Create a new Label Control instance
 	var label_scene_instance = error_message_label_ui_scene.instantiate()
 	label_scene_instance.text = message

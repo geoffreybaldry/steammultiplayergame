@@ -51,8 +51,7 @@ var lobby_members: Array = [] # Format - [{"steam_id":member_steam_id, "steam_na
 
 
 func _ready() -> void:
-	steam_name_label.text = Steamworks.steam_username
-	steam_id_label.text = str(Steamworks.steam_id)
+	
 	
 	# Steam signals
 	Steam.lobby_created.connect(_on_lobby_created)           # When a lobby gets created by you.
@@ -74,6 +73,9 @@ func _ready() -> void:
 	
 	# Check for command line arguments
 	check_command_line()
+	
+	steam_name_label.text = Steamworks.steam_username
+	steam_id_label.text = str(Steamworks.steam_id)
 	
 	
 #########################

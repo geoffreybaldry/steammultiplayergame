@@ -37,7 +37,7 @@ func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
 	scene_loading_ui.visible = false
 	pause_menu_ui.visible = false
 	
-	# Turn on the one we want
+	# Turn on the UI scene we want
 	match new_game_state:
 		GameState.GAME_STATES.MAIN_MENU:
 			main_menu_ui.visible = true

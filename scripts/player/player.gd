@@ -45,6 +45,8 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	player_id_label.text = "id : " + str(player_id)
 	authority_id_label.text = "auth_id : " + str(get_multiplayer_authority())
+	
+	apply_animation()
 
 
 func _physics_process(delta: float) -> void:
@@ -60,7 +62,7 @@ func _physics_process(delta: float) -> void:
 		velocity = velocity.move_toward(Vector2.ZERO, DECELERATION * delta)
 
 	move_and_slide()
-	apply_animation()
+	
 
 
 # Play the appropriate animation based on the player's velocity
