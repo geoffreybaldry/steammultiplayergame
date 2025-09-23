@@ -10,6 +10,7 @@ func _ready() -> void:
 	# Connect to signals
 	if multiplayer.is_server():
 		SteamNetwork.all_peers_loaded.connect(_on_all_peers_loaded)
+		SteamNetwork.peer_disconnected.connect(_on_peer_disconnected)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -26,10 +27,14 @@ func _on_all_peers_loaded() -> void:
 		spawn_player(this_player)
 
 
+func _on_peer_disconnected(this_peer_id: int):
+	despawn_player(this_peer_id)
+
+
 # This function only happens on the server - the MultiplayerSpawner replicates 
 # any spawned player nodes on all the peer clients.
-func spawn_player(this_id: int) -> void:
-	Log.pr("Spawning player with id : " + str(this_id))
+func spawn_player(this_peer_id: int) -> void:
+	Log.pr("Spawning player with id : " + str(this_peer_id))
 	
 	# Instantiate a player scene, give it the correct peer id, and grant authority to the client
 	var player_instance = player_scene.instantiate()
@@ -37,11 +42,11 @@ func spawn_player(this_id: int) -> void:
 	# Setting this player_id on the player object allows it to be given the correct multiplayer 
 	# authority once the player object is added to the scene tree with 
 	# $spawned_players.add_child(player, true).
-	player_instance.player_id = this_id
+	player_instance.player_id = this_peer_id
 	
 	# This makes the player node in the scene tree have the player's id as its name
 	# Useful for debugging in the "remote" scene view, and also for later despawning if necessary
-	player_instance.name = str(this_id) 
+	player_instance.name = str(this_peer_id) 
 	
 	# Set the player's position to a random offset from an initial value - replace this with spawn pads later
 	var pos: Vector2 = Vector2.from_angle(randf() * 2 * PI)
@@ -55,8 +60,8 @@ func spawn_player(this_id: int) -> void:
 
 # If for any reason we need to remove a peer's player, then the server will despawn it, and it
 # will cause it to be removed on all the peers too.
-#func despawn_player(this_id: int) -> void:
-	#Log.pr("Despawning player with id : " + str(this_id))
-	#$spawned_players.get_node(str(this_id)).queue_free()
-		#
-	## TBD - despawn the player - done on server only, I guess, but need to react to it on client
+func despawn_player(this_peer_id: int) -> void:
+	Log.pr("Despawning player with id : " + str(this_peer_id))
+	$spawned_players.get_node(str(this_peer_id)).queue_free()
+		
+	# TBD - despawn the player - done on server only, I guess, but need to react to it on client
