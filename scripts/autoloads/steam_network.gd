@@ -82,7 +82,8 @@ func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
 	
 	match new_game_state:
 		GameState.GAME_STATES.MAIN_MENU:
-			remove_multiplayer_peer()
+			remove_multiplayer_peer() # Currently causes player.gd to error because it's too harsh
+
 
 ##########################
 ##### Game Functions #####

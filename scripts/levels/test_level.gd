@@ -5,5 +5,5 @@ func _ready() -> void:
 	# Let the Network know that we have loaded the level
 	SteamNetwork.player_loaded.rpc()
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	pass

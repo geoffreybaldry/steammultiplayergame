@@ -104,5 +104,6 @@ func deferred_goto_scene(this_scene_filepath: String) -> void:
 	
 	
 func remove_current_scene() -> void:
+	Log.pr("Unloading current level scene : " + current_scene_name)
 	get_tree().current_scene.get_node("levels").get_node(current_scene_name).queue_free()
 	current_scene_name = ""
