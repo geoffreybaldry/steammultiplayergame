@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://buv4amh2h5i4s"]
+
+[ext_resource type="Script" uid="uid://bi5cnsqtaukd4" path="res://scripts/ui/error_message_label_ui.gd" id="1_lphde"]
+
+[node name="error_message_label_ui" type="Label"]
+offset_right = 40.0
+offset_bottom = 23.0
+script = ExtResource("1_lphde")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 2.0
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
