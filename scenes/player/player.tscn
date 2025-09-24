@@ -121,7 +121,6 @@ replication_config = SubResource("SceneReplicationConfig_dovo2")
 [node name="PlayerInputSynchronizer" type="MultiplayerSynchronizer" parent="."]
 root_path = NodePath("../player_input")
 replication_config = SubResource("SceneReplicationConfig_lvxji")
-public_visibility = false
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
