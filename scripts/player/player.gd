@@ -24,6 +24,8 @@ const DECELERATION = 300.0
 @onready var authority_id_label: Label = $authority_id_label
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 
+@onready var weapon_pivot: Node2D = $weapon_pivot
+
 # Exporting this var makes it easily selectable in the MultiplayerSynchronizer
 @export var player_id: int = -1
 
@@ -47,6 +49,8 @@ func _process(_delta: float) -> void:
 	authority_id_label.text = "auth_id : " + str(get_multiplayer_authority())
 	
 	apply_animation()
+	
+	weapon_pivot.look_at(position + player_input.aim_direction)
 
 
 func _physics_process(delta: float) -> void:

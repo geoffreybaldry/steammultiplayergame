@@ -1,9 +1,12 @@
-[gd_scene load_steps=12 format=3 uid="uid://cdg0vfkaa0w3v"]
+[gd_scene load_steps=15 format=3 uid="uid://cdg0vfkaa0w3v"]
 
 [ext_resource type="Script" uid="uid://g1v38iwbwey" path="res://scripts/player/player.gd" id="1_8afob"]
 [ext_resource type="Texture2D" uid="uid://bv0netwfa0sdd" path="res://assets/sprites/4_characters.png" id="2_dovo2"]
 [ext_resource type="Script" uid="uid://dlhab88x572jk" path="res://scripts/player/player_input.gd" id="3_gmlin"]
 [ext_resource type="FontFile" uid="uid://c1l47aekqn13v" path="res://assets/fonts/m3x6.ttf" id="4_lvxji"]
+[ext_resource type="Texture2D" uid="uid://bixw1tij30ea2" path="res://assets/sprites/2d_lights_and_shadows_neutral_point_light.png" id="5_p47bc"]
+[ext_resource type="Script" uid="uid://cnp8ixxh2itjx" path="res://scripts/player/weapon_pivot.gd" id="6_0owmy"]
+[ext_resource type="Texture2D" uid="uid://8jbiyn7wodcq" path="res://assets/sprites/weapon_pointer.png" id="6_75vfm"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8afob"]
 radius = 4.0
@@ -23,6 +26,9 @@ properties/2/replication_mode = 1
 properties/0/path = NodePath(".:input_direction")
 properties/0/spawn = true
 properties/0/replication_mode = 1
+properties/1/path = NodePath(".:aim_direction")
+properties/1/spawn = true
+properties/1/replication_mode = 1
 
 [sub_resource type="Animation" id="Animation_p47bc"]
 length = 0.001
@@ -57,6 +63,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_75vfm"]
 resource_name = "walk"
+length = 0.4
 loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -65,7 +72,7 @@ tracks/0/path = NodePath("Sprite2D:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5),
+"times": PackedFloat32Array(0, 0.2),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [2, 3]
@@ -121,3 +128,14 @@ libraries = {
 &"": SubResource("AnimationLibrary_75vfm")
 }
 autoplay = "idle"
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+scale = Vector2(0.265625, 0.304688)
+texture = ExtResource("5_p47bc")
+
+[node name="weapon_pivot" type="Node2D" parent="."]
+script = ExtResource("6_0owmy")
+
+[node name="Sprite2D" type="Sprite2D" parent="weapon_pivot"]
+position = Vector2(6, 0)
+texture = ExtResource("6_75vfm")

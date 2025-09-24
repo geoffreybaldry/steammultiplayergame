@@ -5,7 +5,8 @@ extends Node
 ## main player script.
 
 # Exporting this var makes it easily selectable in the PlayerInputSynchronizer
-@export var input_direction: Vector2 
+@export var input_direction: Vector2
+@export var aim_direction: Vector2
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -21,3 +22,4 @@ func _process(_delta: float) -> void:
 	# Input.get_vector provides a Vector2 of maximum length 1 unit - perfect
 	# for use in directions of players.
 	input_direction = Input.get_vector("move_left", "move_right", "move_up", "move_down")
+	aim_direction = Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down")

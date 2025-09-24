@@ -5,6 +5,7 @@ const SPAWN_RANDOM: int = 25
 
 var player_scene = preload("res://scenes/player/player.tscn")
 
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	# Connect to signals
