@@ -117,7 +117,7 @@ replication_config = SubResource("SceneReplicationConfig_0owmy")
 [node name="RollbackSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("5_qek5x")
 root = NodePath("..")
-state_properties = Array[String]([":global_transform"])
+state_properties = Array[String]([":global_transform", ":velocity"])
 input_properties = Array[String](["player_input:input_direction", "player_input:aim_direction", "player_input:just_fired"])
 metadata/_custom_type_script = "uid://d350u8evihs1u"
 

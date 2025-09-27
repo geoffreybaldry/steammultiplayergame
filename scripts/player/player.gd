@@ -57,7 +57,6 @@ func _rollback_tick(_delta, _tick, _is_fresh) -> void:
 	velocity = player_input.input_direction * SPEED
 	velocity *= NetworkTime.physics_factor
 	move_and_slide()
-	apply_animation()
 	velocity /= NetworkTime.physics_factor
 
 # Temporary - used to show the player_id, and the id of the authority of the player node
@@ -67,6 +66,7 @@ func _process(_delta: float) -> void:
 	peer_authority_id_label.text = "auth_id : " + str(get_multiplayer_authority())
 	input_authority_id_label.text = "input_auth_id : " + str(player_input.get_multiplayer_authority())
 	
+	apply_animation()
 	weapon_pivot.look_at(position + player_input.aim_direction)
 	
 	
