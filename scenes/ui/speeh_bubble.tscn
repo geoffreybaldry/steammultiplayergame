@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://bdbckpg3aoi1b"]
+
+[ext_resource type="Script" uid="uid://l2llvtwr5w6q" path="res://scripts/ui/speeh_bubble.gd" id="1_pcp4l"]
+[ext_resource type="Texture2D" uid="uid://cadxptuv8st7u" path="res://assets/sprites/dialogue_box_9_patch.png" id="1_u0m67"]
+[ext_resource type="FontFile" uid="uid://c1l47aekqn13v" path="res://assets/fonts/m3x6.ttf" id="2_u0m67"]
+
+[node name="speeh_bubble" type="Node2D"]
+script = ExtResource("1_pcp4l")
+
+[node name="NinePatchRect" type="NinePatchRect" parent="."]
+offset_right = 42.0
+offset_bottom = 10.0
+texture = ExtResource("1_u0m67")
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
+
+[node name="dialogue_label" type="Label" parent="."]
+offset_left = 2.0
+offset_top = -3.0
+offset_right = 46.0
+offset_bottom = 10.0
+theme_override_fonts/font = ExtResource("2_u0m67")
+theme_override_font_sizes/font_size = 16
+text = "some text"

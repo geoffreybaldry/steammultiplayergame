@@ -13,6 +13,10 @@ extends CharacterBody2D
 ## collect a "pick-up" at the same time, it will be the server that decies which
 ## peer really touched it first, and award the "pick-up" to them.
 
+# Pre-loads
+var projectile_bullet_scene: PackedScene = preload("res://scenes/projectiles/projectile_bullet.tscn")
+
+# Constants
 const SPEED = 30.0
 const ACCELERATION = 300.0
 const DECELERATION = 300.0
@@ -65,6 +69,13 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity = velocity.move_toward(Vector2.ZERO, DECELERATION * delta)
 
+	if player_input.just_fired:
+		var projectile_bullet_instance = projectile_bullet_scene.instantiate()
+		projectile_bullet_instance.position = position
+		projectile_bullet_instance.look_at(position + player_input.aim_direction)
+		get_tree().current_scene.get_node("projectiles").add_child(projectile_bullet_instance)
+		
+	
 	move_and_slide()
 	
 
