@@ -1,10 +1,11 @@
-[gd_scene load_steps=15 format=3 uid="uid://cdg0vfkaa0w3v"]
+[gd_scene load_steps=16 format=3 uid="uid://cdg0vfkaa0w3v"]
 
 [ext_resource type="Script" uid="uid://g1v38iwbwey" path="res://scripts/player/player.gd" id="1_8afob"]
 [ext_resource type="Texture2D" uid="uid://bv0netwfa0sdd" path="res://assets/sprites/4_characters.png" id="2_dovo2"]
 [ext_resource type="Script" uid="uid://dlhab88x572jk" path="res://scripts/player/player_input.gd" id="3_gmlin"]
 [ext_resource type="FontFile" uid="uid://c1l47aekqn13v" path="res://assets/fonts/m3x6.ttf" id="4_lvxji"]
 [ext_resource type="Texture2D" uid="uid://bixw1tij30ea2" path="res://assets/sprites/2d_lights_and_shadows_neutral_point_light.png" id="5_p47bc"]
+[ext_resource type="Script" uid="uid://d350u8evihs1u" path="res://addons/netfox/rollback/rollback-synchronizer.gd" id="5_qek5x"]
 [ext_resource type="Script" uid="uid://cnp8ixxh2itjx" path="res://scripts/player/weapon_pivot.gd" id="6_0owmy"]
 [ext_resource type="Texture2D" uid="uid://8jbiyn7wodcq" path="res://assets/sprites/weapon_pointer.png" id="6_75vfm"]
 
@@ -88,8 +89,9 @@ _data = {
 &"walk": SubResource("Animation_75vfm")
 }
 
-[node name="player" type="CharacterBody2D"]
+[node name="player" type="CharacterBody2D" node_paths=PackedStringArray("player_input")]
 script = ExtResource("1_8afob")
+player_input = NodePath("player_input")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_8afob")
@@ -100,7 +102,6 @@ hframes = 6
 vframes = 4
 
 [node name="player_id_label" type="Label" parent="."]
-visible = false
 offset_left = -6.0
 offset_top = -18.0
 offset_right = 6.0
@@ -109,7 +110,6 @@ theme_override_fonts/font = ExtResource("4_lvxji")
 text = "id : n/a"
 
 [node name="authority_id_label" type="Label" parent="."]
-visible = false
 offset_left = -6.0
 offset_top = -26.465
 offset_right = 6.0
@@ -119,6 +119,13 @@ text = "auth_id : n/a"
 
 [node name="player_input" type="Node" parent="."]
 script = ExtResource("3_gmlin")
+
+[node name="RollbackSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
+script = ExtResource("5_qek5x")
+root = NodePath("..")
+state_properties = Array[String]([":global_transform"])
+input_properties = Array[String](["player_input:input_direction"])
+metadata/_custom_type_script = "uid://d350u8evihs1u"
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_dovo2")

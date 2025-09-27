@@ -22,7 +22,8 @@ const ACCELERATION = 300.0
 const DECELERATION = 300.0
 
 # We gather the player input from this separate script, which can be independently synchronized to the server
-@onready var player_input: Node = $player_input
+#@onready var player_input: Node = $player_input
+@export var player_input: PlayerInput
 
 @onready var player_id_label: Label = $player_id_label
 @onready var authority_id_label: Label = $authority_id_label
@@ -41,48 +42,55 @@ func _ready() -> void:
 	# Grant the particular player_id authority over this player node.
 	# This means we are doing "Client Authority", meaning that the client "owns"
 	# or "is the authority" over this player node in the scene tree.
-	set_multiplayer_authority(player_id)
+	#set_multiplayer_authority(player_id)
+	player_input.set_multiplayer_authority(player_id)
 	
 	# Might need to set the camera appropriately to follow this player - TBD
 
+
+func _rollback_tick(delta, tick, is_fresh) -> void:
+	velocity = player_input.input_direction * SPEED
+	velocity *= NetworkTime.physics_factor
+	move_and_slide()
+	velocity /= NetworkTime.physics_factor
 
 # Temporary - used to show the player_id, and the id of the authority of the player node
 # Helps with debugging who is in charge of which player nodes.
 func _process(_delta: float) -> void:
 	player_id_label.text = "id : " + str(player_id)
 	authority_id_label.text = "auth_id : " + str(get_multiplayer_authority())
-	
-	apply_animation()
-	
-	weapon_pivot.look_at(position + player_input.aim_direction)
+	#
+	#apply_animation()
+	#
+	#weapon_pivot.look_at(position + player_input.aim_direction)
 
 
-func _physics_process(delta: float) -> void:
-	# Only allow this player's authority to perform actions
-	if not is_multiplayer_authority():
-		return
-	
-	# Use the input direction from player_input node and handle the movement/deceleration.
-	if player_input.input_direction:
-		var target_velocity = SPEED * player_input.input_direction
-		velocity = velocity.move_toward(target_velocity, ACCELERATION * delta)
-	else:
-		velocity = velocity.move_toward(Vector2.ZERO, DECELERATION * delta)
-
-	if player_input.just_fired:
-		var projectile_bullet_instance = projectile_bullet_scene.instantiate()
-		projectile_bullet_instance.position = position
-		projectile_bullet_instance.look_at(position + player_input.aim_direction)
-		get_tree().current_scene.get_node("projectiles").add_child(projectile_bullet_instance)
-		
-	
-	move_and_slide()
+#func _physics_process(delta: float) -> void:
+	## Only allow this player's authority to perform actions
+	#if not is_multiplayer_authority():
+		#return
+	#
+	## Use the input direction from player_input node and handle the movement/deceleration.
+	#if player_input.input_direction:
+		#var target_velocity = SPEED * player_input.input_direction
+		#velocity = velocity.move_toward(target_velocity, ACCELERATION * delta)
+	#else:
+		#velocity = velocity.move_toward(Vector2.ZERO, DECELERATION * delta)
+#
+	#if player_input.just_fired:
+		#var projectile_bullet_instance = projectile_bullet_scene.instantiate()
+		#projectile_bullet_instance.position = position
+		#projectile_bullet_instance.look_at(position + player_input.aim_direction)
+		#get_tree().current_scene.get_node("projectiles").add_child(projectile_bullet_instance)
+		#
+	#
+	#move_and_slide()
 	
 
 
 # Play the appropriate animation based on the player's velocity
-func apply_animation() -> void:
-	if velocity == Vector2.ZERO:
-		animation_player.play("idle")
-	else:
-		animation_player.play("walk")
+#func apply_animation() -> void:
+	#if velocity == Vector2.ZERO:
+		#animation_player.play("idle")
+	#else:
+		#animation_player.play("walk")
