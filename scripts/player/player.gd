@@ -34,8 +34,7 @@ const DECELERATION = 300.0
 
 @onready var weapon_pivot: Node2D = $weapon_pivot
 
-# Exporting this var makes it easily selectable in the MultiplayerSynchronizer
-@export var peer_id: int = -1
+var peer_id: int = -1
 
 func _ready() -> void:
 	# Take a frame to allow the network to synchronize, etc, and let player_id
