@@ -34,7 +34,7 @@ const DECELERATION = 300.0
 
 @onready var weapon_pivot: Node2D = $weapon_pivot
 
-var peer_id: int = -1
+@export var peer_id: int = -1
 
 func _ready() -> void:
 	# Take a frame to allow the network to synchronize, etc, and let player_id
