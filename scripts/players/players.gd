@@ -40,10 +40,10 @@ func spawn_player(this_peer_id: int) -> void:
 	# Instantiate a player scene, give it the correct peer id, and grant authority to the client
 	var player_instance = player_scene.instantiate()
 	
-	# Setting this player_id on the player object allows it to be given the correct multiplayer 
+	# Setting this peer_id on the player object allows it to be given the correct multiplayer 
 	# authority once the player object is added to the scene tree with 
 	# $spawned_players.add_child(player, true).
-	player_instance.player_id = this_peer_id
+	player_instance.peer_id = this_peer_id
 	
 	# This makes the player node in the scene tree have the player's id as its name
 	# Useful for debugging in the "remote" scene view, and also for later despawning if necessary

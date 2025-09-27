@@ -101,7 +101,7 @@ texture = ExtResource("2_dovo2")
 hframes = 6
 vframes = 4
 
-[node name="player_id_label" type="Label" parent="."]
+[node name="peer_id_label" type="Label" parent="."]
 offset_left = -6.0
 offset_top = -18.0
 offset_right = 6.0
@@ -109,13 +109,21 @@ offset_bottom = -5.0
 theme_override_fonts/font = ExtResource("4_lvxji")
 text = "id : n/a"
 
-[node name="authority_id_label" type="Label" parent="."]
+[node name="peer_authority_id_label" type="Label" parent="."]
 offset_left = -6.0
-offset_top = -26.465
-offset_right = 6.0
-offset_bottom = -13.465
+offset_top = -27.245
+offset_right = 66.0
+offset_bottom = -14.245
 theme_override_fonts/font = ExtResource("4_lvxji")
 text = "auth_id : n/a"
+
+[node name="input_authority_id_label" type="Label" parent="."]
+offset_left = -6.0
+offset_top = -35.745
+offset_right = 44.0
+offset_bottom = -22.745
+theme_override_fonts/font = ExtResource("4_lvxji")
+text = "input_auth_id : n/a"
 
 [node name="player_input" type="Node" parent="."]
 script = ExtResource("3_gmlin")

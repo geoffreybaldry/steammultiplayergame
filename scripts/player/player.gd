@@ -25,25 +25,31 @@ const DECELERATION = 300.0
 #@onready var player_input: Node = $player_input
 @export var player_input: PlayerInput
 
-@onready var player_id_label: Label = $player_id_label
-@onready var authority_id_label: Label = $authority_id_label
+@onready var rollback_synchronizer: RollbackSynchronizer = $RollbackSynchronizer
+@onready var peer_id_label: Label = $peer_id_label
+@onready var peer_authority_id_label: Label = $peer_authority_id_label
+@onready var input_authority_id_label: Label = $input_authority_id_label
+
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 
 @onready var weapon_pivot: Node2D = $weapon_pivot
 
 # Exporting this var makes it easily selectable in the MultiplayerSynchronizer
-@export var player_id: int = -1
+@export var peer_id: int = -1
 
 func _ready() -> void:
-	# Take a frame to allow the network to synchronize, etc.
+	# Take a frame to allow the network to synchronize, etc, and let player_id
+	# be set.
 	# I tried using the _enter_tree() method instead, and it didn't work.
 	await get_tree().process_frame
 	
-	# Grant the particular player_id authority over this player node.
-	# This means we are doing "Client Authority", meaning that the client "owns"
-	# or "is the authority" over this player node in the scene tree.
-	#set_multiplayer_authority(player_id)
-	player_input.set_multiplayer_authority(player_id)
+	# Grant the particular player_id authority over this player's input node.
+	# Netfox uses Server Authority over the player node, but we grant Client
+	# Authority to the player_input node.
+	player_input.set_multiplayer_authority(peer_id)
+	
+	# Activate the Rollback Synchronizer's settings
+	rollback_synchronizer.process_settings()
 	
 	# Might need to set the camera appropriately to follow this player - TBD
 
@@ -57,10 +63,11 @@ func _rollback_tick(delta, tick, is_fresh) -> void:
 # Temporary - used to show the player_id, and the id of the authority of the player node
 # Helps with debugging who is in charge of which player nodes.
 func _process(_delta: float) -> void:
-	player_id_label.text = "id : " + str(player_id)
-	authority_id_label.text = "auth_id : " + str(get_multiplayer_authority())
+	peer_id_label.text = "id : " + str(peer_id)
+	peer_authority_id_label.text = "auth_id : " + str(get_multiplayer_authority())
+	input_authority_id_label.text = "input_auth_id : " + str(player_input.get_multiplayer_authority())
 	#
-	#apply_animation()
+	apply_animation()
 	#
 	#weapon_pivot.look_at(position + player_input.aim_direction)
 
@@ -89,8 +96,8 @@ func _process(_delta: float) -> void:
 
 
 # Play the appropriate animation based on the player's velocity
-#func apply_animation() -> void:
-	#if velocity == Vector2.ZERO:
-		#animation_player.play("idle")
-	#else:
-		#animation_player.play("walk")
+func apply_animation() -> void:
+	if velocity == Vector2.ZERO:
+		animation_player.play("idle")
+	else:
+		animation_player.play("walk")
