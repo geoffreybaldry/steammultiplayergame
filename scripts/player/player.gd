@@ -1,17 +1,14 @@
 extends CharacterBody2D
 
 ## The player script - It handles the movement of the player, and applies
-## the appropriate animation.
-## In this game, the local client peers have "authority" over their player node,
-## which means that local players see their character move immediately, without
-## any associated "lag" that you get with server-authority.
-## The client peers send some of their important information to the server,
-## including their position, the player's input, etc, via the attached
-## MultiplayerSynchronizer nodes.
-## The server is still the "source-of-truth" for the overall state of
-## the game. This means that if both you and another peer both appear to 
-## collect a "pick-up" at the same time, it will be the server that decies which
-## peer really touched it first, and award the "pick-up" to them.
+## the appropriate animation, etc.
+##
+## This game uses NetFox for Client-Side prediction and Server Reconciliation.
+## That's why the player input is separated from the player object. It's so
+## we can allow the local player/peer to have ownership of their player_input
+## node, but still have the sever/host own the overall player object.
+## The player object has a RollbackSynchronizer, which allows certain 'state'
+## to be lag-compensated, such as position.
 
 # Pre-loads
 var projectile_bullet_scene: PackedScene = preload("res://scenes/projectiles/projectile_bullet.tscn")
@@ -34,6 +31,7 @@ const DECELERATION = 300.0
 
 @onready var weapon_pivot: Node2D = $weapon_pivot
 
+# This peer_id gets synchronized by a MultiplayerSynchronizer, only on change
 @export var peer_id: int = -1
 
 func _ready() -> void:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://cdg0vfkaa0w3v"]
+[gd_scene load_steps=15 format=3 uid="uid://cdg0vfkaa0w3v"]
 
 [ext_resource type="Script" uid="uid://g1v38iwbwey" path="res://scripts/player/player.gd" id="1_8afob"]
 [ext_resource type="Texture2D" uid="uid://bv0netwfa0sdd" path="res://assets/sprites/4_characters.png" id="2_dovo2"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://bixw1tij30ea2" path="res://assets/sprites/2d_lights_and_shadows_neutral_point_light.png" id="5_p47bc"]
 [ext_resource type="Script" uid="uid://d350u8evihs1u" path="res://addons/netfox/rollback/rollback-synchronizer.gd" id="5_qek5x"]
 [ext_resource type="Texture2D" uid="uid://8jbiyn7wodcq" path="res://assets/sprites/weapon_pointer.png" id="6_75vfm"]
+[ext_resource type="Script" uid="uid://dour8fehaaugp" path="res://addons/netfox/tick-interpolator.gd" id="6_qek5x"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8afob"]
 radius = 4.0
@@ -14,7 +15,7 @@ radius = 4.0
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_0owmy"]
 properties/0/path = NodePath(".:peer_id")
 properties/0/spawn = true
-properties/0/replication_mode = 1
+properties/0/replication_mode = 2
 
 [sub_resource type="Animation" id="Animation_p47bc"]
 length = 0.001
@@ -110,15 +111,21 @@ text = "input_auth_id : n/a"
 [node name="player_input" type="Node" parent="."]
 script = ExtResource("3_gmlin")
 
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_0owmy")
+
 [node name="RollbackSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("5_qek5x")
 root = NodePath("..")
 state_properties = Array[String]([":global_transform"])
-input_properties = Array[String](["player_input:input_direction"])
+input_properties = Array[String](["player_input:input_direction", "player_input:aim_direction", "player_input:just_fired"])
 metadata/_custom_type_script = "uid://d350u8evihs1u"
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_0owmy")
+[node name="TickInterpolator" type="Node" parent="." node_paths=PackedStringArray("root")]
+script = ExtResource("6_qek5x")
+root = NodePath("..")
+properties = Array[String]([":global_transform"])
+metadata/_custom_type_script = "uid://dour8fehaaugp"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
