@@ -43,7 +43,10 @@ func _ready() -> void:
 	# I tried using the _enter_tree() method instead, and it didn't work.
 	await get_tree().process_frame
 	
-	# Grant the particular player_id authority over this player's input node.
+	# Ensure that the server/host is the autohority over the player node
+	set_multiplayer_authority(1)
+	
+	# Grant the particular peer_id authority over this player's input node.
 	# Netfox uses Server Authority over the player node, but we grant Client
 	# Authority to the player_input node.
 	player_input.set_multiplayer_authority(peer_id)
@@ -54,7 +57,7 @@ func _ready() -> void:
 	# Might need to set the camera appropriately to follow this player - TBD
 
 
-func _rollback_tick(delta, tick, is_fresh) -> void:
+func _rollback_tick(_delta, _tick, _is_fresh) -> void:
 	velocity = player_input.input_direction * SPEED
 	velocity *= NetworkTime.physics_factor
 	move_and_slide()
@@ -66,11 +69,10 @@ func _process(_delta: float) -> void:
 	peer_id_label.text = "id : " + str(peer_id)
 	peer_authority_id_label.text = "auth_id : " + str(get_multiplayer_authority())
 	input_authority_id_label.text = "input_auth_id : " + str(player_input.get_multiplayer_authority())
-	#
+	
+	weapon_pivot.look_at(position + player_input.aim_direction)
 	apply_animation()
-	#
-	#weapon_pivot.look_at(position + player_input.aim_direction)
-
+	
 
 #func _physics_process(delta: float) -> void:
 	## Only allow this player's authority to perform actions

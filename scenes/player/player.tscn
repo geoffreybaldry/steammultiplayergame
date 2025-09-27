@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://cdg0vfkaa0w3v"]
+[gd_scene load_steps=13 format=3 uid="uid://cdg0vfkaa0w3v"]
 
 [ext_resource type="Script" uid="uid://g1v38iwbwey" path="res://scripts/player/player.gd" id="1_8afob"]
 [ext_resource type="Texture2D" uid="uid://bv0netwfa0sdd" path="res://assets/sprites/4_characters.png" id="2_dovo2"]
@@ -6,7 +6,6 @@
 [ext_resource type="FontFile" uid="uid://c1l47aekqn13v" path="res://assets/fonts/m3x6.ttf" id="4_lvxji"]
 [ext_resource type="Texture2D" uid="uid://bixw1tij30ea2" path="res://assets/sprites/2d_lights_and_shadows_neutral_point_light.png" id="5_p47bc"]
 [ext_resource type="Script" uid="uid://d350u8evihs1u" path="res://addons/netfox/rollback/rollback-synchronizer.gd" id="5_qek5x"]
-[ext_resource type="Script" uid="uid://cnp8ixxh2itjx" path="res://scripts/player/weapon_pivot.gd" id="6_0owmy"]
 [ext_resource type="Texture2D" uid="uid://8jbiyn7wodcq" path="res://assets/sprites/weapon_pointer.png" id="6_75vfm"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8afob"]
@@ -124,7 +123,6 @@ scale = Vector2(0.265625, 0.304688)
 texture = ExtResource("5_p47bc")
 
 [node name="weapon_pivot" type="Node2D" parent="."]
-script = ExtResource("6_0owmy")
 
 [node name="Sprite2D" type="Sprite2D" parent="weapon_pivot"]
 position = Vector2(6, 0)
