@@ -37,7 +37,6 @@ const DECELERATION = 300.0
 func _ready() -> void:
 	# Take a frame to allow the network to synchronize, etc, and let player_id
 	# be set.
-	# I tried using the _enter_tree() method instead, and it didn't work.
 	await get_tree().process_frame
 	
 	# Ensure that the server/host is the autohority over the player node
@@ -58,6 +57,7 @@ func _rollback_tick(_delta, _tick, _is_fresh) -> void:
 	velocity = player_input.input_direction * SPEED
 	velocity *= NetworkTime.physics_factor
 	move_and_slide()
+	apply_animation()
 	velocity /= NetworkTime.physics_factor
 
 # Temporary - used to show the player_id, and the id of the authority of the player node
@@ -68,31 +68,8 @@ func _process(_delta: float) -> void:
 	input_authority_id_label.text = "input_auth_id : " + str(player_input.get_multiplayer_authority())
 	
 	weapon_pivot.look_at(position + player_input.aim_direction)
-	apply_animation()
 	
-
-#func _physics_process(delta: float) -> void:
-	## Only allow this player's authority to perform actions
-	#if not is_multiplayer_authority():
-		#return
-	#
-	## Use the input direction from player_input node and handle the movement/deceleration.
-	#if player_input.input_direction:
-		#var target_velocity = SPEED * player_input.input_direction
-		#velocity = velocity.move_toward(target_velocity, ACCELERATION * delta)
-	#else:
-		#velocity = velocity.move_toward(Vector2.ZERO, DECELERATION * delta)
-#
-	#if player_input.just_fired:
-		#var projectile_bullet_instance = projectile_bullet_scene.instantiate()
-		#projectile_bullet_instance.position = position
-		#projectile_bullet_instance.look_at(position + player_input.aim_direction)
-		#get_tree().current_scene.get_node("projectiles").add_child(projectile_bullet_instance)
-		#
-	#
-	#move_and_slide()
 	
-
 
 # Play the appropriate animation based on the player's velocity
 func apply_animation() -> void:
