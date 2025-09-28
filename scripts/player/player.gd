@@ -77,6 +77,7 @@ func apply_animation() -> void:
 	else:
 		animation_player.play("walk")
 		
+		
 func check_fired() -> void:
 	if player_input.just_fired:
 		Log.pr("Just Fired")
@@ -84,9 +85,10 @@ func check_fired() -> void:
 		
 		fire()
 		
+		
 func fire() -> void:
-	var projectile_buttet_instance = projectile_bullet_scene.instantiate()
-	projectile_buttet_instance.peer_id = peer_id
-	projectile_buttet_instance.position = position
-	projectile_buttet_instance.rotation = weapon_pivot.rotation
-	get_tree().current_scene.get_node("projectiles").get_node("spawned_projectiles").add_child(projectile_buttet_instance, true)
+	var projectile_bullet_instance = projectile_bullet_scene.instantiate()
+	projectile_bullet_instance.peer_id = peer_id
+	projectile_bullet_instance.position = position
+	projectile_bullet_instance.rotation = weapon_pivot.rotation
+	get_tree().current_scene.get_node("projectiles").get_node("spawned_projectiles").add_child(projectile_bullet_instance, true)

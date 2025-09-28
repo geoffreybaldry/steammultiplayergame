@@ -14,11 +14,6 @@ func _ready() -> void:
 		SteamNetwork.peer_disconnected.connect(_on_peer_disconnected)
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta: float) -> void:
-	#pass
-
-
 # This function is called when all the peers have successfully loaded the
 # level - it creates the player objects on the server peer, and allows the
 # MultiplayerSpawner to then replicate them across the client peers.

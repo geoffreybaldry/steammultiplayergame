@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://b4n3kqck5uw0c" path="res://assets/sprites/projectile_bullet_yellow.png" id="1_latb8"]
 [ext_resource type="Script" uid="uid://b0ka62cxpdkic" path="res://scripts/projectiles/projectile_bullet.gd" id="1_ok26g"]
 [ext_resource type="Texture2D" uid="uid://bixw1tij30ea2" path="res://assets/sprites/2d_lights_and_shadows_neutral_point_light.png" id="2_0yxct"]
-[ext_resource type="Script" uid="uid://3lbngqcexe0l" path="res://addons/netfox/state-synchronizer.gd" id="4_k2qyb"]
+[ext_resource type="Script" uid="uid://d350u8evihs1u" path="res://addons/netfox/rollback/rollback-synchronizer.gd" id="4_k2qyb"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_latb8"]
 size = Vector2(2, 2)
@@ -29,8 +29,8 @@ texture = ExtResource("2_0yxct")
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_k2qyb")
 
-[node name="StateSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
+[node name="RollbackSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("4_k2qyb")
 root = NodePath("..")
-properties = Array[String]([":global_transform"])
-metadata/_custom_type_script = "uid://3lbngqcexe0l"
+state_properties = Array[String]([":global_transform"])
+metadata/_custom_type_script = "uid://d350u8evihs1u"
