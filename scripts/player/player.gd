@@ -81,3 +81,12 @@ func check_fired() -> void:
 	if player_input.just_fired:
 		Log.pr("Just Fired")
 		player_input.just_fired = false
+		
+		fire()
+		
+func fire() -> void:
+	var projectile_buttet_instance = projectile_bullet_scene.instantiate()
+	projectile_buttet_instance.peer_id = peer_id
+	projectile_buttet_instance.position = position
+	projectile_buttet_instance.rotation = weapon_pivot.rotation
+	get_tree().current_scene.get_node("projectiles").get_node("spawned_projectiles").add_child(projectile_buttet_instance, true)
