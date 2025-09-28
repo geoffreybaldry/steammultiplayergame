@@ -239,6 +239,7 @@ func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
 		GameState.GAME_STATES.MAIN_MENU:
 			leave_lobby()
 
+
 ########################
 ##### Game Signals #####
 ########################

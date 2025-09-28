@@ -19,7 +19,8 @@ var my_player_info = {"name": "Not yet set"}
 var players_loaded: int = 0
 
 signal host_server_disconnected
-signal peer_disconnected(peer_id: int)	# Emitted if a peer disconnectes so we can let the rest of the game know
+signal peer_connected(peer_id: int)		# Emitted if a peer connects
+signal peer_disconnected(peer_id: int)	# Emitted if a peer disconnects so we can let the rest of the game know
 signal all_peers_loaded					# Emitted when all peers have loaded the chosen level
 
 
@@ -34,6 +35,7 @@ func _ready() -> void:
 
 	GameState.game_state_changed.connect(_on_game_state_changed)
 
+
 ###################################
 ##### MultiplayerPeer signals #####
 ###################################
@@ -41,6 +43,8 @@ func _ready() -> void:
 # This allows transfer of all desired data for each player, not only the unique ID.
 func _on_peer_connected(this_peer_id: int) -> void:
 	Log.pr("A peer connected with id " + str(this_peer_id))
+	
+	peer_connected.emit(this_peer_id)
 	
 	# Let the player know about us by contacting them directly with an RPC direct to their id (rpc_id)
 	register_player.rpc_id(this_peer_id, my_player_info)
