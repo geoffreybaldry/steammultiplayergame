@@ -15,11 +15,13 @@ var aim_direction_buf: Vector2 = Vector2.ZERO
 var sample_count: int = 0
 
 # Binary input
-var just_fired: bool
+var just_fired: bool = false
+var just_fired_buf: bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	NetworkTime.before_tick_loop.connect(_gather)
+	NetworkTime.after_tick.connect(func(_dt, _t): _gather_always())
 
 
 func _process(delta: float) -> void:
@@ -29,6 +31,8 @@ func _process(delta: float) -> void:
 	aim_direction_buf += Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down")
 	sample_count += 1
 	
+	if Input.is_action_just_pressed("fire"):
+		just_fired_buf = true
 
 func _gather():
 	# Only allow this player's authority to collect input
@@ -48,5 +52,7 @@ func _gather():
 	aim_direction_buf = Vector2.ZERO
 	sample_count = 0
 	
-	if Input.is_action_just_pressed("fire"):
-		just_fired = true
+
+func _gather_always():
+	just_fired = just_fired_buf
+	just_fired_buf = false
