@@ -1,7 +1,7 @@
 extends Area2D
 class_name ProjectileBullet
 
-const SPEED:int = 50
+const SPEED:int = 100
 #var velocity: Vector2
 @export var peer_id: int = -1
 

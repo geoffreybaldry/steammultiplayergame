@@ -24,7 +24,7 @@ func _ready() -> void:
 	NetworkTime.after_tick.connect(func(_dt, _t): _gather_always())
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	# Input.get_vector() provides a Vector2 of maximum length 1 unit - perfect
 	# for use in directions of players.
 	input_direction_buf += Input.get_vector("move_left", "move_right", "move_up", "move_down")
