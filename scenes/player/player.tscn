@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://cdg0vfkaa0w3v"]
+[gd_scene load_steps=17 format=3 uid="uid://cdg0vfkaa0w3v"]
 
 [ext_resource type="Script" uid="uid://g1v38iwbwey" path="res://scripts/player/player.gd" id="1_8afob"]
 [ext_resource type="Texture2D" uid="uid://bv0netwfa0sdd" path="res://assets/sprites/4_characters.png" id="2_dovo2"]
@@ -8,6 +8,8 @@
 [ext_resource type="Script" uid="uid://d350u8evihs1u" path="res://addons/netfox/rollback/rollback-synchronizer.gd" id="5_qek5x"]
 [ext_resource type="Texture2D" uid="uid://8jbiyn7wodcq" path="res://assets/sprites/weapon_pointer.png" id="6_75vfm"]
 [ext_resource type="Script" uid="uid://dour8fehaaugp" path="res://addons/netfox/tick-interpolator.gd" id="6_qek5x"]
+[ext_resource type="Script" uid="uid://t5n0dfhb2c8t" path="res://scripts/weapon/player_weapon.gd" id="9_5gtgg"]
+[ext_resource type="PackedScene" uid="uid://bropub4ww8cgj" path="res://scenes/projectiles/projectile_bullet.tscn" id="10_h17s1"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8afob"]
 radius = 4.0
@@ -113,6 +115,10 @@ text = "input_auth_id : n/a"
 
 [node name="player_input" type="Node" parent="."]
 script = ExtResource("3_gmlin")
+
+[node name="weapon" type="Node2D" parent="."]
+script = ExtResource("9_5gtgg")
+projectile = ExtResource("10_h17s1")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_0owmy")

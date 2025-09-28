@@ -67,7 +67,7 @@ func _process(_delta: float) -> void:
 	
 	apply_animation()
 	weapon_pivot.look_at(position + player_input.aim_direction)
-	check_fired()
+	#check_fired()
 
 
 # Play the appropriate animation based on the player's velocity
@@ -78,17 +78,17 @@ func apply_animation() -> void:
 		animation_player.play("walk")
 		
 		
-func check_fired() -> void:
-	if player_input.just_fired:
-		Log.pr("Just Fired")
-		player_input.just_fired = false
+#func check_fired() -> void:
+	#if player_input.just_fired:
+		#Log.pr("Just Fired")
+		#player_input.just_fired = false
+		#
+		#fire()
 		
-		fire()
 		
-		
-func fire() -> void:
-	var projectile_bullet_instance = projectile_bullet_scene.instantiate()
-	projectile_bullet_instance.peer_id = peer_id
-	projectile_bullet_instance.position = position
-	projectile_bullet_instance.rotation = weapon_pivot.rotation
-	get_tree().current_scene.get_node("projectiles").get_node("spawned_projectiles").add_child(projectile_bullet_instance, true)
+#func fire() -> void:
+	#var projectile_bullet_instance = projectile_bullet_scene.instantiate()
+	#projectile_bullet_instance.peer_id = peer_id
+	#projectile_bullet_instance.position = position
+	#projectile_bullet_instance.rotation = weapon_pivot.rotation
+	#get_tree().current_scene.get_node("projectiles").get_node("spawned_projectiles").add_child(projectile_bullet_instance, true)
