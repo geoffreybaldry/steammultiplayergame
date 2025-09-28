@@ -21,18 +21,16 @@ const DECELERATION = 300.0
 # We gather the player input from this separate script, which can be independently synchronized to the server
 #@onready var player_input: Node = $player_input
 @export var player_input: PlayerInput
+# This peer_id gets synchronized by a MultiplayerSynchronizer, only on change
+@export var peer_id: int = -1
 
 @onready var rollback_synchronizer: RollbackSynchronizer = $RollbackSynchronizer
 @onready var peer_id_label: Label = $peer_id_label
 @onready var peer_authority_id_label: Label = $peer_authority_id_label
 @onready var input_authority_id_label: Label = $input_authority_id_label
-
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
-
 @onready var weapon_pivot: Node2D = $weapon_pivot
 
-# This peer_id gets synchronized by a MultiplayerSynchronizer, only on change
-@export var peer_id: int = -1
 
 func _ready() -> void:
 	# Take a frame to allow the network to synchronize, etc, and let player_id
@@ -59,17 +57,18 @@ func _rollback_tick(_delta, _tick, _is_fresh) -> void:
 	move_and_slide()
 	velocity /= NetworkTime.physics_factor
 
-# Temporary - used to show the player_id, and the id of the authority of the player node
-# Helps with debugging who is in charge of which player nodes.
+
 func _process(_delta: float) -> void:
+	# Temporary - used to show the player_id, and the id of the authority of the player node
+	# Helps with debugging who is in charge of which player nodes.
 	peer_id_label.text = "id : " + str(peer_id)
 	peer_authority_id_label.text = "auth_id : " + str(get_multiplayer_authority())
 	input_authority_id_label.text = "input_auth_id : " + str(player_input.get_multiplayer_authority())
 	
 	apply_animation()
 	weapon_pivot.look_at(position + player_input.aim_direction)
-	
-	
+	check_fired()
+
 
 # Play the appropriate animation based on the player's velocity
 func apply_animation() -> void:
@@ -77,3 +76,8 @@ func apply_animation() -> void:
 		animation_player.play("idle")
 	else:
 		animation_player.play("walk")
+		
+func check_fired() -> void:
+	if player_input.just_fired:
+		Log.pr("Just Fired")
+		player_input.just_fired = false

@@ -15,7 +15,7 @@ radius = 4.0
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_0owmy"]
 properties/0/path = NodePath(".:peer_id")
 properties/0/spawn = true
-properties/0/replication_mode = 2
+properties/0/replication_mode = 0
 
 [sub_resource type="Animation" id="Animation_p47bc"]
 length = 0.001
@@ -85,6 +85,7 @@ hframes = 6
 vframes = 4
 
 [node name="peer_id_label" type="Label" parent="."]
+visible = false
 offset_left = -6.0
 offset_top = -18.0
 offset_right = 6.0
@@ -93,6 +94,7 @@ theme_override_fonts/font = ExtResource("4_lvxji")
 text = "id : n/a"
 
 [node name="peer_authority_id_label" type="Label" parent="."]
+visible = false
 offset_left = -6.0
 offset_top = -27.245
 offset_right = 66.0
@@ -101,6 +103,7 @@ theme_override_fonts/font = ExtResource("4_lvxji")
 text = "auth_id : n/a"
 
 [node name="input_authority_id_label" type="Label" parent="."]
+visible = false
 offset_left = -6.0
 offset_top = -35.745
 offset_right = 44.0
@@ -124,7 +127,7 @@ metadata/_custom_type_script = "uid://d350u8evihs1u"
 [node name="TickInterpolator" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("6_qek5x")
 root = NodePath("..")
-properties = Array[String]([":global_transform"])
+properties = Array[String]([":global_transform", ":velocity"])
 metadata/_custom_type_script = "uid://dour8fehaaugp"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
