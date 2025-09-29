@@ -35,3 +35,11 @@ visible = false
 
 [node name="enemies" type="Node2D" parent="."]
 script = ExtResource("8_4mrxx")
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="enemies"]
+_spawnable_scenes = PackedStringArray("uid://crp53qjrihu5b")
+spawn_path = NodePath("../spawned_enemies")
+
+[node name="spawned_enemies" type="Node2D" parent="enemies"]
+
+[editable path="players"]

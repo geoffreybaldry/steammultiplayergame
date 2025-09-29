@@ -34,4 +34,4 @@ func spawn_enemy() -> void:
 	# Add the player instance to the scene tree, under the MultiplayerSpawner's spawn path.
 	# This causes the instance to also be spawned on all the client peers too.
 	# We add the 'true' argument to force readable names - required by MultiplayerSpawner.
-	add_child(enemy_instance, true)
+	$spawned_enemies.add_child(enemy_instance, true)
