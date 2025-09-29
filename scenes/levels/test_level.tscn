@@ -1,9 +1,8 @@
-[gd_scene load_steps=7 format=4 uid="uid://cjcrlrdi47dw3"]
+[gd_scene load_steps=6 format=4 uid="uid://cjcrlrdi47dw3"]
 
 [ext_resource type="Script" uid="uid://do00viek7ibq0" path="res://scripts/levels/test_level.gd" id="1_fr1um"]
 [ext_resource type="Texture2D" uid="uid://c1sb1gyasxnjo" path="res://assets/sprites/1-Bit-8x8.png" id="1_jbqir"]
 [ext_resource type="Texture2D" uid="uid://bixw1tij30ea2" path="res://assets/sprites/2d_lights_and_shadows_neutral_point_light.png" id="2_fr1um"]
-[ext_resource type="PackedScene" uid="uid://crp53qjrihu5b" path="res://scenes/enemies/enemy_base.tscn" id="4_v45ci"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yautc"]
 texture = ExtResource("1_jbqir")
@@ -1258,6 +1257,3 @@ color = Color(0, 0, 0, 1)
 [node name="PointLight2D" type="PointLight2D" parent="."]
 position = Vector2(53, 152)
 texture = ExtResource("2_fr1um")
-
-[node name="enemy_base" parent="." instance=ExtResource("4_v45ci")]
-position = Vector2(48, 92)
