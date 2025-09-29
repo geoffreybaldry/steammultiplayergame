@@ -18,7 +18,7 @@ var my_player_info = {"name": "Not yet set"}
 
 var players_loaded: int = 0
 
-signal host_server_disconnected
+signal host_server_disconnected         # Emitted if we see the host server disconnect - bad news
 signal peer_connected(peer_id: int)		# Emitted if a peer connects
 signal peer_disconnected(peer_id: int)	# Emitted if a peer disconnects so we can let the rest of the game know
 signal all_peers_loaded					# Emitted when all peers have loaded the chosen level

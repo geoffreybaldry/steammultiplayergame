@@ -75,6 +75,8 @@ _data = {
 }
 
 [node name="player" type="CharacterBody2D" node_paths=PackedStringArray("player_input")]
+collision_layer = 8
+collision_mask = 13
 script = ExtResource("1_8afob")
 player_input = NodePath("player_input")
 

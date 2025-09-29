@@ -2,37 +2,24 @@ extends Area2D
 class_name ProjectileBullet
 
 const SPEED:int = 100
-#var velocity: Vector2
-@export var peer_id: int = -1
 
-#@onready var rollback_synchronizer: RollbackSynchronizer = $RollbackSynchronizer
+@export var peer_id: int = -1
 
 var fired_by: Node
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	# Take a frame to allow the network to synchronize, etc, and let player_id
-	# be set.
-	#await get_tree().process_frame
-	
-	#set_multiplayer_authority(1)
-	
-	#rollback_synchronizer.process_settings()
 	NetworkTime.on_tick.connect(_tick)
 
 func _tick(delta, _t):
 	position += transform.x * SPEED * delta
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta: float) -> void:
-	#pass
-#func _rollback_tick(_delta, _tick, _is_fresh) -> void:
-	#position += transform.x * SPEED * _delta
-	#velocity = player_input.input_direction * SPEED
-	#velocity *= NetworkTime.physics_factor
-	#move_and_slide()
-	#velocity /= NetworkTime.physics_factor
-	
-	
-#func _physics_process(delta: float) -> void:
-	#position += transform.x * SPEED * delta
+
+func _on_body_entered(body: Node2D) -> void:
+	Log.pr("Projectile entered body : " + str(body.name))
+	if body.is_in_group("enemies"):
+		Log.pr("Peer ID " + str(fired_by.peer_id) + " shot an enemy!")
+
+
+func _on_area_entered(area: Area2D) -> void:
+	Log.pr("Projectile entered area : " + str(area.name))

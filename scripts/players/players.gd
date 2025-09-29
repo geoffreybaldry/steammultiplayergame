@@ -32,12 +32,8 @@ func _on_peer_disconnected(this_peer_id: int):
 func spawn_player(this_peer_id: int) -> void:
 	Log.pr("Spawning player with id : " + str(this_peer_id))
 	
-	# Instantiate a player scene, give it the correct peer id, and grant authority to the client
+	# Instantiate a player scene, and give it the correct peer id
 	var player_instance = player_scene.instantiate()
-	
-	# Setting this peer_id on the player object allows it to be given the correct multiplayer 
-	# authority once the player object is added to the scene tree with 
-	# $spawned_players.add_child(player, true).
 	player_instance.peer_id = this_peer_id
 	
 	# This makes the player node in the scene tree have the player's id as its name

@@ -31,11 +31,3 @@ visible = false
 [node name="players" parent="." instance=ExtResource("7_i7141")]
 
 [node name="projectiles" type="Node2D" parent="."]
-
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="projectiles"]
-_spawnable_scenes = PackedStringArray("uid://bropub4ww8cgj")
-spawn_path = NodePath("../spawned_projectiles")
-
-[node name="spawned_projectiles" type="Node2D" parent="projectiles"]
-
-[editable path="players"]
