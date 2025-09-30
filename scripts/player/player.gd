@@ -19,7 +19,6 @@ const ACCELERATION = 300.0
 const DECELERATION = 300.0
 
 # We gather the player input from this separate script, which can be independently synchronized to the server
-#@onready var player_input: Node = $player_input
 @export var player_input: PlayerInput
 # This peer_id gets synchronized by a MultiplayerSynchronizer, only on change
 @export var peer_id: int = -1
@@ -67,7 +66,6 @@ func _process(_delta: float) -> void:
 	
 	apply_animation()
 	weapon_pivot.look_at(position + player_input.aim_direction)
-	#check_fired()
 
 
 # Play the appropriate animation based on the player's velocity
@@ -76,19 +74,3 @@ func apply_animation() -> void:
 		animation_player.play("idle")
 	else:
 		animation_player.play("walk")
-		
-		
-#func check_fired() -> void:
-	#if player_input.just_fired:
-		#Log.pr("Just Fired")
-		#player_input.just_fired = false
-		#
-		#fire()
-		
-		
-#func fire() -> void:
-	#var projectile_bullet_instance = projectile_bullet_scene.instantiate()
-	#projectile_bullet_instance.peer_id = peer_id
-	#projectile_bullet_instance.position = position
-	#projectile_bullet_instance.rotation = weapon_pivot.rotation
-	#get_tree().current_scene.get_node("projectiles").get_node("spawned_projectiles").add_child(projectile_bullet_instance, true)

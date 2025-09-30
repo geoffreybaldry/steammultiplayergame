@@ -124,6 +124,11 @@ func join_network(host_steam_id: int) -> void:
 # Used to reset the multiplayer peer back to starting state
 func remove_multiplayer_peer() -> void:
 	multiplayer.multiplayer_peer = null
+	
+	# I see people talking about doing this instead of = null above - investigate it, Geoff
+	#multiplayer.multiplayer_peer.close()
+	#multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
+
 	players.clear()
 
 

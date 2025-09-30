@@ -18,8 +18,8 @@ func _tick(delta, _t):
 
 func remove_projectile() -> void:
 	queue_free()
-	
 	NetworkTime.on_tick.disconnect(_tick)
+
 
 func _on_body_entered(body: Node2D) -> void:
 	Log.pr("Projectile entered body : " + str(body.name))
