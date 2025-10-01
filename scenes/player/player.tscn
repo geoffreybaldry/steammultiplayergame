@@ -1,6 +1,7 @@
-[gd_scene load_steps=17 format=3 uid="uid://cdg0vfkaa0w3v"]
+[gd_scene load_steps=16 format=3 uid="uid://cdg0vfkaa0w3v"]
 
 [ext_resource type="Script" uid="uid://g1v38iwbwey" path="res://scripts/player/player.gd" id="1_8afob"]
+[ext_resource type="PackedScene" uid="uid://3inh0u4giphy" path="res://scenes/projectiles/bullet.tscn" id="2_5gtgg"]
 [ext_resource type="Texture2D" uid="uid://bv0netwfa0sdd" path="res://assets/sprites/4_characters.png" id="2_dovo2"]
 [ext_resource type="Script" uid="uid://dlhab88x572jk" path="res://scripts/player/player_input.gd" id="3_gmlin"]
 [ext_resource type="FontFile" uid="uid://c1l47aekqn13v" path="res://assets/fonts/m3x6.ttf" id="4_lvxji"]
@@ -8,8 +9,6 @@
 [ext_resource type="Script" uid="uid://d350u8evihs1u" path="res://addons/netfox/rollback/rollback-synchronizer.gd" id="5_qek5x"]
 [ext_resource type="Texture2D" uid="uid://8jbiyn7wodcq" path="res://assets/sprites/weapon_pointer.png" id="6_75vfm"]
 [ext_resource type="Script" uid="uid://dour8fehaaugp" path="res://addons/netfox/tick-interpolator.gd" id="6_qek5x"]
-[ext_resource type="Script" uid="uid://t5n0dfhb2c8t" path="res://scripts/weapon/player_weapon.gd" id="9_5gtgg"]
-[ext_resource type="PackedScene" uid="uid://bropub4ww8cgj" path="res://scenes/projectiles/projectile_bullet.tscn" id="10_h17s1"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8afob"]
 radius = 4.0
@@ -79,6 +78,7 @@ collision_layer = 8
 collision_mask = 13
 script = ExtResource("1_8afob")
 player_input = NodePath("player_input")
+bullet_scene = ExtResource("2_5gtgg")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_8afob")
@@ -117,10 +117,6 @@ text = "input_auth_id : n/a"
 
 [node name="player_input" type="Node2D" parent="."]
 script = ExtResource("3_gmlin")
-
-[node name="player_weapon" type="Node2D" parent="."]
-script = ExtResource("9_5gtgg")
-projectile_scene = ExtResource("10_h17s1")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_0owmy")

@@ -33,6 +33,12 @@ visible = false
 
 [node name="projectiles" type="Node2D" parent="."]
 
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="projectiles"]
+_spawnable_scenes = PackedStringArray("uid://3inh0u4giphy")
+spawn_path = NodePath("../spawned_projectiles")
+
+[node name="spawned_projectiles" type="Node2D" parent="projectiles"]
+
 [node name="enemies" type="Node2D" parent="."]
 script = ExtResource("8_4mrxx")
 

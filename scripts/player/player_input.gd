@@ -34,6 +34,7 @@ func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("fire"):
 		just_fired_buf = true
 
+
 func _gather():
 	# Only allow this player's authority to collect input
 	if not is_multiplayer_authority():

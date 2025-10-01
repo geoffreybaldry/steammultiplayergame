@@ -23,6 +23,8 @@ const DECELERATION = 300.0
 # This peer_id gets synchronized by a MultiplayerSynchronizer, only on change
 @export var peer_id: int = -1
 
+@export var bullet_scene: PackedScene
+
 @onready var rollback_synchronizer: RollbackSynchronizer = $RollbackSynchronizer
 @onready var peer_id_label: Label = $peer_id_label
 @onready var peer_authority_id_label: Label = $peer_authority_id_label
@@ -32,7 +34,7 @@ const DECELERATION = 300.0
 
 
 func _ready() -> void:
-	# Take a frame to allow the network to synchronize, etc, and let player_id
+	# Take a frame to allow the network to synchronize, etc, and let peer_id
 	# be set.
 	await get_tree().process_frame
 	
@@ -66,7 +68,7 @@ func _process(_delta: float) -> void:
 	
 	apply_animation()
 	weapon_pivot.look_at(position + player_input.aim_direction)
-
+	check_fired()
 
 # Play the appropriate animation based on the player's velocity
 func apply_animation() -> void:
@@ -74,3 +76,14 @@ func apply_animation() -> void:
 		animation_player.play("idle")
 	else:
 		animation_player.play("walk")
+
+
+func check_fired() -> void:
+	if player_input.just_fired:
+		var bullet_instance: Bullet  =bullet_scene.instantiate() as Bullet
+		get_tree().current_scene.get_node("projectiles").get_node("spawned_projectiles").add_child(bullet_instance, true)
+		bullet_instance.position = position
+		bullet_instance.rotation = weapon_pivot.rotation
+		bullet_instance.peer_id = peer_id
+		
+		player_input.just_fired = false
