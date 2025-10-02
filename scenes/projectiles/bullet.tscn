@@ -11,7 +11,7 @@ size = Vector2(2, 1)
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_k5ji7"]
 properties/0/path = NodePath(".:peer_id")
 properties/0/spawn = true
-properties/0/replication_mode = 1
+properties/0/replication_mode = 0
 
 [node name="bullet" type="Area2D"]
 collision_layer = 2

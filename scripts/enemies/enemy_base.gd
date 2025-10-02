@@ -4,8 +4,8 @@ extends CharacterBody2D
 const SPEED = 10.0
 const ACCELERATION = 300.0
 const DECELERATION = 300.0
-const SENSOR_RADIUS = 20.0
-const MIN_RADIUS = 5.0
+const SENSOR_RADIUS = 30.0
+const MIN_RADIUS = 10.0
 
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var rollback_synchronizer: RollbackSynchronizer = $RollbackSynchronizer
@@ -17,8 +17,8 @@ func _ready():
 	# Activate the Rollback Synchronizer's settings
 	rollback_synchronizer.process_settings()
 	
-	if is_multiplayer_authority():
-		hit_box.area_entered.connect(_on_hit_box_area_entered)
+	#if is_multiplayer_authority():
+		#hit_box.area_entered.connect(_on_hit_box_area_entered)
 
 
 func _rollback_tick(_delta, _tick, _is_fresh) -> void:
@@ -44,7 +44,7 @@ func _rollback_tick(_delta, _tick, _is_fresh) -> void:
 	velocity /= NetworkTime.physics_factor
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	apply_animation()
 	
 	
@@ -91,5 +91,5 @@ func _get_interpolated_properties() -> Array:
 	]
 
 
-func _on_hit_box_area_entered(area: Area2D) -> void:
-	Log.pr("My hit-box was entered!")
+#func _on_hit_box_area_entered(area: Area2D) -> void:
+	#Log.pr("My hit-box was entered! Area : " + str(area.name))

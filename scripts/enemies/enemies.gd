@@ -17,7 +17,6 @@ func _on_all_peers_loaded() -> void:
 func spawn_enemy() -> void:
 	Log.pr("Spawning enemy")
 	
-	
 	var enemy_instance = enemy_scene.instantiate()
 	#player_instance.peer_id = this_peer_id
 	
