@@ -5,7 +5,9 @@ extends Node
 ## This is where globally important signals are defined, so that subsystems
 ## can use and react to them.
 ## It's often used as a place to define a signal where defining it elsewhere
-## might result in a race-condition or "catch-22".
+## might result in a race-condition or "catch-22". i.e if two systems want
+## to connect to eachother's signals, but they can't during start-up because
+## one of them doesn't yet exist.
 ## I find it better to define signals "closer" to the source of where they are
 ## used usually, but sometimes it's not possible.
 ##

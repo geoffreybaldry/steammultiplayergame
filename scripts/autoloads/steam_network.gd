@@ -18,10 +18,11 @@ var my_player_info = {"name": "Not yet set"}
 
 var players_loaded: int = 0
 
-signal host_server_disconnected         # Emitted if we see the host server disconnect - bad news
-signal peer_connected(peer_id: int)		# Emitted if a peer connects
-signal peer_disconnected(peer_id: int)	# Emitted if a peer disconnects so we can let the rest of the game know
-signal all_peers_loaded					# Emitted when all peers have loaded the chosen level
+signal networktime_client_synced(peer_id: int)	# Emitted when a client syncs its network time with the server
+signal host_server_disconnected         		# Emitted if we see the host server disconnect - bad news
+signal peer_connected(peer_id: int)				# Emitted if a peer connects
+signal peer_disconnected(peer_id: int)			# Emitted if a peer disconnects so we can let the rest of the game know
+signal all_peers_loaded							# Emitted when all peers have loaded the chosen level
 
 
 func _ready() -> void:
@@ -33,6 +34,11 @@ func _ready() -> void:
 	multiplayer.connection_failed.connect(_on_connection_failed)       # Failed to connect to a server
 	multiplayer.server_disconnected.connect(_on_server_disconnected)   # When this client disconnects from a server
 
+	# Connect to NetworkTime signals
+	if multiplayer.is_server():
+		NetworkTime.after_client_sync.connect(_on_networktime_client_sync)
+
+	# Connect to game signals
 	GameState.game_state_changed.connect(_on_game_state_changed)
 
 
@@ -79,6 +85,11 @@ func _on_server_disconnected() -> void:
 	Events.error_messages.error_message.emit("Host Server Disconnected from Steam Network")
 	remove_multiplayer_peer()
 
+
+func _on_networktime_client_sync(this_peer_id: int) -> void:
+	Log.pr("Peer " + str(this_peer_id) + " synchronized its time to the server")
+	networktime_client_synced.emit(this_peer_id)
+	
 
 # Watch for changes in the game state, and adjust steam networking to suit
 func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:

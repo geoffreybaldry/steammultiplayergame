@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://crp53qjrihu5b"]
+[gd_scene load_steps=12 format=3 uid="uid://crp53qjrihu5b"]
 
 [ext_resource type="Script" uid="uid://cwf5ur61ikgh2" path="res://scripts/enemies/enemy_base.gd" id="1_pkqou"]
 [ext_resource type="Texture2D" uid="uid://d1hwbkybaoh5d" path="res://assets/sprites/skeleton_sprite_sheet.png" id="1_qty17"]
-[ext_resource type="Script" uid="uid://3lbngqcexe0l" path="res://addons/netfox/state-synchronizer.gd" id="3_satqt"]
+[ext_resource type="Script" uid="uid://d350u8evihs1u" path="res://addons/netfox/rollback/rollback-synchronizer.gd" id="3_satqt"]
+[ext_resource type="Script" uid="uid://dour8fehaaugp" path="res://addons/netfox/tick-interpolator.gd" id="4_qa0nx"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_pkqou"]
 radius = 4.0
@@ -79,6 +80,9 @@ _data = {
 &"walk": SubResource("Animation_xdb20")
 }
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qa0nx"]
+size = Vector2(6, 8)
+
 [node name="enemy_base" type="CharacterBody2D" groups=["enemies"]]
 collision_layer = 4
 collision_mask = 13
@@ -91,14 +95,28 @@ shape = SubResource("CapsuleShape2D_pkqou")
 texture = ExtResource("1_qty17")
 hframes = 6
 
-[node name="StateSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
-script = ExtResource("3_satqt")
-root = NodePath("..")
-properties = Array[String]([":global_transform"])
-metadata/_custom_type_script = "uid://3lbngqcexe0l"
-
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 &"": SubResource("AnimationLibrary_xdb20")
 }
 autoplay = "idle"
+
+[node name="RollbackSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
+script = ExtResource("3_satqt")
+root = NodePath("..")
+enable_prediction = true
+state_properties = Array[String]([":position", ":velocity"])
+metadata/_custom_type_script = "uid://d350u8evihs1u"
+
+[node name="TickInterpolator" type="Node" parent="." node_paths=PackedStringArray("root")]
+script = ExtResource("4_qa0nx")
+root = NodePath("..")
+properties = Array[String]([":position"])
+metadata/_custom_type_script = "uid://dour8fehaaugp"
+
+[node name="hit_box" type="Area2D" parent="."]
+collision_layer = 32
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hit_box"]
+shape = SubResource("RectangleShape2D_qa0nx")

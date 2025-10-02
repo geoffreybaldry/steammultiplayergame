@@ -1,7 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://3inh0u4giphy"]
+[gd_scene load_steps=7 format=3 uid="uid://3inh0u4giphy"]
 
 [ext_resource type="Script" uid="uid://ttnpfghyctg0" path="res://scripts/projectiles/bullet.gd" id="1_48g2p"]
 [ext_resource type="Texture2D" uid="uid://b4n3kqck5uw0c" path="res://assets/sprites/projectile_bullet_yellow.png" id="1_yvfy2"]
+[ext_resource type="Texture2D" uid="uid://bixw1tij30ea2" path="res://assets/sprites/2d_lights_and_shadows_neutral_point_light.png" id="3_k5ji7"]
+[ext_resource type="Script" uid="uid://dour8fehaaugp" path="res://addons/netfox/tick-interpolator.gd" id="4_i2bxc"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_48g2p"]
 size = Vector2(2, 1)
@@ -13,7 +15,7 @@ properties/0/replication_mode = 1
 
 [node name="bullet" type="Area2D"]
 collision_layer = 2
-collision_mask = 5
+collision_mask = 33
 script = ExtResource("1_48g2p")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -30,5 +32,12 @@ wait_time = 3.0
 one_shot = true
 autostart = true
 
-[connection signal="body_entered" from="." to="." method="_on_body_entered"]
-[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[node name="PointLight2D" type="PointLight2D" parent="."]
+scale = Vector2(0.0546875, 0.0546875)
+texture = ExtResource("3_k5ji7")
+
+[node name="TickInterpolator" type="Node" parent="." node_paths=PackedStringArray("root")]
+script = ExtResource("4_i2bxc")
+root = NodePath("..")
+properties = Array[String]([":global_transform"])
+metadata/_custom_type_script = "uid://dour8fehaaugp"

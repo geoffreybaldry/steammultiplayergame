@@ -48,6 +48,10 @@ window/stretch/scale_mode="integer"
 
 enabled=PackedStringArray("res://addons/log/plugin.cfg", "res://addons/netfox.extras/plugin.cfg", "res://addons/netfox.internals/plugin.cfg", "res://addons/netfox/plugin.cfg")
 
+[global_group]
+
+players="The players in the game"
+
 [input]
 
 move_left={
