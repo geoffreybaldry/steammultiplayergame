@@ -1,11 +1,24 @@
 extends Node
 
-const PORT = 4096
-const MAX_CLIENTS: int = 4
-#const ADDRESS: String = "192.168.1.1"
-const ADDRESS: String = "localhost"
+# Enet Specific
+const ENET_ADDRESS: String = "localhost"
+const ENET_PORT = 4096
 
+# Network agnostic
+const MAX_PEERS: int = 4
+
+# This will contain player info for every player,
+# with the keys being each player's unique IDs.
+# e.g 	{ 
+# 			"1" : {"name": "A Player's Name"},
+#			"694392204": { "name": JazzyGeoff }
+#		}
 var players = {}
+
+# This is the local player info. This should be modified locally
+# before the connection is made. It will be passed to every other peer.
+# For example, the value of "name" can be set to something the player
+# entered in a UI scene.
 var my_player_info = {"name": "Not yet set"}
 
 var players_loaded: int = 0
@@ -92,34 +105,65 @@ func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
 			remove_multiplayer_peer() # Currently causes player.gd to error because it's too harsh
 
 
-##########################
-##### Game Functions #####
-##########################
-func create_network() -> void:
-	Log.pr("Creating Network as Host...")
-	var multiplayer_peer = ENetMultiplayerPeer.new()
-	var err = multiplayer_peer.create_server(PORT, MAX_CLIENTS)
+###########################
+##### Steam Functions #####
+###########################
+func create_steam_network() -> void:
+	Log.pr("Creating Steam Network as Host...")
+	var multiplayer_peer = SteamMultiplayerPeer.new()
+	#multiplayer_peer.set_debug_level(SteamMultiplayerPeer.DEBUG_LEVEL_PEER)
+	var err = multiplayer_peer.create_host()
 	if err == OK:
 		multiplayer.multiplayer_peer = multiplayer_peer
-		my_player_info["name"] = "Host User"
+		my_player_info["name"] = Steamworks.steam_username
 		players[1] = my_player_info # The game host is always id 1
 	else:
-		Log.warn("Error creating Host Network, Error: " + error_string(err))
+		Log.warn("Error creating Steam Host Network, Error: " + error_string(err))
 	
 	Log.pr("Waiting for players to Join...")
 	
 	Log.prn(players)
 
 
-func join_network() -> void:
-	Log.pr("Joining Network as client ")
-	var multiplayer_peer = ENetMultiplayerPeer.new()
-	var err = multiplayer_peer.create_client(ADDRESS, PORT)
+func join_steam_network(host_steam_id: int) -> void:
+	Log.pr("Joining Steam Network as client of Host " + str(host_steam_id))
+	var multiplayer_peer = SteamMultiplayerPeer.new()
+	#multiplayer_peer.set_debug_level(SteamMultiplayerPeer.DEBUG_LEVEL_PEER)
+	var err = multiplayer_peer.create_client(host_steam_id)
 	if err == OK:
 		multiplayer.multiplayer_peer = multiplayer_peer
 		my_player_info["name"] = Steamworks.steam_username
 	else:
-		Log.warn("Error connecting to host " + str(ADDRESS) + " Port: " + str(PORT) + ", Error: " + error_string(err))
+		Log.warn("Error connecting to steam host " + str(host_steam_id) + ", Error: " + error_string(err))
+
+##########################
+##### Enet Functions #####
+##########################
+func create_enet_network() -> void:
+	Log.pr("Creating Enet Network as Host...")
+	var multiplayer_peer = ENetMultiplayerPeer.new()
+	var err = multiplayer_peer.create_server(ENET_PORT, MAX_PEERS)
+	if err == OK:
+		multiplayer.multiplayer_peer = multiplayer_peer
+		my_player_info["name"] = "Host User"
+		players[1] = my_player_info # The game host is always id 1
+	else:
+		Log.warn("Error creating Enet Host Network, Error: " + error_string(err))
+	
+	Log.pr("Waiting for players to Join...")
+	
+	Log.prn(players)
+
+
+func join_enet_network() -> void:
+	Log.pr("Joining Enet Network as client ")
+	var multiplayer_peer = ENetMultiplayerPeer.new()
+	var err = multiplayer_peer.create_client(ENET_ADDRESS, ENET_PORT)
+	if err == OK:
+		multiplayer.multiplayer_peer = multiplayer_peer
+		my_player_info["name"] = Steamworks.steam_username
+	else:
+		Log.warn("Error connecting to host " + str(ENET_ADDRESS) + " Port: " + str(ENET_PORT) + ", Error: " + error_string(err))
 
 
 # Used to reset the multiplayer peer back to starting state

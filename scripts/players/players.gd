@@ -10,8 +10,10 @@ var player_scene = preload("res://scenes/player/player.tscn")
 func _ready() -> void:
 	# Connect to signals
 	if multiplayer.is_server():
-		SteamNetwork.all_peers_loaded.connect(_on_all_peers_loaded)
-		SteamNetwork.peer_disconnected.connect(_on_peer_disconnected)
+		#SteamNetwork.all_peers_loaded.connect(_on_all_peers_loaded)
+		#SteamNetwork.peer_disconnected.connect(_on_peer_disconnected)
+		Network.all_peers_loaded.connect(_on_all_peers_loaded)
+		Network.peer_disconnected.connect(_on_peer_disconnected)
 
 
 # This function is called when all the peers have successfully loaded the
@@ -19,7 +21,8 @@ func _ready() -> void:
 # MultiplayerSpawner to then replicate them across the client peers.
 func _on_all_peers_loaded() -> void:
 	Log.pr("Spawning Players into Level...")
-	for this_player in SteamNetwork.players:
+	#for this_player in SteamNetwork.players:
+	for this_player in Network.players:
 		spawn_player(this_player)
 
 

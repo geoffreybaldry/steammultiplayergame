@@ -64,8 +64,9 @@ func _ready() -> void:
 	#Steam.lobby_invite.connect(_on_lobby_invite)
 	Steam.lobby_message.connect(_on_lobby_message)
 	
-	# SteamNetwork signals
-	SteamNetwork.host_server_disconnected.connect(_on_host_server_disconnected)
+	# Network signals
+	#SteamNetwork.host_server_disconnected.connect(_on_host_server_disconnected)
+	Network.host_server_disconnected.connect(_on_host_server_disconnected)
 	
 	# Other signals
 	GameState.game_state_changed.connect(_on_game_state_changed)
@@ -102,7 +103,8 @@ func _on_lobby_created(conn: int, this_lobby_id: int) -> void:
 		lobby_code_text_area.text = lobby_code
 		
 		# Start multiplayer_peer networking
-		SteamNetwork.create_network()
+		#SteamNetwork.create_network()
+		Network.create_steam_network()
 
 
 func _on_lobby_match_list(these_lobbies: Array) -> void:
@@ -129,7 +131,8 @@ func _on_lobby_joined(this_lobby_id: int, _permissions: int, _locked: bool, resp
 		
 		# Join the multiplayer_peer network, unless we are already the host
 		if Steam.getLobbyOwner(lobby_id) != Steamworks.steam_id:
-			SteamNetwork.join_network(lobby_owner_id)
+			#SteamNetwork.join_network(lobby_owner_id)
+			Network.join_steam_network(lobby_owner_id)
 
 	# Else it failed for some reason
 	else:
@@ -324,7 +327,8 @@ func leave_lobby() -> void:
 		lobby_owner_id = 0
 		
 		# Disconnect from Steam Network
-		SteamNetwork.remove_multiplayer_peer()
+		#SteamNetwork.remove_multiplayer_peer()
+		Network.remove_multiplayer_peer()
 
 		# Clear the local lobby list
 		lobby_members.clear()
@@ -351,7 +355,8 @@ func start_game() -> void:
 	
 	
 func join_game() -> void:
-	SteamNetwork.join_game(lobby_id)
+	#SteamNetwork.join_game(lobby_id)
+	Network.join_steam_game(lobby_id)
 
 
 ###################

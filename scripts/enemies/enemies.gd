@@ -6,7 +6,8 @@ var enemy_scene = preload("res://scenes/enemies/enemy_base.tscn")
 func _ready() -> void:
 	# Connect to signals
 	if multiplayer.is_server():
-		SteamNetwork.all_peers_loaded.connect(_on_all_peers_loaded)
+		#SteamNetwork.all_peers_loaded.connect(_on_all_peers_loaded)
+		Network.all_peers_loaded.connect(_on_all_peers_loaded)
 		
 
 func _on_all_peers_loaded() -> void:
