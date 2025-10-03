@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dakmb72ihvjv4"]
 
-[ext_resource type="Script" uid="uid://reqkmpuspv0w" path="res://scripts/ui/lobby_menu_ui.gd" id="1_au8pp"]
+[ext_resource type="Script" uid="uid://reqkmpuspv0w" path="res://scripts/ui/steam_lobby_menu_ui.gd" id="1_au8pp"]
 [ext_resource type="FontFile" uid="uid://c1l47aekqn13v" path="res://assets/fonts/m3x6.ttf" id="1_t04ke"]
 
 [node name="lobby_menu_ui" type="Control"]

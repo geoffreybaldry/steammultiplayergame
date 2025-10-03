@@ -40,10 +40,15 @@ offset_bottom = 23.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="lobby_menu_button" type="Button" parent="VBoxContainer"]
+[node name="steam_lobby_menu_button" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_b8bkt")
-text = "Lobby"
+text = "Steam Lobby"
+
+[node name="enet_menu_button" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_b8bkt")
+text = "Enet Network"
 
 [node name="quit_game_button" type="Button" parent="VBoxContainer"]
 layout_mode = 2
@@ -61,5 +66,6 @@ grow_vertical = 0
 theme_override_fonts/font = ExtResource("2_b8bkt")
 text = "vX.Y"
 
-[connection signal="pressed" from="VBoxContainer/lobby_menu_button" to="." method="_on_lobby_menu_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/steam_lobby_menu_button" to="." method="_on_steam_lobby_menu_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/enet_menu_button" to="." method="_on_enet_menu_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/quit_game_button" to="." method="_on_quit_game_button_pressed"]

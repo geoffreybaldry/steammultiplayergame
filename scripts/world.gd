@@ -14,6 +14,7 @@ extends Node2D
 @onready var ui_canvas_layer: CanvasLayer = $ui_canvas_layer
 @onready var main_menu_ui: Control = $ui_canvas_layer/main_menu_ui
 @onready var lobby_menu_ui: Control = $ui_canvas_layer/lobby_menu_ui
+@onready var enet_menu_ui: Control = $ui_canvas_layer/enet_menu_ui
 @onready var scene_loading_ui: Control = $ui_canvas_layer/scene_loading_ui
 @onready var pause_menu_ui: Control = $ui_canvas_layer/pause_menu_ui
 
@@ -34,6 +35,7 @@ func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
 	# Hide all the UI scenes
 	main_menu_ui.visible = false
 	lobby_menu_ui.visible = false
+	enet_menu_ui.visible = false
 	scene_loading_ui.visible = false
 	pause_menu_ui.visible = false
 	
@@ -41,8 +43,10 @@ func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
 	match new_game_state:
 		GameState.GAME_STATES.MAIN_MENU:
 			main_menu_ui.visible = true
-		GameState.GAME_STATES.LOBBY_MENU:
+		GameState.GAME_STATES.STEAM_LOBBY_MENU:
 			lobby_menu_ui.visible = true
+		GameState.GAME_STATES.ENET_MENU:
+			enet_menu_ui.visible = true
 		GameState.GAME_STATES.SCENE_LOADING:
 			scene_loading_ui.visible = true
 		GameState.GAME_STATES.PLAYING:

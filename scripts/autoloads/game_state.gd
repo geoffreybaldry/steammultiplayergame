@@ -13,12 +13,14 @@ extends Node
 enum GAME_STATES {
 	BOOT_SPLASH,	# Not yet implemented in this game, but we start here anyway.
 	MAIN_MENU,
-	LOBBY_MENU,
+	STEAM_LOBBY_MENU,
+	ENET_MENU,
 	SCENE_LOADING,
 	PLAYING,
 	PAUSED,
 	QUITTING
 }
+
 signal game_state_changed(old_game_state: int, new_game_state: int)
 
 var current_game_state: int = GAME_STATES.BOOT_SPLASH
