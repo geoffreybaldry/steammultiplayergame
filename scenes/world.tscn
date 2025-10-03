@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://cmrw5rswvfbdj"]
+[gd_scene load_steps=8 format=3 uid="uid://cmrw5rswvfbdj"]
 
 [ext_resource type="Script" uid="uid://dy34yfx3ut15n" path="res://scripts/world.gd" id="1_nnsk1"]
 [ext_resource type="PackedScene" uid="uid://dy6qu38rl2hod" path="res://scenes/ui/main_menu_ui.tscn" id="2_4wyf3"]
@@ -7,8 +7,6 @@
 [ext_resource type="PackedScene" uid="uid://bkqx3adxgrqvh" path="res://scenes/ui/scene_loading_ui.tscn" id="4_k0juu"]
 [ext_resource type="PackedScene" uid="uid://c6no7p4khy8a" path="res://scenes/ui/pause_menu_ui.tscn" id="5_71j4m"]
 [ext_resource type="PackedScene" uid="uid://bicd8f3r5out6" path="res://scenes/ui/error_message_ui.tscn" id="6_qfnet"]
-[ext_resource type="PackedScene" uid="uid://b3xqb1fhmwpy5" path="res://scenes/players/players.tscn" id="7_i7141"]
-[ext_resource type="Script" uid="uid://cexgycv8taayf" path="res://scripts/enemies/enemies.gd" id="8_4mrxx"]
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_nnsk1")
@@ -32,24 +30,3 @@ visible = false
 [node name="error_message_ui" parent="ui_canvas_layer" instance=ExtResource("6_qfnet")]
 
 [node name="levels" type="Node2D" parent="."]
-
-[node name="players" parent="." instance=ExtResource("7_i7141")]
-
-[node name="projectiles" type="Node2D" parent="."]
-
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="projectiles"]
-_spawnable_scenes = PackedStringArray("uid://3inh0u4giphy")
-spawn_path = NodePath("../spawned_projectiles")
-
-[node name="spawned_projectiles" type="Node2D" parent="projectiles"]
-
-[node name="enemies" type="Node2D" parent="."]
-script = ExtResource("8_4mrxx")
-
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="enemies"]
-_spawnable_scenes = PackedStringArray("uid://crp53qjrihu5b")
-spawn_path = NodePath("../spawned_enemies")
-
-[node name="spawned_enemies" type="Node2D" parent="enemies"]
-
-[editable path="players"]

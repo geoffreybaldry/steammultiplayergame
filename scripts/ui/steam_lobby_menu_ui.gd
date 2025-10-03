@@ -1,6 +1,6 @@
 extends Control
 
-const PACKET_READ_LIMIT: int = 32
+#const PACKET_READ_LIMIT: int = 32
 const M_3X_6: Font = preload("res://assets/fonts/m3x6.ttf")
 const LOBBY_MEMBERS_MAX: int = 4
 
@@ -104,7 +104,7 @@ func _on_lobby_created(conn: int, this_lobby_id: int) -> void:
 		
 		# Start multiplayer_peer networking
 		#SteamNetwork.create_network()
-		Network.create_steam_network()
+		Network.create_network()
 
 
 func _on_lobby_match_list(these_lobbies: Array) -> void:
@@ -131,8 +131,7 @@ func _on_lobby_joined(this_lobby_id: int, _permissions: int, _locked: bool, resp
 		
 		# Join the multiplayer_peer network, unless we are already the host
 		if Steam.getLobbyOwner(lobby_id) != Steamworks.steam_id:
-			#SteamNetwork.join_network(lobby_owner_id)
-			Network.join_steam_network(lobby_owner_id)
+			Network.join_network(lobby_owner_id)
 
 	# Else it failed for some reason
 	else:

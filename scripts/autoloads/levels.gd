@@ -6,6 +6,7 @@ extends Node
 
 signal scene_loading_progress_updated(progress_percent: int)
 signal scene_loaded(scene_filepath: String)
+signal scene_unloaded
 
 var scene_filepath: String = ""
 var current_scene_name: String = ""
@@ -55,6 +56,10 @@ func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
 		GameState.GAME_STATES.MAIN_MENU:
 			# Unload any existing level scene
 			if current_scene_name:
+				# Destroy any objects in the current scene - Players, Enemies, Projectiles
+				# TBD - destroy objects
+				
+				# Remove the remaining scene
 				remove_current_scene()
 
 
@@ -91,6 +96,7 @@ func deferred_goto_scene(this_scene_filepath: String) -> void:
 	
 	# Instantiate the new scene
 	var new_scene_instance: Node2D = new_scene_resource.instantiate()
+	new_scene_instance.name = "current_level"
 	
 	# Remove the old level scene, if there is one
 	if current_scene_name:
@@ -107,3 +113,4 @@ func remove_current_scene() -> void:
 	Log.pr("Unloading current level scene : " + current_scene_name)
 	get_tree().current_scene.get_node("levels").get_node(current_scene_name).queue_free()
 	current_scene_name = ""
+	scene_unloaded.emit()

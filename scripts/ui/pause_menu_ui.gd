@@ -22,5 +22,5 @@ func _on_resume_game_button_pressed() -> void:
 	GameState.change_game_state(GameState.GAME_STATES.PLAYING)
 
 
-func _on_exit_game_button_pressed() -> void:
-	GameState.change_game_state(GameState.GAME_STATES.MAIN_MENU)
+func _on_main_menu_button_pressed() -> void:
+	GameState.change_game_state(GameState.GAME_STATES.SCENE_UNLOADING)

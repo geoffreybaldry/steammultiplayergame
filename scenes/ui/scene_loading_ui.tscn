@@ -13,7 +13,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_rqdcv")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="loading_container" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -23,22 +23,47 @@ offset_top = -51.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="loading_label" type="Label" parent="VBoxContainer"]
+[node name="loading_label" type="Label" parent="loading_container"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_fonts/font = ExtResource("2_5fj0j")
 text = "Loading bro, just chill..."
 horizontal_alignment = 1
 
-[node name="ProgressBar" type="ProgressBar" parent="VBoxContainer"]
+[node name="loading_progress_bar" type="ProgressBar" parent="loading_container"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_fonts/font = ExtResource("3_s2kth")
 
-[node name="hint_label" type="Label" parent="VBoxContainer"]
+[node name="loading_hint_label" type="Label" parent="loading_container"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("3_s2kth")
 text = "here is a nice hint about something"
 horizontal_alignment = 1
+
+[node name="unloading_container" type="VBoxContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -51.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="unloading_label" type="Label" parent="unloading_container"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("2_5fj0j")
+text = "Returning to Main Menu, hold tight..."
+horizontal_alignment = 1
+
+[node name="unloading_progress_bar" type="ProgressBar" parent="unloading_container"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_fonts/font = ExtResource("3_s2kth")

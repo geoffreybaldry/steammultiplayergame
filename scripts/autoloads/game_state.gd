@@ -11,27 +11,28 @@ extends Node
 ## This de-coupling is called the 'Observer' pattern.
 
 enum GAME_STATES {
-	BOOT_SPLASH,	# Not yet implemented in this game, but we start here anyway.
+	BOOT_SPLASH,		# Not yet implemented in this game, but we start here anyway.
 	MAIN_MENU,
 	STEAM_LOBBY_MENU,
 	ENET_MENU,
 	SCENE_LOADING,
+	SCENE_UNLOADING,	# State while all the level objects are freed off
 	PLAYING,
 	PAUSED,
 	QUITTING
 }
 
-enum NETWORK_TYPE {
-	NONE,
-	ENET,
-	STEAM
-}
+#enum NETWORK_TYPE {
+	#NONE,
+	#ENET,
+	#STEAM
+#}
 
 signal game_state_changed(old_game_state: int, new_game_state: int)
-signal network_type_changed(network_type: int)
+#signal network_type_changed(network_type: int)
 
 var current_game_state: int = GAME_STATES.BOOT_SPLASH
-var current_network_type: int = NETWORK_TYPE.NONE
+#var current_network_type: int = NETWORK_TYPE.NONE
 
 
 func change_game_state(new_game_state: int) -> void:
@@ -43,10 +44,10 @@ func change_game_state(new_game_state: int) -> void:
 		Log.warn("Trying to change game_state from " + GAME_STATES.keys()[current_game_state] + " to " + GAME_STATES.keys()[new_game_state])
 		
 		
-func change_network_type(new_network_type: int) -> void:
-	if current_network_type != new_network_type:
-		Log.pr("Changing network_type from " + NETWORK_TYPE.keys()[current_network_type] + " to " + NETWORK_TYPE.keys()[new_network_type])
-		current_network_type = new_network_type
-		network_type_changed.emit(new_network_type)
-	else:
-		Log.warn("Trying to change network_type from " + NETWORK_TYPE.keys()[current_network_type] + " to " + NETWORK_TYPE.keys()[new_network_type])
+#func change_network_type(new_network_type: int) -> void:
+	#if current_network_type != new_network_type:
+		#Log.pr("Changing network_type from " + NETWORK_TYPE.keys()[current_network_type] + " to " + NETWORK_TYPE.keys()[new_network_type])
+		#current_network_type = new_network_type
+		#network_type_changed.emit(new_network_type)
+	#else:
+		#Log.warn("Trying to change network_type from " + NETWORK_TYPE.keys()[current_network_type] + " to " + NETWORK_TYPE.keys()[new_network_type])

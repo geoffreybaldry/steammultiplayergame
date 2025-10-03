@@ -3,11 +3,11 @@ extends Control
 
 func _on_host_button_pressed() -> void:
 	# Start multiplayer_peer networking
-	Network.create_enet_network()
+	Network.create_network()
 
 
 func _on_join_button_pressed() -> void:
-	Network.join_enet_network()
+	Network.join_network()
 
 
 func _on_start_game_button_pressed() -> void:
