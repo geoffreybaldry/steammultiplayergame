@@ -104,6 +104,7 @@ autoplay = "idle"
 [node name="RollbackSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("3_satqt")
 root = NodePath("..")
+enable_prediction = true
 state_properties = Array[String]([":global_transform", ":velocity"])
 metadata/_custom_type_script = "uid://d350u8evihs1u"
 
