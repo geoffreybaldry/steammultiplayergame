@@ -14,6 +14,11 @@ const MIN_RADIUS = 10.0
 var health: int = 4
 
 func _ready():
+	await get_tree().process_frame
+	
+	# Ensure that the server/host is the autohority over the player node
+	set_multiplayer_authority(1)
+	
 	# Activate the Rollback Synchronizer's settings
 	rollback_synchronizer.process_settings()
 	
@@ -80,14 +85,14 @@ func _find_nearby_player() -> Node2D:
 
 func _get_rollback_state_properties() -> Array:
 	return [
-		"position",
+		"global_transform",
 		"velocity"
 	]
 
 
 func _get_interpolated_properties() -> Array:
 	return [
-		"position"
+		"global_transform"
 	]
 
 
