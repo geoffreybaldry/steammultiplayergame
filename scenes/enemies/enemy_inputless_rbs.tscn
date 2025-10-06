@@ -1,0 +1,57 @@
+[gd_scene load_steps=7 format=3 uid="uid://db5srd2v6csoo"]
+
+[ext_resource type="Script" uid="uid://ckc2no34vsado" path="res://scripts/enemies/enemy_inputless_rbs.gd" id="1_2hg8n"]
+[ext_resource type="Texture2D" uid="uid://d1hwbkybaoh5d" path="res://assets/sprites/skeleton_sprite_sheet.png" id="2_s5h6b"]
+[ext_resource type="Script" uid="uid://d350u8evihs1u" path="res://addons/netfox/rollback/rollback-synchronizer.gd" id="4_2hg8n"]
+[ext_resource type="Script" uid="uid://dour8fehaaugp" path="res://addons/netfox/tick-interpolator.gd" id="5_pom32"]
+[ext_resource type="FontFile" uid="uid://c1l47aekqn13v" path="res://assets/fonts/m3x6.ttf" id="5_s5h6b"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_pkqou"]
+radius = 4.0
+height = 8.0
+
+[node name="enemy_inputless_rbs" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 13
+script = ExtResource("1_2hg8n")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_pkqou")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_s5h6b")
+hframes = 6
+
+[node name="auth_id_label" type="Label" parent="."]
+offset_top = -18.505
+offset_right = 51.0
+offset_bottom = 4.495
+theme_override_fonts/font = ExtResource("5_s5h6b")
+text = "auth id : n/a"
+
+[node name="nearby_player_label" type="Label" parent="."]
+offset_top = -28.08
+offset_right = 76.0
+offset_bottom = -5.08
+theme_override_fonts/font = ExtResource("5_s5h6b")
+text = "nearby player : n/a"
+
+[node name="target_motion_label" type="Label" parent="."]
+offset_top = -37.12
+offset_right = 77.0
+offset_bottom = -14.12
+theme_override_fonts/font = ExtResource("5_s5h6b")
+text = "target motion : n/a"
+
+[node name="RollbackSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
+script = ExtResource("4_2hg8n")
+root = NodePath("..")
+enable_prediction = true
+state_properties = Array[String]([":position", ":velocity"])
+metadata/_custom_type_script = "uid://d350u8evihs1u"
+
+[node name="TickInterpolator" type="Node" parent="." node_paths=PackedStringArray("root")]
+script = ExtResource("5_pom32")
+root = NodePath("..")
+properties = Array[String]([":position"])
+metadata/_custom_type_script = "uid://dour8fehaaugp"

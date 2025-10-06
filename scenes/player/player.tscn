@@ -73,7 +73,7 @@ _data = {
 &"walk": SubResource("Animation_75vfm")
 }
 
-[node name="player" type="CharacterBody2D" node_paths=PackedStringArray("player_input") groups=["players"]]
+[node name="player" type="CharacterBody2D" node_paths=PackedStringArray("player_input") groups=["Players"]]
 collision_layer = 8
 collision_mask = 13
 script = ExtResource("1_8afob")

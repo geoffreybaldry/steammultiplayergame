@@ -21,7 +21,7 @@ extends Node2D
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	# Connect to signals
+	#Connect to signals
 	GameState.game_state_changed.connect(_on_game_state_changed)
 	
 	# At this stage the game_state is now MAIN_MENU
