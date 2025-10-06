@@ -46,8 +46,8 @@ text = "target motion : n/a"
 [node name="RollbackSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("4_2hg8n")
 root = NodePath("..")
-enable_prediction = true
 state_properties = Array[String]([":position", ":velocity"])
+input_properties = Array[String]([":target_motion"])
 metadata/_custom_type_script = "uid://d350u8evihs1u"
 
 [node name="TickInterpolator" type="Node" parent="." node_paths=PackedStringArray("root")]

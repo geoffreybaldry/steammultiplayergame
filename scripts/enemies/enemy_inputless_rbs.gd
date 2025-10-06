@@ -1,4 +1,4 @@
-@tool
+#@tool
 extends CharacterBody2D
 
 const SPEED = 10.0
@@ -14,28 +14,32 @@ const MIN_RADIUS = 10.0
 @onready var nearby_player_label: Label = $nearby_player_label
 @onready var target_motion_label: Label = $target_motion_label
 
+var target_motion: Vector2 = Vector2.ZERO
+
 #func _ready() -> void:
+	#if Engine.is_editor_hint(): return
 	#rollback_synchronizer.process_settings()
-	#
 	
-func _get_rollback_state_properties() -> Array:
-	return [
-		"position",
-		"velocity"
-	]
-
-func _get_interpolated_properties() -> Array:
-	return [
-		"position"
-	]
+	
+#func _get_rollback_state_properties() -> Array:
+	#return [
+		#"position",
+		#"velocity"
+	#]
+#
+#func _get_interpolated_properties() -> Array:
+	#return [
+		#"position"
+	#]
 
 	
-func _rollback_tick(delta, _tick, _is_fresh: bool):
+func _rollback_tick(_delta, _tick, _is_fresh: bool):
 	auth_id_label.text = "auth id : " + str(get_multiplayer_authority())
 	nearby_player_label.text = "nearby player : n/a"
 	target_motion_label.text = "target motion : n/a"
 	
-	var target_motion := Vector2.ZERO
+	#var target_motion := Vector2.ZERO
+	target_motion = Vector2.ZERO
 	var nearby_player := _find_nearby_player()
 	
 	# Check if we are near a player
@@ -59,20 +63,20 @@ func _rollback_tick(delta, _tick, _is_fresh: bool):
 		velocity.y = target_motion.y
 	else:
 		## Set desired velocity to zero
-		pass
+		#pass
 		##velocity = velocity.move_toward(Vector2.ZERO, DECELERATION * delta)
-		#velocity = Vector2.ZERO
+		velocity = Vector2.ZERO
 	
 	velocity *= NetworkTime.physics_factor
 	move_and_slide()
 	velocity /= NetworkTime.physics_factor
 
 
-#func _process(_delta: float) -> void:
-	#if Engine.is_editor_hint(): return
-	#
+func _process(_delta: float) -> void:
+	if Engine.is_editor_hint(): return
+	
 	#apply_animation()
-	#auth_id_label.text = "auth id : " + str(get_multiplayer_authority())
+	auth_id_label.text = "auth id : " + str(get_multiplayer_authority())
 	
 	
 #func apply_animation() -> void:

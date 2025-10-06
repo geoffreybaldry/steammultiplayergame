@@ -3,81 +3,22 @@
 [ext_resource type="Script" uid="uid://dpkn3vo0howk7" path="res://scripts/enemies/enemy_state_replicate.gd" id="1_k85nx"]
 [ext_resource type="Texture2D" uid="uid://d1hwbkybaoh5d" path="res://assets/sprites/skeleton_sprite_sheet.png" id="2_jaswj"]
 [ext_resource type="Script" uid="uid://3lbngqcexe0l" path="res://addons/netfox/state-synchronizer.gd" id="2_jg7g7"]
+[ext_resource type="Animation" uid="uid://c5vdkprtrsl5o" path="res://animations/skeleton/idle.res" id="3_xo171"]
+[ext_resource type="Animation" uid="uid://cq0yjnxant6i0" path="res://animations/skeleton/die.res" id="4_q7881"]
 [ext_resource type="Script" uid="uid://dour8fehaaugp" path="res://addons/netfox/tick-interpolator.gd" id="4_xo171"]
+[ext_resource type="Animation" uid="uid://b0slskib53w4f" path="res://animations/skeleton/walk.res" id="5_dwi04"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_pkqou"]
 radius = 4.0
 height = 8.0
 
-[sub_resource type="Animation" id="Animation_qa0nx"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-
-[sub_resource type="Animation" id="Animation_evjv1"]
-resource_name = "die"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [4, 5]
-}
-
-[sub_resource type="Animation" id="Animation_satqt"]
-resource_name = "idle"
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [0, 1]
-}
-
-[sub_resource type="Animation" id="Animation_xdb20"]
-resource_name = "walk"
-length = 0.4
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [2, 3]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_xdb20"]
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_qvr4r"]
 _data = {
-&"RESET": SubResource("Animation_qa0nx"),
-&"die": SubResource("Animation_evjv1"),
-&"idle": SubResource("Animation_satqt"),
-&"walk": SubResource("Animation_xdb20")
+&"die": ExtResource("4_q7881"),
+&"idle": ExtResource("3_xo171"),
+&"walk": ExtResource("5_dwi04")
 }
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qa0nx"]
@@ -97,9 +38,10 @@ hframes = 6
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-&"": SubResource("AnimationLibrary_xdb20")
+&"": SubResource("AnimationLibrary_xdb20"),
+&"skeleton_animations": SubResource("AnimationLibrary_qvr4r")
 }
-autoplay = "idle"
+autoplay = "skeleton_animations/idle"
 
 [node name="hit_box" type="Area2D" parent="."]
 collision_layer = 32

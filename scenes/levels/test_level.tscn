@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=4 uid="uid://cjcrlrdi47dw3"]
+[gd_scene load_steps=9 format=4 uid="uid://cjcrlrdi47dw3"]
 
 [ext_resource type="Script" uid="uid://do00viek7ibq0" path="res://scripts/levels/test_level.gd" id="1_fr1um"]
 [ext_resource type="Texture2D" uid="uid://c1sb1gyasxnjo" path="res://assets/sprites/1-Bit-8x8.png" id="1_jbqir"]
@@ -6,7 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://b3xqb1fhmwpy5" path="res://scenes/players/players.tscn" id="4_6xh4u"]
 [ext_resource type="PackedScene" uid="uid://wtisgcppd1hq" path="res://scenes/enemies/enemies.tscn" id="5_cyt5c"]
 [ext_resource type="PackedScene" uid="uid://ddeoje1v7nln5" path="res://scenes/projectiles/projectiles.tscn" id="6_7x1jh"]
-[ext_resource type="PackedScene" uid="uid://db5srd2v6csoo" path="res://scenes/enemies/enemy_inputless_rbs.tscn" id="7_cyt5c"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yautc"]
 texture = ExtResource("1_jbqir")
@@ -1269,9 +1268,6 @@ texture = ExtResource("2_fr1um")
 [node name="enemies" parent="." instance=ExtResource("5_cyt5c")]
 
 [node name="projectiles" parent="." instance=ExtResource("6_7x1jh")]
-
-[node name="enemy_inputless_rbs" parent="." instance=ExtResource("7_cyt5c")]
-position = Vector2(55, 47)
 
 [editable path="players"]
 [editable path="enemies"]

@@ -13,13 +13,13 @@ func _ready() -> void:
 func _on_all_peers_loaded() -> void:
 	Log.pr("Spawning Enemies into Level...")
 	
-	#spawn_enemy()
+	spawn_enemy()
 	
 func spawn_enemy() -> void:
 	Log.pr(str(get_tree()) + "Spawning enemy")
 	
 	#var enemy_instance = enemy_state_replicate_scene.instantiate()
-	var enemy_instance = enemy_inputless_rbs_scene.instantiate()
+	var enemy_instance = enemy_state_replicate_scene.instantiate()
 	
 	enemy_instance.position = Vector2(50, 80)
 	

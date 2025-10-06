@@ -43,13 +43,13 @@ func _process(_delta: float) -> void:
 	
 func apply_animation() -> void:
 	if velocity == Vector2.ZERO:
-		animation_player.play("idle")
+		animation_player.play("skeleton_animations/idle")
 	else:
-		animation_player.play("walk")
+		animation_player.play("skeleton_animations/walk")
 		
 
 func _find_nearby_player() -> Node2D:
-	var players := get_tree().get_nodes_in_group(&"players")
+	var players := get_tree().get_nodes_in_group(&"Players")
 	if players.is_empty():
 		return null
 		

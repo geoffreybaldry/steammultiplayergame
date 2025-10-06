@@ -27,11 +27,14 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	# Input.get_vector() provides a Vector2 of maximum length 1 unit - perfect
 	# for use in directions of players.
-	input_direction_buf += Input.get_vector("move_left", "move_right", "move_up", "move_down")
-	aim_direction_buf += Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down")
+	#input_direction_buf += Input.get_vector("move_left", "move_right", "move_up", "move_down")
+	#aim_direction_buf += Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down")
+	input_direction_buf += Focus.input_get_vector("move_left", "move_right", "move_up", "move_down")
+	aim_direction_buf += Focus.input_get_vector("aim_left", "aim_right", "aim_up", "aim_down")
 	sample_count += 1
 	
-	if Input.is_action_just_pressed("fire"):
+	#if Input.is_action_just_pressed("fire"):
+	if Focus.input_is_action_just_pressed("fire"):
 		just_fired_buf = true
 
 
