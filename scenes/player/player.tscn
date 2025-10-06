@@ -13,17 +13,12 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_8afob"]
 radius = 4.0
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_0owmy"]
-properties/0/path = NodePath(".:peer_id")
-properties/0/spawn = true
-properties/0/replication_mode = 0
-
 [sub_resource type="Animation" id="Animation_p47bc"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/path = NodePath("visual/Sprite2D:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -39,7 +34,7 @@ loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/path = NodePath("visual/Sprite2D:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -56,7 +51,7 @@ loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/path = NodePath("visual/Sprite2D:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -73,6 +68,11 @@ _data = {
 &"walk": SubResource("Animation_75vfm")
 }
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_0owmy"]
+properties/0/path = NodePath(".:peer_id")
+properties/0/spawn = true
+properties/0/replication_mode = 0
+
 [node name="player" type="CharacterBody2D" node_paths=PackedStringArray("player_input") groups=["Players"]]
 collision_layer = 8
 collision_mask = 13
@@ -83,21 +83,23 @@ bullet_scene = ExtResource("2_5gtgg")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_8afob")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="visual" type="Node2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="visual"]
 texture = ExtResource("2_dovo2")
 hframes = 6
 vframes = 4
 
-[node name="peer_id_label" type="Label" parent="."]
+[node name="peer_id_label" type="Label" parent="visual"]
 visible = false
 offset_left = -6.0
 offset_top = -18.0
-offset_right = 6.0
+offset_right = 24.0
 offset_bottom = -5.0
 theme_override_fonts/font = ExtResource("4_lvxji")
 text = "id : n/a"
 
-[node name="peer_authority_id_label" type="Label" parent="."]
+[node name="peer_authority_id_label" type="Label" parent="visual"]
 visible = false
 offset_left = -6.0
 offset_top = -27.245
@@ -106,14 +108,27 @@ offset_bottom = -14.245
 theme_override_fonts/font = ExtResource("4_lvxji")
 text = "auth_id : n/a"
 
-[node name="input_authority_id_label" type="Label" parent="."]
+[node name="input_authority_id_label" type="Label" parent="visual"]
 visible = false
 offset_left = -6.0
 offset_top = -35.745
-offset_right = 44.0
+offset_right = 66.0
 offset_bottom = -22.745
 theme_override_fonts/font = ExtResource("4_lvxji")
 text = "input_auth_id : n/a"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="visual"]
+root_node = NodePath("../..")
+libraries = {
+&"": SubResource("AnimationLibrary_75vfm")
+}
+autoplay = "idle"
+
+[node name="weapon_pivot" type="Node2D" parent="visual"]
+
+[node name="Sprite2D" type="Sprite2D" parent="visual/weapon_pivot"]
+position = Vector2(6, 0)
+texture = ExtResource("6_75vfm")
 
 [node name="player_input" type="Node2D" parent="."]
 script = ExtResource("3_gmlin")
@@ -124,7 +139,7 @@ replication_config = SubResource("SceneReplicationConfig_0owmy")
 [node name="RollbackSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("5_qek5x")
 root = NodePath("..")
-state_properties = Array[String]([":global_transform", ":velocity", "weapon_pivot:rotation"])
+state_properties = Array[String]([":global_transform", ":velocity", "visual:weapon_pivot:rotation"])
 input_properties = Array[String](["player_input:input_direction", "player_input:aim_direction", "player_input:just_fired"])
 enable_input_broadcast = false
 metadata/_custom_type_script = "uid://d350u8evihs1u"
@@ -132,21 +147,9 @@ metadata/_custom_type_script = "uid://d350u8evihs1u"
 [node name="TickInterpolator" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("6_qek5x")
 root = NodePath("..")
-properties = Array[String]([":velocity", ":global_transform", "weapon_pivot:rotation"])
+properties = Array[String]([":velocity", ":global_transform", "visual:weapon_pivot:rotation"])
 metadata/_custom_type_script = "uid://dour8fehaaugp"
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_75vfm")
-}
-autoplay = "idle"
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
 scale = Vector2(0.265625, 0.304688)
 texture = ExtResource("5_p47bc")
-
-[node name="weapon_pivot" type="Node2D" parent="."]
-
-[node name="Sprite2D" type="Sprite2D" parent="weapon_pivot"]
-position = Vector2(6, 0)
-texture = ExtResource("6_75vfm")

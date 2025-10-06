@@ -1261,6 +1261,7 @@ color = Color(0, 0, 0, 1)
 
 [node name="PointLight2D" type="PointLight2D" parent="environment"]
 position = Vector2(67, 75)
+energy = 1.5
 texture = ExtResource("2_fr1um")
 
 [node name="players" parent="." instance=ExtResource("4_6xh4u")]

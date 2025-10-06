@@ -26,12 +26,11 @@ const DECELERATION = 300.0
 @export var bullet_scene: PackedScene
 
 @onready var rollback_synchronizer: RollbackSynchronizer = $RollbackSynchronizer
-@onready var peer_id_label: Label = $peer_id_label
-@onready var peer_authority_id_label: Label = $peer_authority_id_label
-@onready var input_authority_id_label: Label = $input_authority_id_label
-@onready var animation_player: AnimationPlayer = $AnimationPlayer
-@onready var weapon_pivot: Node2D = $weapon_pivot
-
+@onready var peer_id_label: Label = $visual/peer_id_label
+@onready var peer_authority_id_label: Label = $visual/peer_authority_id_label
+@onready var input_authority_id_label: Label = $visual/input_authority_id_label
+@onready var animation_player: AnimationPlayer = $visual/AnimationPlayer
+@onready var weapon_pivot: Node2D = $visual/weapon_pivot
 
 func _ready() -> void:
 	# Take a frame to allow the network to synchronize, etc, and let peer_id

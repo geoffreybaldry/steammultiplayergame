@@ -6,21 +6,14 @@ const ACCELERATION = 300.0
 const DECELERATION = 300.0
 const SENSOR_RADIUS = 30.0
 const MIN_RADIUS = 10.0
-#
-#@onready var animation_player: AnimationPlayer = $AnimationPlayer
-@onready var rollback_synchronizer: RollbackSynchronizer = $RollbackSynchronizer
 
-@onready var auth_id_label: Label = $auth_id_label
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var rollback_synchronizer: RollbackSynchronizer = $RollbackSynchronizer
 @onready var nearby_player_label: Label = $nearby_player_label
-@onready var target_motion_label: Label = $target_motion_label
 
 var target_motion: Vector2 = Vector2.ZERO
 
-#func _ready() -> void:
-	#if Engine.is_editor_hint(): return
-	#rollback_synchronizer.process_settings()
-	
-	
+
 func _get_rollback_state_properties() -> Array:
 	return [
 		"position",
@@ -33,10 +26,8 @@ func _get_interpolated_properties() -> Array:
 	]
 
 	
-func _rollback_tick(_delta, _tick, _is_fresh: bool):
-	auth_id_label.text = "auth id : " + str(get_multiplayer_authority())
+func _rollback_tick(delta, _tick, _is_fresh: bool):
 	nearby_player_label.text = "nearby player : n/a"
-	target_motion_label.text = "target motion : n/a"
 	
 	#var target_motion := Vector2.ZERO
 	target_motion = Vector2.ZERO
@@ -48,24 +39,15 @@ func _rollback_tick(_delta, _tick, _is_fresh: bool):
 		
 		# Calculate difference as vector
 		target_motion = nearby_player.global_position - global_position
-
-		target_motion_label.text = "target motion : " + str(target_motion)
 		
 		# Set the desired target vector
 		target_motion = target_motion.normalized() * SPEED
 		
-			
 		# Set desired velocity towards target
-		#velocity = velocity.move_toward(target_motion, ACCELERATION * delta)
-		#velocity.x = move_toward(velocity.x, target_motion.x, SPEED / 0.35 * delta)
-		#velocity.y = move_toward(velocity.y, target_motion.y, SPEED / 0.35 * delta)
-		velocity.x = target_motion.x
-		velocity.y = target_motion.y
+		velocity = velocity.move_toward(target_motion, ACCELERATION * delta)
 	else:
 		## Set desired velocity to zero
-		#pass
-		##velocity = velocity.move_toward(Vector2.ZERO, DECELERATION * delta)
-		velocity = Vector2.ZERO
+		velocity = velocity.move_toward(Vector2.ZERO, DECELERATION * delta)
 	
 	velocity *= NetworkTime.physics_factor
 	move_and_slide()
@@ -75,15 +57,14 @@ func _rollback_tick(_delta, _tick, _is_fresh: bool):
 func _process(_delta: float) -> void:
 	if Engine.is_editor_hint(): return
 	
-	#apply_animation()
-	auth_id_label.text = "auth id : " + str(get_multiplayer_authority())
+	apply_animation()
 	
 	
-#func apply_animation() -> void:
-	#if velocity == Vector2.ZERO:
-		#animation_player.play("idle")
-	#else:
-		#animation_player.play("walk")
+func apply_animation() -> void:
+	if velocity == Vector2.ZERO:
+		animation_player.play("skeleton_animations/idle")
+	else:
+		animation_player.play("skeleton_animations/walk")
 		
 
 func _find_nearby_player() -> Node2D:
