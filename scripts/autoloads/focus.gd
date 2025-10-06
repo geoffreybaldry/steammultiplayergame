@@ -1,5 +1,7 @@
-# Focus.gd
 extends Node
+
+## This just makes sure that gamepads only provide input the the active window
+## that has focus.
 
 var focused := true
 

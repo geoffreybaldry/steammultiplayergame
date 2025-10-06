@@ -1,4 +1,4 @@
-#@tool
+@tool
 extends CharacterBody2D
 
 const SPEED = 10.0
@@ -21,16 +21,16 @@ var target_motion: Vector2 = Vector2.ZERO
 	#rollback_synchronizer.process_settings()
 	
 	
-#func _get_rollback_state_properties() -> Array:
-	#return [
-		#"position",
-		#"velocity"
-	#]
-#
-#func _get_interpolated_properties() -> Array:
-	#return [
-		#"position"
-	#]
+func _get_rollback_state_properties() -> Array:
+	return [
+		"position",
+		"velocity"
+	]
+
+func _get_interpolated_properties() -> Array:
+	return [
+		"position"
+	]
 
 	
 func _rollback_tick(_delta, _tick, _is_fresh: bool):

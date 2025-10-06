@@ -18,9 +18,9 @@ func _on_all_peers_loaded() -> void:
 func spawn_enemy() -> void:
 	Log.pr(str(get_tree()) + "Spawning enemy")
 	
+	var enemy_instance = enemy_inputless_rbs_scene.instantiate()
 	#var enemy_instance = enemy_state_replicate_scene.instantiate()
-	var enemy_instance = enemy_state_replicate_scene.instantiate()
 	
-	enemy_instance.position = Vector2(50, 80)
+	#enemy_instance.position = Vector2(50, 80)
 	
 	$spawned_enemies.add_child(enemy_instance, true)

@@ -6,7 +6,7 @@
 script = ExtResource("1_pgpww")
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("uid://bardrgxrlp73t", "uid://db5srd2v6csoo")
+_spawnable_scenes = PackedStringArray("uid://db5srd2v6csoo", "uid://bardrgxrlp73t")
 spawn_path = NodePath("../spawned_enemies")
 
 [node name="spawned_enemies" type="Node2D" parent="."]

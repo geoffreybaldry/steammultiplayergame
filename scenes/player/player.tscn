@@ -124,7 +124,7 @@ replication_config = SubResource("SceneReplicationConfig_0owmy")
 [node name="RollbackSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("5_qek5x")
 root = NodePath("..")
-state_properties = Array[String]([":global_transform", ":velocity", "weapon_pivot:global_transform"])
+state_properties = Array[String]([":global_transform", ":velocity", "weapon_pivot:rotation"])
 input_properties = Array[String](["player_input:input_direction", "player_input:aim_direction", "player_input:just_fired"])
 enable_input_broadcast = false
 metadata/_custom_type_script = "uid://d350u8evihs1u"
@@ -132,7 +132,7 @@ metadata/_custom_type_script = "uid://d350u8evihs1u"
 [node name="TickInterpolator" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("6_qek5x")
 root = NodePath("..")
-properties = Array[String]([":velocity", ":global_transform"])
+properties = Array[String]([":velocity", ":global_transform", "weapon_pivot:rotation"])
 metadata/_custom_type_script = "uid://dour8fehaaugp"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
