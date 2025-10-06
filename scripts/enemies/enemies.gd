@@ -21,6 +21,6 @@ func spawn_enemy() -> void:
 	var enemy_instance = enemy_inputless_rbs_scene.instantiate()
 	#var enemy_instance = enemy_state_replicate_scene.instantiate()
 	
-	#enemy_instance.position = Vector2(50, 80)
+	enemy_instance.position = Vector2(50, 80)
 	
 	$spawned_enemies.add_child(enemy_instance, true)

@@ -27,12 +27,13 @@ EnetNetwork="res://scripts/autoloads/enet_network.gd"
 Config="*res://scripts/autoloads/config.gd"
 SaveLoad="*res://scripts/autoloads/save_load.gd"
 Levels="*res://scripts/autoloads/levels.gd"
+WindowTiler="*res://addons/netfox.extras/window-tiler.gd"
+NetworkSimulator="*res://addons/netfox.extras/network-simulator.gd"
 NetworkTime="*res://addons/netfox/network-time.gd"
 NetworkTimeSynchronizer="*res://addons/netfox/network-time-synchronizer.gd"
 NetworkRollback="*res://addons/netfox/rollback/network-rollback.gd"
 NetworkEvents="*res://addons/netfox/network-events.gd"
 NetworkPerformance="*res://addons/netfox/network-performance.gd"
-WindowTiler="*res://addons/netfox.extras/window-tiler.gd"
 
 [debug]
 
