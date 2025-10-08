@@ -58,7 +58,7 @@ func _rollback_tick(_delta, _tick, _is_fresh) -> void:
 	velocity /= NetworkTime.physics_factor
 	
 	weapon_pivot.look_at(position + player_input.aim_direction)
-	#check_fired()
+	check_fired()
 
 func _process(_delta: float) -> void:
 	# Temporary - used to show the player_id, and the id of the authority of the player node
@@ -80,7 +80,7 @@ func apply_animation() -> void:
 
 func check_fired() -> void:
 	if player_input.just_fired:
-		var bullet_instance: Bullet  =bullet_scene.instantiate() as Bullet
+		var bullet_instance: Bullet = bullet_scene.instantiate() as Bullet
 		#get_tree().current_scene.get_node("projectiles").get_node("spawned_projectiles").add_child(bullet_instance, true)
 		get_tree().current_scene.get_node("levels").get_node("current_level").get_node("projectiles").get_node("spawned_projectiles").add_child(bullet_instance, true)
 
