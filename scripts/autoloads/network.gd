@@ -29,14 +29,23 @@ var players = {}
 # entered in a UI scene.
 var my_player_info = {"name": "Not yet set"}
 
+# UIsed by the server to keep track of how many players have loaded the level
 var players_loaded: int = 0
 
-signal networktime_client_synced(peer_id: int)	# Emitted when a client syncs its network time with the server
+# Our multiplayer peer id, 0 for not set, 1 for server, any other number for client
+var peer_id: int = 0:
+	set(value):
+		peer_id = value
+		peer_id_changed.emit(value)
+	get:
+		return peer_id
+
+signal networktime_client_synced(peer_id: int)	# Emitted when a client syncs its NetFox network time with the server
 signal host_server_disconnected         		# Emitted if we see the host server disconnect - bad news
 signal peer_connected(peer_id: int)				# Emitted if a peer connects
 signal peer_disconnected(peer_id: int)			# Emitted if a peer disconnects so we can let the rest of the game know
 signal all_peers_loaded							# Emitted when all peers have loaded the chosen level
-
+signal peer_id_changed(peer_id: int)			# Emitted when our peer_id changes
 
 func _ready() -> void:
 	# Connect to multiplayer signals
@@ -81,7 +90,7 @@ func _on_peer_disconnected(this_peer_id: int) -> void:
 func _on_connected_to_server() -> void:
 	Log.pr("_on_connected_to_server")
 	# Add ourselves to the players list
-	var peer_id = multiplayer.get_unique_id()
+	peer_id = multiplayer.get_unique_id()
 	players[peer_id] = my_player_info
 	
 	Log.prn(players)
@@ -139,8 +148,9 @@ func create_network() -> void:
 		
 	if err == OK:
 		multiplayer.multiplayer_peer = multiplayer_peer
+		peer_id = 1 # The game host is always id 1
 		my_player_info["name"] = "Host User"
-		players[1] = my_player_info # The game host is always id 1
+		players[peer_id] = my_player_info
 	else:
 		Log.warn("Error creating Host Network, Error: " + error_string(err))
 	
@@ -234,10 +244,12 @@ func join_network(host_steam_id: int = 0) -> void:
 
 # Used to reset the multiplayer peer back to starting state
 func remove_multiplayer_peer() -> void:
-	#multiplayer.multiplayer_peer = null
+	multiplayer.multiplayer_peer = null
+	peer_id = 0
+	
 	# I see people talking about doing this instead of = null above - investigate it, Geoff
-	multiplayer.multiplayer_peer.close()
-	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
+	#multiplayer.multiplayer_peer.close()
+	#multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
 
 	players.clear()
 

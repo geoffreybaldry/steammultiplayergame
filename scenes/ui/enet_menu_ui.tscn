@@ -13,9 +13,18 @@ grow_vertical = 2
 script = ExtResource("1_ov3ih")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -23.5
+offset_top = -48.0
+offset_right = 23.5
+offset_bottom = 48.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="host_button" type="Button" parent="VBoxContainer"]
 layout_mode = 2
@@ -27,17 +36,63 @@ layout_mode = 2
 theme_override_fonts/font = ExtResource("2_o2sq8")
 text = "Join"
 
-[node name="start_game_button" type="Button" parent="VBoxContainer"]
-layout_mode = 2
+[node name="start_game_button" type="Button" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -75.0
+offset_top = -26.0
+offset_right = -5.0
+offset_bottom = -5.0
+grow_horizontal = 0
+grow_vertical = 0
 theme_override_fonts/font = ExtResource("2_o2sq8")
-text = "Start"
+text = "Start Game
+"
 
-[node name="main_menu_button" type="Button" parent="VBoxContainer"]
-layout_mode = 2
+[node name="main_menu_button" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = -26.0
+offset_right = 68.0
+offset_bottom = -5.0
+grow_vertical = 0
 theme_override_fonts/font = ExtResource("2_o2sq8")
 text = "Main Menu"
 
+[node name="leave_network_button" type="Button" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = -26.0
+offset_right = 52.0
+offset_bottom = -5.0
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("2_o2sq8")
+text = "Leave Network"
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+
+[node name="status_message_label" type="Label" parent="Panel"]
+layout_mode = 1
+offset_right = 26.0
+offset_bottom = 13.0
+theme_override_fonts/font = ExtResource("2_o2sq8")
+horizontal_alignment = 1
+
 [connection signal="pressed" from="VBoxContainer/host_button" to="." method="_on_host_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/join_button" to="." method="_on_join_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/start_game_button" to="." method="_on_start_game_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/main_menu_button" to="." method="_on_main_menu_button_pressed"]
+[connection signal="pressed" from="start_game_button" to="." method="_on_start_game_button_pressed"]
+[connection signal="pressed" from="main_menu_button" to="." method="_on_main_menu_button_pressed"]
+[connection signal="pressed" from="leave_network_button" to="." method="_on_leave_network_button_pressed"]
