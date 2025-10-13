@@ -50,7 +50,7 @@ func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
 		GameState.GAME_STATES.SCENE_LOADING:
 			scene_loading_ui.visible = true
 		GameState.GAME_STATES.SCENE_UNLOADING:
-			pass
+			scene_loading_ui.visible = true
 		GameState.GAME_STATES.PLAYING:
 			pass
 		GameState.GAME_STATES.PAUSED:

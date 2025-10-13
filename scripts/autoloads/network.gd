@@ -73,9 +73,6 @@ func _on_server_started() -> void:
 	NetworkTime.start()
 	
 
-###################################
-##### MultiplayerPeer signals #####
-###################################
 # When a peer connects, send them my player info.
 # This allows transfer of all desired data for each player, not only the unique ID.
 func _on_peer_connected(this_peer_id: int) -> void:
@@ -141,9 +138,6 @@ func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
 			current_network_type = NETWORK_TYPE.STEAM
 
 
-#############################
-##### Unified Functions #####
-#############################
 func create_network() -> void:
 	Log.pr("Creating Network as Host...")
 	
@@ -200,7 +194,7 @@ func join_network(host_steam_id: int = 0) -> void:
 
 # Used to reset the multiplayer peer back to starting state
 func remove_multiplayer_peer() -> void:
-	Log.warn("Calling remove_multiplayer_peer()")
+	#Log.warn("Calling remove_multiplayer_peer()")
 	if peer_id == 0:
 		return
 	

@@ -61,6 +61,8 @@ func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
 				
 				# Remove the remaining scene
 				remove_current_scene()
+		GameState.GAME_STATES.SCENE_UNLOADING:
+			pass
 
 
 # When the server decides to start the game from a UI scene,

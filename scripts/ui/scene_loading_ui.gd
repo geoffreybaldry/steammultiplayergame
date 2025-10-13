@@ -16,7 +16,7 @@ func _ready() -> void:
 
 
 func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
-	#Log.pr("_on_game_state_changed : ", old_game_state, new_game_state)
+	#Log.pr("_on_game_state_changed : ", _old_game_state, new_game_state)
 	
 	# Turn on the UI scene we want
 	match new_game_state:

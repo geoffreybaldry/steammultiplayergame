@@ -1,11 +1,10 @@
-[gd_scene load_steps=9 format=4 uid="uid://cjcrlrdi47dw3"]
+[gd_scene load_steps=8 format=4 uid="uid://cjcrlrdi47dw3"]
 
 [ext_resource type="Script" uid="uid://do00viek7ibq0" path="res://scripts/levels/test_level.gd" id="1_fr1um"]
 [ext_resource type="Texture2D" uid="uid://c1sb1gyasxnjo" path="res://assets/sprites/1-Bit-8x8.png" id="1_jbqir"]
+[ext_resource type="PackedScene" uid="uid://cdg0vfkaa0w3v" path="res://scenes/player/player.tscn" id="2_6xh4u"]
 [ext_resource type="Texture2D" uid="uid://bixw1tij30ea2" path="res://assets/sprites/2d_lights_and_shadows_neutral_point_light.png" id="2_fr1um"]
-[ext_resource type="PackedScene" uid="uid://b3xqb1fhmwpy5" path="res://scenes/players/players.tscn" id="4_6xh4u"]
-[ext_resource type="PackedScene" uid="uid://wtisgcppd1hq" path="res://scenes/enemies/enemies.tscn" id="5_cyt5c"]
-[ext_resource type="PackedScene" uid="uid://ddeoje1v7nln5" path="res://scenes/projectiles/projectiles.tscn" id="6_7x1jh"]
+[ext_resource type="PackedScene" uid="uid://db5srd2v6csoo" path="res://scenes/enemies/enemy_inputless_rbs.tscn" id="3_cyt5c"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yautc"]
 texture = ExtResource("1_jbqir")
@@ -1239,6 +1238,8 @@ sources/0 = SubResource("TileSetAtlasSource_yautc")
 
 [node name="test_level" type="Node2D"]
 script = ExtResource("1_fr1um")
+player_scene = ExtResource("2_6xh4u")
+enemy_skeleton_scene = ExtResource("3_cyt5c")
 
 [node name="environment" type="Node2D" parent="."]
 
@@ -1264,12 +1265,16 @@ position = Vector2(67, 75)
 energy = 1.5
 texture = ExtResource("2_fr1um")
 
-[node name="players" parent="." instance=ExtResource("4_6xh4u")]
+[node name="spawned_players" type="Node2D" parent="."]
 
-[node name="enemies" parent="." instance=ExtResource("5_cyt5c")]
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="spawned_players"]
+_spawnable_scenes = PackedStringArray("uid://cdg0vfkaa0w3v")
+spawn_path = NodePath("..")
 
-[node name="projectiles" parent="." instance=ExtResource("6_7x1jh")]
+[node name="spawned_enemies" type="Node2D" parent="."]
 
-[editable path="players"]
-[editable path="enemies"]
-[editable path="projectiles"]
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="spawned_enemies"]
+_spawnable_scenes = PackedStringArray("uid://db5srd2v6csoo")
+spawn_path = NodePath("..")
+
+[node name="spawned_projectiles" type="Node2D" parent="."]
