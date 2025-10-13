@@ -29,7 +29,7 @@ var players = {}
 # entered in a UI scene.
 var my_player_info = {"name": "Not yet set"}
 
-# UIsed by the server to keep track of how many players have loaded the level
+# Used by the server to keep track of how many players have loaded the level
 var players_loaded: int = 0
 
 # Our multiplayer peer id, 0 for not set, 1 for server, any other number for client
@@ -40,7 +40,8 @@ var peer_id: int = 0:
 	get:
 		return peer_id
 
-signal networktime_client_synced(peer_id: int)	# Emitted when a client syncs its NetFox network time with the server
+signal server_started()							# Emitted when this peer starts as a server
+#signal networktime_client_synced(peer_id: int)	# Emitted when a client syncs its NetFox network time with the server
 signal host_server_disconnected         		# Emitted if we see the host server disconnect - bad news
 signal peer_connected(peer_id: int)				# Emitted if a peer connects
 signal peer_disconnected(peer_id: int)			# Emitted if a peer disconnects so we can let the rest of the game know
@@ -56,13 +57,21 @@ func _ready() -> void:
 	multiplayer.connection_failed.connect(_on_connection_failed)       # Failed to connect to a server
 	multiplayer.server_disconnected.connect(_on_server_disconnected)   # When this client disconnects from a server
 
+	# Connect to server signal(s)
+	server_started.connect(_on_server_started)
+
 	# Connect to NetworkTime signals
-	if multiplayer.is_server():
-		NetworkTime.after_client_sync.connect(_on_networktime_client_sync)
+	#if multiplayer.is_server():
+		#NetworkTime.after_client_sync.connect(_on_networktime_client_sync)
 
 	# Connect to game signals
 	GameState.game_state_changed.connect(_on_game_state_changed)
 
+
+# Convenient signal for initiating things when the server starts
+func _on_server_started() -> void:
+	NetworkTime.start()
+	
 
 ###################################
 ##### MultiplayerPeer signals #####
@@ -89,6 +98,10 @@ func _on_peer_disconnected(this_peer_id: int) -> void:
 
 func _on_connected_to_server() -> void:
 	Log.pr("_on_connected_to_server")
+	
+	# Start NetFox Network time ticks
+	NetworkTime.start()
+	
 	# Add ourselves to the players list
 	peer_id = multiplayer.get_unique_id()
 	players[peer_id] = my_player_info
@@ -104,13 +117,14 @@ func _on_connection_failed() -> void:
 func _on_server_disconnected() -> void:
 	Log.warn("_on_server_disconnected")
 	host_server_disconnected.emit()
-	Events.error_messages.error_message.emit("Host Server Disconnected from Steam Network")
+	Events.error_messages.error_message.emit("Host Server Disconnected from Network")
 	remove_multiplayer_peer()
 
 
-func _on_networktime_client_sync(this_peer_id: int) -> void:
-	Log.pr("Peer " + str(this_peer_id) + " synchronized its time to the server")
-	networktime_client_synced.emit(this_peer_id)
+# Not really used - probably should delete
+#func _on_networktime_client_sync(this_peer_id: int) -> void:
+	#Log.pr("Peer " + str(this_peer_id) + " synchronized its time to the server")
+	#networktime_client_synced.emit(this_peer_id)
 	
 
 # Watch for changes in the game state, and adjust steam networking to suit
@@ -149,6 +163,9 @@ func create_network() -> void:
 	if err == OK:
 		multiplayer.multiplayer_peer = multiplayer_peer
 		peer_id = 1 # The game host is always id 1
+		
+		server_started.emit()
+
 		my_player_info["name"] = "Host User"
 		players[peer_id] = my_player_info
 	else:
@@ -181,73 +198,18 @@ func join_network(host_steam_id: int = 0) -> void:
 		Log.warn("Error connecting to host, Error: " + error_string(err))
 
 
-###########################
-##### Steam Functions #####
-###########################
-#func create_steam_network() -> void:
-	#Log.pr("Creating Steam Network as Host...")
-	#var multiplayer_peer = SteamMultiplayerPeer.new()
-	##multiplayer_peer.set_debug_level(SteamMultiplayerPeer.DEBUG_LEVEL_PEER)
-	#var err = multiplayer_peer.create_host()
-	#if err == OK:
-		#multiplayer.multiplayer_peer = multiplayer_peer
-		#my_player_info["name"] = Steamworks.steam_username
-		#players[1] = my_player_info # The game host is always id 1
-	#else:
-		#Log.warn("Error creating Steam Host Network, Error: " + error_string(err))
-	#
-	#Log.pr("Waiting for players to Join...")
-	#
-	#Log.prn(players)
-
-
-#func join_steam_network(host_steam_id: int) -> void:
-	#Log.pr("Joining Steam Network as client of Host " + str(host_steam_id))
-	#var multiplayer_peer = SteamMultiplayerPeer.new()
-	##multiplayer_peer.set_debug_level(SteamMultiplayerPeer.DEBUG_LEVEL_PEER)
-	#var err = multiplayer_peer.create_client(host_steam_id)
-	#if err == OK:
-		#multiplayer.multiplayer_peer = multiplayer_peer
-		#my_player_info["name"] = Steamworks.steam_username
-	#else:
-		#Log.warn("Error connecting to steam host " + str(host_steam_id) + ", Error: " + error_string(err))
-
-##########################
-##### Enet Functions #####
-##########################
-#func create_enet_network() -> void:
-	#Log.pr("Creating Enet Network as Host...")
-	#var multiplayer_peer = ENetMultiplayerPeer.new()
-	#var err = multiplayer_peer.create_server(ENET_PORT, MAX_PEERS)
-	#if err == OK:
-		#multiplayer.multiplayer_peer = multiplayer_peer
-		#my_player_info["name"] = "Host User"
-		#players[1] = my_player_info # The game host is always id 1
-	#else:
-		#Log.warn("Error creating Enet Host Network, Error: " + error_string(err))
-	#
-	#Log.pr("Waiting for players to Join...")
-	#
-	#Log.prn(players)
-#
-#
-#func join_enet_network() -> void:
-	#Log.pr("Joining Enet Network as client ")
-	#var multiplayer_peer = ENetMultiplayerPeer.new()
-	#var err = multiplayer_peer.create_client(ENET_ADDRESS, ENET_PORT)
-	#if err == OK:
-		#multiplayer.multiplayer_peer = multiplayer_peer
-		#my_player_info["name"] = Steamworks.steam_username
-	#else:
-		#Log.warn("Error connecting to host " + str(ENET_ADDRESS) + " Port: " + str(ENET_PORT) + ", Error: " + error_string(err))
-
-
 # Used to reset the multiplayer peer back to starting state
 func remove_multiplayer_peer() -> void:
+	Log.warn("Calling remove_multiplayer_peer()")
+	if peer_id == 0:
+		return
+	
+	NetworkTime.stop()
 	multiplayer.multiplayer_peer = null
 	peer_id = 0
 	
 	# I see people talking about doing this instead of = null above - investigate it, Geoff
+	#NetworkTime.stop()
 	#multiplayer.multiplayer_peer.close()
 	#multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
 

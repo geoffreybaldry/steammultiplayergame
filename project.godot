@@ -22,8 +22,6 @@ Focus="*res://scripts/autoloads/focus.gd"
 GameState="*res://scripts/autoloads/game_state.gd"
 Steamworks="*res://scripts/autoloads/steamworks.gd"
 Network="*res://scripts/autoloads/network.gd"
-SteamNetwork="res://scripts/autoloads/steam_network.gd"
-EnetNetwork="res://scripts/autoloads/enet_network.gd"
 Config="*res://scripts/autoloads/config.gd"
 SaveLoad="*res://scripts/autoloads/save_load.gd"
 Levels="*res://scripts/autoloads/levels.gd"
@@ -122,6 +120,10 @@ fire={
 2d_physics/layer_4="player_collision"
 2d_physics/layer_5="player_hitbox"
 2d_physics/layer_6="enemy_hitbox"
+
+[netfox]
+
+events/enabled=false
 
 [rendering]
 

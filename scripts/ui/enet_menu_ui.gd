@@ -26,7 +26,7 @@ func update_enet_button_state(state: String) -> void:
 			join_button.disabled = false
 			host_button.visible = true
 			join_button.visible = true
-			
+			main_menu_button.visible = true
 
 
 func update_game_button_state(state: String) -> void:
