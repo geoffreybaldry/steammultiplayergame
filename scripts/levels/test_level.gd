@@ -9,33 +9,58 @@ const SPAWN_RANDOM: int = 25
 @onready var spawned_players: Node2D = $spawned_players
 @onready var spawned_enemies: Node2D = $spawned_enemies
 
+signal level_entities_unloaded
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	# Connect to signals
 	if multiplayer.is_server():
 		Network.all_peers_loaded.connect(_on_all_peers_loaded)
+		GameState.game_state_changed.connect(_on_game_state_changed)
 
 	# Let the Network Server know that we have loaded the level
 	Network.player_loaded.rpc_id(1)
+
+
+func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
+	#Log.pr("_on_game_state_changed : ", old_game_state, new_game_state)
+	
+	match new_game_state:
+		GameState.GAME_STATES.SCENE_UNLOADING:
+			unload_level_entities()
 
 
 # This function is called when all the peers have successfully loaded the
 # level - it creates the player objects on the server peer, and allows the
 # MultiplayerSpawner to then replicate them across the client peers.
 func _on_all_peers_loaded() -> void:
-	Log.pr("Spawning Players into Level...")
+	Log.pr(str(get_tree()) + "Spawning Players into Level...")
 	for this_player in Network.players:
 		spawn_player(this_player)
 		
-	Log.pr("Spawning Enemies into Level...")
+	Log.pr(str(get_tree()) + "Spawning Enemies into Level...")
 	spawn_enemy()
 
 
+# Used to grecefully remove any networked entities before deleting the level.
+func unload_level_entities() -> void:
+	Log.pr("unload_level_entities()")
+	
+	# Despawn the player(s)
+	for player in spawned_players.get_children():
+		player.queue_free()
+	
+	# Despawn the enemy(ies)
+	for enemy in spawned_enemies.get_children():
+		enemy.queue_free()
+		
+	# Despawn projectile(s)
+	# TBD
+	
 # This function only happens on the server - the MultiplayerSpawner replicates 
 # any spawned player nodes on all the peer clients.
 func spawn_player(this_peer_id: int) -> void:
-	Log.pr("Spawning player with id : " + str(this_peer_id))
+	Log.pr(str(get_tree()) + "Spawning player with id : " + str(this_peer_id))
 	
 	# Instantiate a player scene, and give it the correct peer id
 	var player_instance = player_scene.instantiate()

@@ -98,7 +98,7 @@ func deferred_goto_scene(this_scene_filepath: String) -> void:
 	
 	# Instantiate the new scene
 	var new_scene_instance: Node2D = new_scene_resource.instantiate()
-	new_scene_instance.name = "current_level"
+	#new_scene_instance.name = "current_level"
 	
 	# Remove the old level scene, if there is one
 	if current_scene_name:

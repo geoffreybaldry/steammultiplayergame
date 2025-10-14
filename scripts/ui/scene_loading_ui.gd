@@ -18,7 +18,7 @@ func _ready() -> void:
 func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
 	#Log.pr("_on_game_state_changed : ", _old_game_state, new_game_state)
 	
-	# Turn on the UI scene we want
+	# Turn on the UI scene we want (loading/unloading)
 	match new_game_state:
 		GameState.GAME_STATES.SCENE_LOADING:
 			loading_container.visible = true
