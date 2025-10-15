@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://c6no7p4khy8a"]
+[gd_scene load_steps=4 format=3 uid="uid://c6no7p4khy8a"]
 
 [ext_resource type="Script" uid="uid://cqs173hfc0jjr" path="res://scripts/ui/pause_menu_ui.gd" id="1_jfoc7"]
 [ext_resource type="FontFile" uid="uid://c1l47aekqn13v" path="res://assets/fonts/m3x6.ttf" id="2_31fmg"]
+[ext_resource type="FontFile" uid="uid://idnu1i0hvyas" path="res://assets/fonts/m5x7.ttf" id="3_bmmqy"]
 
 [node name="pause_menu_ui" type="Control"]
 layout_mode = 3
@@ -44,6 +45,33 @@ text = "Resume"
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_31fmg")
 text = "Exit"
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -45.0
+offset_top = 9.0
+offset_right = 45.0
+offset_bottom = 30.0
+grow_horizontal = 2
+
+[node name="Label" type="Label" parent="Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -33.5
+offset_top = -6.5
+offset_right = 33.5
+offset_bottom = 6.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("3_bmmqy")
+text = "Game Paused"
 
 [connection signal="pressed" from="VBoxContainer/resume_game_button" to="." method="_on_resume_game_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/main_menu_button" to="." method="_on_main_menu_button_pressed"]

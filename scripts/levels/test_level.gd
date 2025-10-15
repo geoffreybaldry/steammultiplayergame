@@ -15,14 +15,17 @@ const SPAWN_RANDOM: int = 25
 func _ready() -> void:
 	# Connect to signals
 	if multiplayer.is_server():
+		#Log.warn("I'm the server")
 		Network.all_peers_loaded.connect(_on_all_peers_loaded)
 		Network.peer_disconnected.connect(_on_peer_disconnected)
-
-	#GameState.game_state_changed.connect(_on_game_state_changed)
-	Network.server_disconnected.connect(_on_server_disconnected)
-
+	else:
+		#Log.warn("I'm a client")
+		Network.server_disconnected.connect(_on_server_disconnected)
+		
 	# Let the Network Server know that we have loaded the level
 	Network.player_loaded.rpc_id(1)
+	
+	#GameState.game_state_changed.connect(_on_game_state_changed)
 
 
 #func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
@@ -45,26 +48,36 @@ func _on_all_peers_loaded() -> void:
 	spawn_enemy()
 
 
+# This only runs on the server, and removes the peer's player.
+# This despawn is then replicated to the client peers
 func _on_peer_disconnected(peer_id: int) -> void:
 	spawned_players.get_node(str(peer_id)).queue_free()
 	
+	
 func _on_server_disconnected() -> void:
+	Log.warn("Server got disconnected!")
+	
+	# No sense carrying on the charade, we've lost the server!
+	#NetworkTime.stop()
+	
+	#unload_level_entities()	# Not sure if this graceful removal of spawned entities is needed
 	Levels.return_to_main_menu()
 
+
 # Used to gracefully remove any networked entities before unloadng the level.
-func unload_level_entities() -> void:
-	Log.pr("unload_level_entities()")
-	
-	# Despawn the player(s)
-	for player in spawned_players.get_children():
-		player.queue_free()
-	
-	# Despawn the enemy(ies)
-	for enemy in spawned_enemies.get_children():
-		enemy.queue_free()
-		
-	# Despawn projectile(s)
-	# TBD
+#func unload_level_entities() -> void:
+	#Log.pr("unload_level_entities()")
+	#
+	## Despawn the player(s)
+	#for player in spawned_players.get_children():
+		#player.queue_free()
+	#
+	## Despawn the enemy(ies)
+	#for enemy in spawned_enemies.get_children():
+		#enemy.queue_free()
+		#
+	## Despawn projectile(s)
+	## TBD
 	
 	#level_entities_unloaded.emit()
 	

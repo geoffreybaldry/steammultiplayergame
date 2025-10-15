@@ -21,9 +21,9 @@ var error_messages = ErrorMessages.new()
 # Use it like Events.mplayer.player_joined.connect(id, name)
 class MultiplayerEvents:
 	@warning_ignore("unused_signal")
-	signal player_joined(player_id, player_display_name)
+	signal player_joined(player_id: int, player_display_name: String)
 	
 	
 class ErrorMessages:
 	@warning_ignore("unused_signal")
-	signal error_message(message)
+	signal error_message(message: String, duration: float)

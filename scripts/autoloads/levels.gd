@@ -122,10 +122,14 @@ func remove_current_scene() -> void:
 func return_to_main_menu() -> void:
 	Log.pr("Returning to Main Menu")
 	
+	# No use for NetworkTime ticks if we are returning to the Main Menu
+	NetworkTime.stop()
+	
+	# This change in game-state will be seen by the level, and cause it to take action
 	GameState.change_game_state(GameState.GAME_STATES.SCENE_UNLOADING)
 	
 	# Pause for a short time, so even if the load takes 0.01sec, the loading screen is visible
-	await get_tree().create_timer(0.75).timeout
+	await get_tree().create_timer(1.5).timeout
 	
 	# Tell the current level to unload all its entities
 	# TBD

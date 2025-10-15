@@ -134,7 +134,7 @@ func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
 	match new_game_state:
 		GameState.GAME_STATES.MAIN_MENU:
 			current_network_type = NETWORK_TYPE.NONE
-			remove_multiplayer_peer() # Currently causes player.gd to error because it's too harsh
+			remove_multiplayer_peer()
 		GameState.GAME_STATES.ENET_MENU:
 			current_network_type = NETWORK_TYPE.ENET
 		GameState.GAME_STATES.STEAM_LOBBY_MENU:
@@ -197,18 +197,14 @@ func join_network(host_steam_id: int = 0) -> void:
 
 # Used to reset the multiplayer peer back to starting state
 func remove_multiplayer_peer() -> void:
-	#Log.warn("Calling remove_multiplayer_peer()")
+	# If we're already disconnected, return.
 	if peer_id == 0:
 		return
-	
-	NetworkTime.stop()
-	multiplayer.multiplayer_peer = null
+
 	peer_id = 0
 	
-	# I see people talking about doing this instead of = null above - investigate it, Geoff
-	#NetworkTime.stop()
-	#multiplayer.multiplayer_peer.close()
-	#multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
+	multiplayer.multiplayer_peer.close()
+	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
 
 	players.clear()
 

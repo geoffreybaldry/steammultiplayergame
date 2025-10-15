@@ -11,6 +11,10 @@ func _ready() -> void:
 	#add_theme_font_size_override("font_size", 16)
 
 
+func start_timer(duration: float) -> void:
+	timer.start(duration)
+	
+	
 # Remove the Label once it has displayed for the timer's duration
 func _on_timer_timeout() -> void:
 	queue_free()
