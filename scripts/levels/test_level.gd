@@ -9,14 +9,17 @@ const SPAWN_RANDOM: int = 25
 @onready var spawned_players: Node2D = $spawned_players
 @onready var spawned_enemies: Node2D = $spawned_enemies
 
-signal level_entities_unloaded
+#signal level_entities_unloaded
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	# Connect to signals
 	if multiplayer.is_server():
 		Network.all_peers_loaded.connect(_on_all_peers_loaded)
-		#GameState.game_state_changed.connect(_on_game_state_changed)
+		Network.peer_disconnected.connect(_on_peer_disconnected)
+
+	#GameState.game_state_changed.connect(_on_game_state_changed)
+	Network.server_disconnected.connect(_on_server_disconnected)
 
 	# Let the Network Server know that we have loaded the level
 	Network.player_loaded.rpc_id(1)
@@ -42,7 +45,13 @@ func _on_all_peers_loaded() -> void:
 	spawn_enemy()
 
 
-# Used to grecefully remove any networked entities before unloadng the level.
+func _on_peer_disconnected(peer_id: int) -> void:
+	spawned_players.get_node(str(peer_id)).queue_free()
+	
+func _on_server_disconnected() -> void:
+	Levels.return_to_main_menu()
+
+# Used to gracefully remove any networked entities before unloadng the level.
 func unload_level_entities() -> void:
 	Log.pr("unload_level_entities()")
 	
@@ -57,7 +66,7 @@ func unload_level_entities() -> void:
 	# Despawn projectile(s)
 	# TBD
 	
-	level_entities_unloaded.emit()
+	#level_entities_unloaded.emit()
 	
 # This function only happens on the server - the MultiplayerSpawner replicates 
 # any spawned player nodes on all the peer clients.

@@ -24,6 +24,7 @@ func _ready() -> void:
 	# Connect Signals
 	#GameState.game_state_changed.connect(_on_game_state_changed)
 	scene_loaded.connect(_on_scene_loaded)
+	
 
 
 # This monitors the progress of any background scene loading taking place

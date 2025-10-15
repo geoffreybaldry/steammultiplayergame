@@ -39,6 +39,10 @@ func _process(_delta: float) -> void:
 
 
 func _gather():
+	# Don't run if this node is being freed
+	if not is_inside_tree():
+		return
+		
 	# Only allow this player's authority to collect input
 	if not is_multiplayer_authority():
 		return
