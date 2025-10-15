@@ -25,8 +25,8 @@ func _ready() -> void:
 	GameState.game_state_changed.connect(_on_game_state_changed)
 	
 	# At this stage the game_state is now MAIN_MENU
-	#GameState.change_game_state(GameState.GAME_STATES.MAIN_MENU)
-	GameState.change_game_state(GameState.GAME_STATES.ENET_MENU)
+	GameState.change_game_state(GameState.GAME_STATES.MAIN_MENU)
+	#GameState.change_game_state(GameState.GAME_STATES.ENET_MENU)
 	
 
 # Show/Hide different UI scenes based on the game state

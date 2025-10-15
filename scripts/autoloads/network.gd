@@ -115,7 +115,7 @@ func _on_connection_failed() -> void:
 func _on_server_disconnected() -> void:
 	Log.pr("_on_server_disconnected")
 	server_disconnected.emit()
-	Events.error_messages.error_message.emit("Host Server Disconnected from Network")
+	Events.error_messages.error_message.emit("Host Server Disconnected from Network", 3.0)
 	
 	#remove_multiplayer_peer() # This is too severe - we need to climb down from this more gradually
 	#Levels.return_to_main_menu()
