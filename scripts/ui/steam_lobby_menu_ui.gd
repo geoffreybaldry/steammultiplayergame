@@ -66,7 +66,7 @@ func _ready() -> void:
 	
 	# Network signals
 	#SteamNetwork.host_server_disconnected.connect(_on_host_server_disconnected)
-	Network.host_server_disconnected.connect(_on_host_server_disconnected)
+	Network.server_disconnected.connect(_on_server_disconnected)
 	
 	# Other signals
 	GameState.game_state_changed.connect(_on_game_state_changed)
@@ -225,8 +225,8 @@ func _on_lobby_message(this_lobby_id: int, this_user: int, this_message: String,
 ################################
 ##### SteamNetwork Signals #####
 ################################
-func _on_host_server_disconnected() -> void:
-	Log.pr("_on_host_server_disconnected")
+func _on_server_disconnected() -> void:
+	Log.pr("_on_server_disconnected")
 	leave_lobby()
 	display_message("The Host Server disconnected")
 	

@@ -16,18 +16,18 @@ func _ready() -> void:
 	# Connect to signals
 	if multiplayer.is_server():
 		Network.all_peers_loaded.connect(_on_all_peers_loaded)
-		GameState.game_state_changed.connect(_on_game_state_changed)
+		#GameState.game_state_changed.connect(_on_game_state_changed)
 
 	# Let the Network Server know that we have loaded the level
 	Network.player_loaded.rpc_id(1)
 
 
-func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
-	#Log.pr("_on_game_state_changed : ", old_game_state, new_game_state)
-	
-	match new_game_state:
-		GameState.GAME_STATES.SCENE_UNLOADING:
-			unload_level_entities()
+#func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
+	##Log.pr("_on_game_state_changed : ", old_game_state, new_game_state)
+	#
+	#match new_game_state:
+		#GameState.GAME_STATES.SCENE_UNLOADING:
+			#unload_level_entities()
 
 
 # This function is called when all the peers have successfully loaded the
@@ -42,7 +42,7 @@ func _on_all_peers_loaded() -> void:
 	spawn_enemy()
 
 
-# Used to grecefully remove any networked entities before deleting the level.
+# Used to grecefully remove any networked entities before unloadng the level.
 func unload_level_entities() -> void:
 	Log.pr("unload_level_entities()")
 	
@@ -56,6 +56,8 @@ func unload_level_entities() -> void:
 		
 	# Despawn projectile(s)
 	# TBD
+	
+	level_entities_unloaded.emit()
 	
 # This function only happens on the server - the MultiplayerSpawner replicates 
 # any spawned player nodes on all the peer clients.

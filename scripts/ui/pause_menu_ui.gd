@@ -23,4 +23,4 @@ func _on_resume_game_button_pressed() -> void:
 
 
 func _on_main_menu_button_pressed() -> void:
-	GameState.change_game_state(GameState.GAME_STATES.SCENE_UNLOADING)
+	Levels.return_to_main_menu()

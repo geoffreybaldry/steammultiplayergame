@@ -8,7 +8,7 @@ signal scene_loading_progress_updated(progress_percent: int)
 signal scene_loaded(scene_filepath: String)
 signal scene_unloaded
 
-var scene_filepath: String = ""
+var scene_filepath: String = ""			# e.g. "res://scenes/levels/test_level.tscn"
 var current_scene_name: String = ""
 var progress_value: float = 0.0:
 	set (value):
@@ -22,7 +22,7 @@ var progress_value: float = 0.0:
 
 func _ready() -> void:
 	# Connect Signals
-	GameState.game_state_changed.connect(_on_game_state_changed)
+	#GameState.game_state_changed.connect(_on_game_state_changed)
 	scene_loaded.connect(_on_scene_loaded)
 
 
@@ -51,18 +51,18 @@ func _process(_delta: float) -> void:
 
 
 # Watch for changes in game state, and react accordingly
-func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
-	match new_game_state:
-		GameState.GAME_STATES.MAIN_MENU:
-			# Unload any existing level scene
-			if current_scene_name:
-				# Destroy any objects in the current scene - Players, Enemies, Projectiles
-				# TBD - destroy objects
-				
-				# Remove the remaining scene
-				remove_current_scene()
-		GameState.GAME_STATES.SCENE_UNLOADING:
-			pass
+#func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
+	#match new_game_state:
+		#GameState.GAME_STATES.MAIN_MENU:
+			## Unload any existing level scene
+			#if current_scene_name:
+				## Destroy any objects in the current scene - Players, Enemies, Projectiles
+				## TBD - destroy objects
+				#
+				## Remove the remaining scene
+				#remove_current_scene()
+		#GameState.GAME_STATES.SCENE_UNLOADING:
+			#pass
 
 
 # When the server decides to start the game from a UI scene,
@@ -116,3 +116,20 @@ func remove_current_scene() -> void:
 	get_tree().current_scene.get_node("levels").get_node(current_scene_name).queue_free()
 	current_scene_name = ""
 	scene_unloaded.emit()
+	
+	
+func return_to_main_menu() -> void:
+	Log.pr("Returning to Main Menu")
+	
+	GameState.change_game_state(GameState.GAME_STATES.SCENE_UNLOADING)
+	
+	# Pause for a short time, so even if the load takes 0.01sec, the loading screen is visible
+	await get_tree().create_timer(0.75).timeout
+	
+	# Tell the current level to unload all its entities
+	# TBD
+	
+	# Remove the current level
+	remove_current_scene()
+	
+	GameState.change_game_state(GameState.GAME_STATES.MAIN_MENU)

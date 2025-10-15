@@ -40,22 +40,23 @@ var peer_id: int = 0:
 	get:
 		return peer_id
 
+
 signal server_started()							# Emitted when this peer starts as a server
 #signal networktime_client_synced(peer_id: int)	# Emitted when a client syncs its NetFox network time with the server
-signal host_server_disconnected         		# Emitted if we see the host server disconnect - bad news
+signal server_disconnected         				# Emitted if we see the host server disconnect - bad news
 signal peer_connected(peer_id: int)				# Emitted if a peer connects
 signal peer_disconnected(peer_id: int)			# Emitted if a peer disconnects so we can let the rest of the game know
 signal all_peers_loaded							# Emitted when all peers have loaded the chosen level
 signal peer_id_changed(peer_id: int)			# Emitted when our peer_id changes
 
 func _ready() -> void:
-	# Connect to multiplayer signals
+	# Connect to multiplayer signals - these are the Godot High-Level API signals
 	multiplayer.peer_connected.connect(_on_peer_connected)             # When this multiplayer_peer connects to a new peer
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)       # When this multiplayer_peer is disconnected from a peer
 	# Only emitted on Clients...
 	multiplayer.connected_to_server.connect(_on_connected_to_server)   # Connected to a server
 	multiplayer.connection_failed.connect(_on_connection_failed)       # Failed to connect to a server
-	multiplayer.server_disconnected.connect(_on_server_disconnected)   # When this client disconnects from a server
+	multiplayer.server_disconnected.connect(_on_server_disconnected)   # When this client disconnects from a server, or the server disappears
 
 	# Connect to server signal(s)
 	server_started.connect(_on_server_started)
@@ -112,13 +113,15 @@ func _on_connection_failed() -> void:
 	
 	
 func _on_server_disconnected() -> void:
-	Log.warn("_on_server_disconnected")
-	host_server_disconnected.emit()
+	Log.pr("_on_server_disconnected")
+	server_disconnected.emit()
 	Events.error_messages.error_message.emit("Host Server Disconnected from Network")
-	remove_multiplayer_peer()
+	
+	#remove_multiplayer_peer() # This is too severe - we need to climb down from this more gradually
+	#Levels.return_to_main_menu()
 
 
-# Not really used - probably should delete
+# Should use this as a way of deciding if clients are ready to start level?
 #func _on_networktime_client_sync(this_peer_id: int) -> void:
 	#Log.pr("Peer " + str(this_peer_id) + " synchronized its time to the server")
 	#networktime_client_synced.emit(this_peer_id)
