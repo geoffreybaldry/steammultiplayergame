@@ -1,5 +1,8 @@
 extends Node2D
 
+# Pre-loads
+var bullet_scene: PackedScene = preload("res://scenes/projectiles/bullet.tscn")
+
 # Temporary help in stopping players spawning on top of eachother
 const SPAWN_RANDOM: int = 25
 
@@ -8,12 +11,13 @@ const SPAWN_RANDOM: int = 25
 
 @onready var spawned_players: Node2D = $spawned_players
 @onready var spawned_enemies: Node2D = $spawned_enemies
+@onready var spawned_projectiles: Node2D = $spawned_projectiles
 
 #signal level_entities_unloaded
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	# Connect to signals
+	# Connect to Network signals
 	if multiplayer.is_server():
 		#Log.warn("I'm the server")
 		Network.all_peers_loaded.connect(_on_all_peers_loaded)
@@ -21,12 +25,26 @@ func _ready() -> void:
 	else:
 		#Log.warn("I'm a client")
 		Network.server_disconnected.connect(_on_server_disconnected)
-		
+	
+	# Connect to game signals
+	Events.game_events.player_fired.connect(_on_player_fired)
+	
 	# Let the Network Server know that we have loaded the level
 	Network.player_loaded.rpc_id(1)
 	
 	#GameState.game_state_changed.connect(_on_game_state_changed)
 
+
+func _on_player_fired(peer_id: int, projectile_position: Vector2, projectile_rotation: float) -> void:
+		var bullet_instance: Bullet = bullet_scene.instantiate() as Bullet
+		#get_tree().current_scene.get_node("projectiles").get_node("spawned_projectiles").add_child(bullet_instance, true)
+		#get_tree().current_scene.get_node("levels").get_node("current_level").get_node("projectiles").get_node("spawned_projectiles").add_child(bullet_instance, true)
+		spawned_projectiles.add_child(bullet_instance, true)
+		
+		bullet_instance.position = projectile_position
+		bullet_instance.rotation = projectile_rotation
+		bullet_instance.peer_id = peer_id
+		
 
 #func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
 	##Log.pr("_on_game_state_changed : ", old_game_state, new_game_state)

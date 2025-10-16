@@ -58,7 +58,7 @@ func _rollback_tick(_delta, _tick, _is_fresh) -> void:
 	velocity /= NetworkTime.physics_factor
 	
 	weapon_pivot.look_at(position + player_input.aim_direction)
-	#check_fired()
+	check_fired()
 
 func _process(_delta: float) -> void:
 	# Temporary - used to show the player_id, and the id of the authority of the player node
@@ -78,12 +78,14 @@ func apply_animation() -> void:
 		animation_player.play("walk")
 
 
-#func check_fired() -> void:
-	#if player_input.just_fired:
+func check_fired() -> void:
+	if player_input.just_fired:
+		Events.game_events.player_fired.emit(peer_id, global_position, weapon_pivot.rotation)
+		
 		#var bullet_instance: Bullet = bullet_scene.instantiate() as Bullet
 		##get_tree().current_scene.get_node("projectiles").get_node("spawned_projectiles").add_child(bullet_instance, true)
 		#get_tree().current_scene.get_node("levels").get_node("current_level").get_node("projectiles").get_node("spawned_projectiles").add_child(bullet_instance, true)
-#
+		#
 		#bullet_instance.position = position
 		#bullet_instance.rotation = weapon_pivot.rotation
 		#bullet_instance.peer_id = peer_id

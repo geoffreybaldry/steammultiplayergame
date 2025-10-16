@@ -1279,3 +1279,7 @@ _spawnable_scenes = PackedStringArray("uid://db5srd2v6csoo")
 spawn_path = NodePath("..")
 
 [node name="spawned_projectiles" type="Node2D" parent="."]
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="spawned_projectiles"]
+_spawnable_scenes = PackedStringArray("uid://3inh0u4giphy")
+spawn_path = NodePath("..")

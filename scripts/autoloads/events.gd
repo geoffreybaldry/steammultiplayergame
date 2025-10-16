@@ -15,15 +15,21 @@ extends Node
 ## mostly because it looks cool :-|, but also creates some 
 ## separation/classification.
 
-var mplayer = MultiplayerEvents.new()
+var mplayer_events = MultiplayerEvents.new()
 var error_messages = ErrorMessages.new()
+var game_events = GameEvents.new()
 
-# Use it like Events.mplayer.player_joined.connect(id, name)
+# Use it like Events.mplayer_events.player_joined.connect(id, name)
 class MultiplayerEvents:
 	@warning_ignore("unused_signal")
-	signal player_joined(player_id: int, player_display_name: String)
+	signal player_joined(peer_id: int, player_display_name: String)
 	
 	
 class ErrorMessages:
 	@warning_ignore("unused_signal")
 	signal error_message(message: String, duration: float)
+	
+	
+class GameEvents:
+	@warning_ignore("unused_signal")
+	signal player_fired(peer_id: int, projectile_position: Vector2, projectile_rotation: float)
