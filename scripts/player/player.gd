@@ -10,9 +10,6 @@ extends CharacterBody2D
 ## The player object has a RollbackSynchronizer, which allows certain 'state'
 ## to be lag-compensated, such as position.
 
-# Pre-loads
-var projectile_bullet_scene: PackedScene = preload("res://scenes/projectiles/projectile_bullet.tscn")
-
 # Constants
 const SPEED = 30.0
 const ACCELERATION = 300.0
@@ -63,12 +60,11 @@ func _rollback_tick(_delta, _tick, _is_fresh) -> void:
 func _process(_delta: float) -> void:
 	# Temporary - used to show the player_id, and the id of the authority of the player node
 	# Helps with debugging who is in charge of which player nodes.
-	peer_id_label.text = "id : " + str(peer_id)
-	peer_authority_id_label.text = "auth_id : " + str(get_multiplayer_authority())
-	input_authority_id_label.text = "input_auth_id : " + str(player_input.get_multiplayer_authority())
+	#peer_id_label.text = "id : " + str(peer_id)
+	#peer_authority_id_label.text = "auth_id : " + str(get_multiplayer_authority())
+	#input_authority_id_label.text = "input_auth_id : " + str(player_input.get_multiplayer_authority())
 	
 	apply_animation()
-	#check_fired()
 
 # Play the appropriate animation based on the player's velocity
 func apply_animation() -> void:
@@ -81,13 +77,3 @@ func apply_animation() -> void:
 func check_fired() -> void:
 	if player_input.just_fired:
 		Events.game_events.player_fired.emit(peer_id, global_position, weapon_pivot.rotation)
-		
-		#var bullet_instance: Bullet = bullet_scene.instantiate() as Bullet
-		##get_tree().current_scene.get_node("projectiles").get_node("spawned_projectiles").add_child(bullet_instance, true)
-		#get_tree().current_scene.get_node("levels").get_node("current_level").get_node("projectiles").get_node("spawned_projectiles").add_child(bullet_instance, true)
-		#
-		#bullet_instance.position = position
-		#bullet_instance.rotation = weapon_pivot.rotation
-		#bullet_instance.peer_id = peer_id
-		#
-		#player_input.just_fired = false
