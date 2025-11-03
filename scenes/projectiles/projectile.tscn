@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://be4llp00irwma"]
+
+[ext_resource type="Script" uid="uid://dyu3biicnlily" path="res://scripts/projectiles/projectile.gd" id="1_dtkph"]
+
+[node name="projectile" type="Area2D"]
+script = ExtResource("1_dtkph")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+
+[node name="Timer" type="Timer" parent="."]
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
