@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=4 uid="uid://cjcrlrdi47dw3"]
+[gd_scene load_steps=9 format=4 uid="uid://cjcrlrdi47dw3"]
 
 [ext_resource type="Script" uid="uid://do00viek7ibq0" path="res://scripts/levels/test_level.gd" id="1_fr1um"]
 [ext_resource type="Texture2D" uid="uid://c1sb1gyasxnjo" path="res://assets/sprites/1-Bit-8x8.png" id="1_jbqir"]
 [ext_resource type="PackedScene" uid="uid://cdg0vfkaa0w3v" path="res://scenes/player/player.tscn" id="2_6xh4u"]
 [ext_resource type="Texture2D" uid="uid://bixw1tij30ea2" path="res://assets/sprites/2d_lights_and_shadows_neutral_point_light.png" id="2_fr1um"]
 [ext_resource type="PackedScene" uid="uid://db5srd2v6csoo" path="res://scenes/enemies/enemy_inputless_rbs.tscn" id="3_cyt5c"]
+[ext_resource type="PackedScene" uid="uid://dntcnn5dmt28f" path="res://scenes/ui/latency_label.tscn" id="6_6xh4u"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yautc"]
 texture = ExtResource("1_jbqir")
@@ -1283,3 +1284,7 @@ spawn_path = NodePath("..")
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="spawned_projectiles"]
 _spawnable_scenes = PackedStringArray("uid://3inh0u4giphy")
 spawn_path = NodePath("..")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="latency_label" parent="CanvasLayer" instance=ExtResource("6_6xh4u")]
