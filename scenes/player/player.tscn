@@ -1,7 +1,6 @@
 [gd_scene load_steps=16 format=3 uid="uid://cdg0vfkaa0w3v"]
 
 [ext_resource type="Script" uid="uid://g1v38iwbwey" path="res://scripts/player/player.gd" id="1_8afob"]
-[ext_resource type="PackedScene" uid="uid://3inh0u4giphy" path="res://scenes/projectiles/bullet.tscn" id="2_5gtgg"]
 [ext_resource type="Texture2D" uid="uid://bv0netwfa0sdd" path="res://assets/sprites/4_characters.png" id="2_dovo2"]
 [ext_resource type="Script" uid="uid://dlhab88x572jk" path="res://scripts/player/player_input.gd" id="3_gmlin"]
 [ext_resource type="FontFile" uid="uid://c1l47aekqn13v" path="res://assets/fonts/m3x6.ttf" id="4_lvxji"]
@@ -12,6 +11,9 @@
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8afob"]
 radius = 4.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_qek5x"]
+radius = 3.0
 
 [sub_resource type="Animation" id="Animation_p47bc"]
 length = 0.001
@@ -78,10 +80,16 @@ collision_layer = 8
 collision_mask = 13
 script = ExtResource("1_8afob")
 player_input = NodePath("player_input")
-bullet_scene = ExtResource("2_5gtgg")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_8afob")
+
+[node name="HitBox" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox"]
+shape = SubResource("CircleShape2D_qek5x")
 
 [node name="visual" type="Node2D" parent="."]
 
@@ -130,6 +138,10 @@ autoplay = "idle"
 position = Vector2(6, 0)
 texture = ExtResource("6_75vfm")
 
+[node name="PointLight2D" type="PointLight2D" parent="visual"]
+scale = Vector2(0.179688, 0.203125)
+texture = ExtResource("5_p47bc")
+
 [node name="player_input" type="Node2D" parent="."]
 script = ExtResource("3_gmlin")
 
@@ -149,7 +161,3 @@ script = ExtResource("6_qek5x")
 root = NodePath("..")
 properties = Array[String]([":velocity", ":global_transform", "visual/weapon_pivot:rotation"])
 metadata/_custom_type_script = "uid://dour8fehaaugp"
-
-[node name="PointLight2D" type="PointLight2D" parent="."]
-scale = Vector2(0.265625, 0.304688)
-texture = ExtResource("5_p47bc")

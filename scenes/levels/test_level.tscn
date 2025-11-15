@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://c1sb1gyasxnjo" path="res://assets/sprites/1-Bit-8x8.png" id="1_jbqir"]
 [ext_resource type="PackedScene" uid="uid://cdg0vfkaa0w3v" path="res://scenes/player/player.tscn" id="2_6xh4u"]
 [ext_resource type="Texture2D" uid="uid://bixw1tij30ea2" path="res://assets/sprites/2d_lights_and_shadows_neutral_point_light.png" id="2_fr1um"]
-[ext_resource type="PackedScene" uid="uid://db5srd2v6csoo" path="res://scenes/enemies/enemy_inputless_rbs.tscn" id="3_cyt5c"]
+[ext_resource type="PackedScene" uid="uid://c7njnx2d0nquw" path="res://scenes/enemies/skeleton.tscn" id="3_6xh4u"]
 [ext_resource type="PackedScene" uid="uid://dntcnn5dmt28f" path="res://scenes/ui/latency_label.tscn" id="6_6xh4u"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yautc"]
@@ -1240,7 +1240,7 @@ sources/0 = SubResource("TileSetAtlasSource_yautc")
 [node name="test_level" type="Node2D"]
 script = ExtResource("1_fr1um")
 player_scene = ExtResource("2_6xh4u")
-enemy_skeleton_scene = ExtResource("3_cyt5c")
+enemy_skeleton_scene = ExtResource("3_6xh4u")
 
 [node name="environment" type="Node2D" parent="."]
 
@@ -1276,14 +1276,10 @@ spawn_path = NodePath("..")
 [node name="spawned_enemies" type="Node2D" parent="."]
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="spawned_enemies"]
-_spawnable_scenes = PackedStringArray("uid://db5srd2v6csoo")
+_spawnable_scenes = PackedStringArray("uid://c7njnx2d0nquw")
 spawn_path = NodePath("..")
 
 [node name="spawned_projectiles" type="Node2D" parent="."]
-
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="spawned_projectiles"]
-_spawnable_scenes = PackedStringArray("uid://3inh0u4giphy")
-spawn_path = NodePath("..")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 

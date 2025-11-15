@@ -13,17 +13,14 @@ const SPAWN_RANDOM: int = 25
 @onready var spawned_enemies: Node2D = $spawned_enemies
 @onready var spawned_projectiles: Node2D = $spawned_projectiles
 
-#signal level_entities_unloaded
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	# Connect to Network signals
 	if multiplayer.is_server():
-		#Log.warn("I'm the server")
 		Network.all_peers_loaded.connect(_on_all_peers_loaded)
 		Network.peer_disconnected.connect(_on_peer_disconnected)
 	else:
-		#Log.warn("I'm a client")
 		Network.server_disconnected.connect(_on_server_disconnected)
 	
 	# Connect to game signals
@@ -31,27 +28,28 @@ func _ready() -> void:
 	
 	# Let the Network Server know that we have loaded the level
 	Network.player_loaded.rpc_id(1)
-	
-	#GameState.game_state_changed.connect(_on_game_state_changed)
+
 
 
 func _on_player_fired(peer_id: int, projectile_position: Vector2, projectile_rotation: float) -> void:
-		var bullet_instance: Bullet = bullet_scene.instantiate() as Bullet
-		#get_tree().current_scene.get_node("projectiles").get_node("spawned_projectiles").add_child(bullet_instance, true)
-		#get_tree().current_scene.get_node("levels").get_node("current_level").get_node("projectiles").get_node("spawned_projectiles").add_child(bullet_instance, true)
-		spawned_projectiles.add_child(bullet_instance, true)
-		
-		bullet_instance.position = projectile_position
-		bullet_instance.rotation = projectile_rotation
-		bullet_instance.peer_id = peer_id
+		spawn_projectile.rpc(peer_id, projectile_position, projectile_rotation)
 		
 
-#func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
-	##Log.pr("_on_game_state_changed : ", old_game_state, new_game_state)
-	#
-	#match new_game_state:
-		#GameState.GAME_STATES.SCENE_UNLOADING:
-			#unload_level_entities()
+@rpc("any_peer", "call_local", "reliable")
+func spawn_projectile(peer_id, projectile_global_position: Vector2, projectile_rotation: float) -> void:
+	Events.error_messages.error_message.emit("Spawned for peer " + str(peer_id), 0.5)
+	var bullet_instance: Bullet = bullet_scene.instantiate() as Bullet
+	
+	bullet_instance.set_multiplayer_authority(peer_id)
+	
+	bullet_instance.peer_id = peer_id
+	bullet_instance.global_position = projectile_global_position
+	bullet_instance.rotation = projectile_rotation
+	
+	spawned_projectiles.add_child(bullet_instance, true)
+	
+	
+
 
 
 # This function is called when all the peers have successfully loaded the
@@ -82,23 +80,6 @@ func _on_server_disconnected() -> void:
 	Levels.return_to_main_menu()
 
 
-# Used to gracefully remove any networked entities before unloadng the level.
-#func unload_level_entities() -> void:
-	#Log.pr("unload_level_entities()")
-	#
-	## Despawn the player(s)
-	#for player in spawned_players.get_children():
-		#player.queue_free()
-	#
-	## Despawn the enemy(ies)
-	#for enemy in spawned_enemies.get_children():
-		#enemy.queue_free()
-		#
-	## Despawn projectile(s)
-	## TBD
-	
-	#level_entities_unloaded.emit()
-	
 # This function only happens on the server - the MultiplayerSpawner replicates 
 # any spawned player nodes on all the peer clients.
 func spawn_player(this_peer_id: int) -> void:
@@ -124,7 +105,5 @@ func spawn_player(this_peer_id: int) -> void:
 
 func spawn_enemy() -> void:
 	Log.pr(str(get_tree()) + "Spawning enemy")
-	
 	var enemy_skeleton_instance = enemy_skeleton_scene.instantiate()
-	
 	spawned_enemies.add_child(enemy_skeleton_instance, true)

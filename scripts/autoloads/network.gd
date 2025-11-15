@@ -209,7 +209,7 @@ func remove_multiplayer_peer() -> void:
 ##########################
 ########## RPCs ##########
 ##########################
-@rpc("call_local", "any_peer")
+@rpc("any_peer", "call_local")
 func register_player(this_player_info) -> void:
 	Log.pr("Registering player with name " + this_player_info['name'])
 	var new_player_id = multiplayer.get_remote_sender_id()

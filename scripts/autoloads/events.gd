@@ -32,4 +32,4 @@ class ErrorMessages:
 	
 class GameEvents:
 	@warning_ignore("unused_signal")
-	signal player_fired(peer_id: int, projectile_position: Vector2, projectile_rotation: float)
+	signal player_fired(peer_id: int, projectile_global_position: Vector2, projectile_rotation: float)

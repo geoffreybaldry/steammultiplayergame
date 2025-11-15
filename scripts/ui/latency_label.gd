@@ -2,7 +2,7 @@ extends Label
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	text = "Time: %.2f at tick #%d, clock at %.2f%%" % [NetworkTime.time, NetworkTime.tick, NetworkTime.clock_stretch_factor * 100.]
 	#text += "\nClock offset: %.2fms, Remote offset: %.2fms" % [NetworkTime.clock_offset * 1000., NetworkTime.remote_clock_offset * 1000.]
 	text += "\nRemote RTT: %.2fms +/- %.2fms" % [NetworkTimeSynchronizer.rtt * 1000., NetworkTimeSynchronizer.rtt_jitter * 1000.]

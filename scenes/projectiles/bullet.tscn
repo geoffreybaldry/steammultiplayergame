@@ -1,43 +1,42 @@
-[gd_scene load_steps=7 format=3 uid="uid://3inh0u4giphy"]
+[gd_scene load_steps=7 format=3 uid="uid://dut7ss1ful8un"]
 
-[ext_resource type="Script" uid="uid://ttnpfghyctg0" path="res://scripts/projectiles/bullet.gd" id="1_48g2p"]
+[ext_resource type="Script" uid="uid://btroiwlncosvf" path="res://scripts/projectiles/bullet.gd" id="1_48g2p"]
+[ext_resource type="PackedScene" uid="uid://be4llp00irwma" path="res://scenes/projectiles/projectile.tscn" id="1_k5ji7"]
 [ext_resource type="Texture2D" uid="uid://b4n3kqck5uw0c" path="res://assets/sprites/projectile_bullet_yellow.png" id="1_yvfy2"]
-[ext_resource type="Texture2D" uid="uid://bixw1tij30ea2" path="res://assets/sprites/2d_lights_and_shadows_neutral_point_light.png" id="3_k5ji7"]
-[ext_resource type="Script" uid="uid://dour8fehaaugp" path="res://addons/netfox/tick-interpolator.gd" id="4_i2bxc"]
+[ext_resource type="AudioStream" uid="uid://cm0qps5muchqr" path="res://assets/audio/effects/weapon/mixkit-short-laser-gun-shot-1670.wav" id="4_i2bxc"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_48g2p"]
-size = Vector2(2, 1)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_k5ji7"]
+size = Vector2(4, 2)
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_k5ji7"]
-properties/0/path = NodePath(".:peer_id")
-properties/0/spawn = true
-properties/0/replication_mode = 0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_i2bxc"]
+size = Vector2(4, 2)
 
-[node name="bullet" type="Area2D"]
-collision_layer = 2
-collision_mask = 33
+[node name="bullet" instance=ExtResource("1_k5ji7")]
+collision_mask = 1
 script = ExtResource("1_48g2p")
+speed = 100
+damage = 1
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_48g2p")
+[node name="CollisionShape2D" parent="." index="0"]
+shape = SubResource("RectangleShape2D_k5ji7")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" parent="." index="1"]
 texture = ExtResource("1_yvfy2")
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_k5ji7")
-
-[node name="Timer" type="Timer" parent="."]
+[node name="Timer" parent="." index="2"]
 wait_time = 3.0
 one_shot = true
 autostart = true
 
-[node name="PointLight2D" type="PointLight2D" parent="."]
-scale = Vector2(0.0546875, 0.0546875)
-texture = ExtResource("3_k5ji7")
+[node name="AudioStreamPlayer2D" parent="." index="3"]
+stream = ExtResource("4_i2bxc")
 
-[node name="TickInterpolator" type="Node" parent="." node_paths=PackedStringArray("root")]
-script = ExtResource("4_i2bxc")
-root = NodePath("..")
-properties = Array[String]([":global_transform"])
-metadata/_custom_type_script = "uid://dour8fehaaugp"
+[node name="HurtBox" parent="." index="4"]
+collision_mask = 32
+
+[node name="CollisionShape2D" parent="HurtBox" index="0"]
+shape = SubResource("RectangleShape2D_i2bxc")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="area_entered" from="HurtBox" to="." method="_on_hurt_box_area_entered"]

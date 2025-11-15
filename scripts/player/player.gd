@@ -20,8 +20,6 @@ const DECELERATION = 300.0
 # This peer_id gets synchronized by a MultiplayerSynchronizer, only on change
 @export var peer_id: int = -1
 
-@export var bullet_scene: PackedScene
-
 @onready var rollback_synchronizer: RollbackSynchronizer = $RollbackSynchronizer
 @onready var peer_id_label: Label = $visual/peer_id_label
 @onready var peer_authority_id_label: Label = $visual/peer_authority_id_label
@@ -34,7 +32,7 @@ func _ready() -> void:
 	# be set.
 	await get_tree().process_frame
 	
-	# Ensure that the server/host is the autohority over the player node
+	# Ensure that the server/host is the authority over the player node
 	set_multiplayer_authority(1)
 	
 	# Grant the particular peer_id authority over this player's input node.
@@ -55,7 +53,7 @@ func _rollback_tick(_delta, _tick, _is_fresh) -> void:
 	velocity /= NetworkTime.physics_factor
 	
 	weapon_pivot.look_at(position + player_input.aim_direction)
-	check_fired()
+	
 
 func _process(_delta: float) -> void:
 	# Temporary - used to show the player_id, and the id of the authority of the player node
@@ -65,6 +63,7 @@ func _process(_delta: float) -> void:
 	#input_authority_id_label.text = "input_auth_id : " + str(player_input.get_multiplayer_authority())
 	
 	apply_animation()
+	check_fired()
 
 # Play the appropriate animation based on the player's velocity
 func apply_animation() -> void:
@@ -77,3 +76,5 @@ func apply_animation() -> void:
 func check_fired() -> void:
 	if player_input.just_fired:
 		Events.game_events.player_fired.emit(peer_id, global_position, weapon_pivot.rotation)
+		
+		player_input.just_fired = false
