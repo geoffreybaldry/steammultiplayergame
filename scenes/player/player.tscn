@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://cdg0vfkaa0w3v"]
+[gd_scene load_steps=17 format=3 uid="uid://cdg0vfkaa0w3v"]
 
 [ext_resource type="Script" uid="uid://g1v38iwbwey" path="res://scripts/player/player.gd" id="1_8afob"]
 [ext_resource type="Texture2D" uid="uid://bv0netwfa0sdd" path="res://assets/sprites/4_characters.png" id="2_dovo2"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://d350u8evihs1u" path="res://addons/netfox/rollback/rollback-synchronizer.gd" id="5_qek5x"]
 [ext_resource type="Texture2D" uid="uid://8jbiyn7wodcq" path="res://assets/sprites/weapon_pointer.png" id="6_75vfm"]
 [ext_resource type="Script" uid="uid://dour8fehaaugp" path="res://addons/netfox/tick-interpolator.gd" id="6_qek5x"]
+[ext_resource type="PackedScene" uid="uid://cmbfgg8vtwhrg" path="res://scenes/weapons/player_weapon.tscn" id="7_5gtgg"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8afob"]
 radius = 4.0
@@ -75,11 +76,10 @@ properties/0/path = NodePath(".:peer_id")
 properties/0/spawn = true
 properties/0/replication_mode = 0
 
-[node name="player" type="CharacterBody2D" node_paths=PackedStringArray("player_input") groups=["Players"]]
+[node name="player" type="CharacterBody2D" groups=["Players"]]
 collision_layer = 8
 collision_mask = 13
 script = ExtResource("1_8afob")
-player_input = NodePath("player_input")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_8afob")
@@ -132,18 +132,21 @@ libraries = {
 }
 autoplay = "idle"
 
-[node name="weapon_pivot" type="Node2D" parent="visual"]
-
-[node name="Sprite2D" type="Sprite2D" parent="visual/weapon_pivot"]
-position = Vector2(6, 0)
-texture = ExtResource("6_75vfm")
-
 [node name="PointLight2D" type="PointLight2D" parent="visual"]
+visible = false
 scale = Vector2(0.179688, 0.203125)
 texture = ExtResource("5_p47bc")
 
+[node name="weapon_pivot" type="Node2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="weapon_pivot"]
+position = Vector2(6, 0)
+texture = ExtResource("6_75vfm")
+
 [node name="player_input" type="Node2D" parent="."]
 script = ExtResource("3_gmlin")
+
+[node name="player_weapon" parent="." instance=ExtResource("7_5gtgg")]
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_0owmy")
@@ -151,13 +154,13 @@ replication_config = SubResource("SceneReplicationConfig_0owmy")
 [node name="RollbackSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("5_qek5x")
 root = NodePath("..")
-state_properties = Array[String]([":global_transform", ":velocity", "visual/weapon_pivot:rotation"])
-input_properties = Array[String](["player_input:input_direction", "player_input:aim_direction", "player_input:just_fired"])
+state_properties = Array[String]([":global_transform", ":velocity", "weapon_pivot:rotation"])
+input_properties = Array[String](["player_input:input_direction", "player_input:aim_direction"])
 enable_input_broadcast = false
 metadata/_custom_type_script = "uid://d350u8evihs1u"
 
 [node name="TickInterpolator" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("6_qek5x")
 root = NodePath("..")
-properties = Array[String]([":velocity", ":global_transform", "visual/weapon_pivot:rotation"])
+properties = Array[String]([":velocity", ":global_transform", "weapon_pivot:rotation"])
 metadata/_custom_type_script = "uid://dour8fehaaugp"

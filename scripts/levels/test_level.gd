@@ -24,25 +24,27 @@ func _ready() -> void:
 		Network.server_disconnected.connect(_on_server_disconnected)
 	
 	# Connect to game signals
-	Events.game_events.player_fired.connect(_on_player_fired)
+	#Events.game_events.player_fired.connect(_on_player_fired)
 	
 	# Let the Network Server know that we have loaded the level
 	Network.player_loaded.rpc_id(1)
 
 
 
-func _on_player_fired(peer_id: int, projectile_position: Vector2, projectile_rotation: float) -> void:
-		spawn_projectile.rpc(peer_id, projectile_position, projectile_rotation)
+#func _on_player_fired(peer_id: int, projectile_position: Vector2, projectile_rotation: float) -> void:
+	#pass
+	#Events.error_messages.error_message.emit("_on_player_fired " + str(peer_id), 1.0)
+	#spawn_projectile.rpc(peer_id, projectile_position, projectile_rotation)
 		
 
 @rpc("any_peer", "call_local", "reliable")
 func spawn_projectile(peer_id, projectile_global_position: Vector2, projectile_rotation: float) -> void:
-	Events.error_messages.error_message.emit("Spawned for peer " + str(peer_id), 0.5)
+	#Events.error_messages.error_message.emit("Spawned for peer " + str(peer_id), 1.0)
 	var bullet_instance: Bullet = bullet_scene.instantiate() as Bullet
 	
 	bullet_instance.set_multiplayer_authority(peer_id)
 	
-	bullet_instance.peer_id = peer_id
+	bullet_instance.fired_by = peer_id
 	bullet_instance.global_position = projectile_global_position
 	bullet_instance.rotation = projectile_rotation
 	

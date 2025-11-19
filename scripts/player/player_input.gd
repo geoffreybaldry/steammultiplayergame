@@ -35,6 +35,9 @@ func _ready() -> void:
 	#sample_count += 1
 	
 func _process(_delta: float) -> void:
+	# Only allow this player's authority to collect input
+	if not is_multiplayer_authority(): return
+	
 	# Input.get_vector() provides a Vector2 of maximum length 1 unit - perfect
 	# for use in directions of players.
 	input_direction_buf += Focus.input_get_vector("move_left", "move_right", "move_up", "move_down")
@@ -47,12 +50,10 @@ func _process(_delta: float) -> void:
 
 func _gather():
 	# Don't run if this node is in the process of being freed
-	if not is_inside_tree():
-		return
+	if not is_inside_tree(): return
 		
 	# Only allow this player's authority to collect input
-	if not is_multiplayer_authority():
-		return
+	if not is_multiplayer_authority(): return
 
 	# Average the buffered input
 	if sample_count > 0:
@@ -69,5 +70,8 @@ func _gather():
 	
 
 func _gather_always():
+	# Only allow this player's authority to collect input
+	if not is_multiplayer_authority(): return
+	
 	just_fired = just_fired_buf
 	just_fired_buf = false

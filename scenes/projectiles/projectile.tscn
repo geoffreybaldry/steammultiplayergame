@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://be4llp00irwma"]
+[gd_scene load_steps=3 format=3 uid="uid://be4llp00irwma"]
 
 [ext_resource type="Script" uid="uid://dyu3biicnlily" path="res://scripts/projectiles/projectile.gd" id="1_dtkph"]
+[ext_resource type="Script" uid="uid://dour8fehaaugp" path="res://addons/netfox/tick-interpolator.gd" id="2_wndne"]
 
 [node name="projectile" type="Area2D"]
 collision_layer = 0
@@ -20,3 +21,9 @@ collision_layer = 0
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox"]
+
+[node name="TickInterpolator" type="Node" parent="." node_paths=PackedStringArray("root")]
+script = ExtResource("2_wndne")
+root = NodePath("..")
+properties = Array[String]([":global_position"])
+metadata/_custom_type_script = "uid://dour8fehaaugp"

@@ -27,7 +27,7 @@ class_name Enemy
 	#]
 
 
-func _rollback_tick(delta, _tick, _is_fresh: bool):
+func _rollback_tick(_delta, _tick, _is_fresh: bool):
 	pass
 
 
