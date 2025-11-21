@@ -12,7 +12,7 @@ class_name PlayerWeapon
 
 var last_fire: int = -1
 
-static var _logger := _NetfoxLogger.new("fb", "BrawlerWeapon")
+#static var _logger := _NetfoxLogger.new("fb", "BrawlerWeapon")
 
 func _ready():
 	NetworkTime.on_tick.connect(_tick)
@@ -29,7 +29,7 @@ func _after_fire(projectile: Node2D):
 	#sound.play()
 
 	#_logger.trace("[%s] Ticking new bomb %d -> %d", [projectile_bullet.name, get_fired_tick(), NetworkTime.tick])
-	Log.pr("[%s] Ticking new bomb %d -> %d", [projectile_bullet.name, get_fired_tick(), NetworkTime.tick])
+	Log.pr("[%s] Ticking new projectile %d -> %d", [projectile_bullet.name, get_fired_tick(), NetworkTime.tick])
 
 	for t in range(get_fired_tick(), NetworkTime.tick):
 		if projectile_bullet.is_queued_for_deletion():
@@ -42,7 +42,7 @@ func _spawn() -> Node2D:
 	#projectile_bullet.global_transform = global_transform
 	projectile_bullet_instance.position = player.position
 	projectile_bullet_instance.rotation = weapon_pivot.rotation
-	#projectile_bullet_instance.fired_by = get_parent()
+	projectile_bullet_instance.fired_by = get_parent().peer_id
 
 	return projectile_bullet_instance
 

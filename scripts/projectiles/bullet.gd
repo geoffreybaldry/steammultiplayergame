@@ -8,22 +8,9 @@ func _ready() -> void:
 	audio_stream_player_2d.play()
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta: float) -> void:
-	#super(delta)
-	#
-#
-#func _physics_process(delta: float) -> void:
-	#super(delta)
-	#
-	#position += transform.x * speed * delta
-
-
 func _tick(delta, _t) -> void:
 	position += transform.x * speed * delta
-
-	# Skip collisions for a single tick, no more
-	#is_first_tick = false
+	
 	
 func _on_body_entered(_body: Node2D) -> void:
 	remove_projectile()

@@ -28,10 +28,11 @@ extends CharacterBody2D
 @onready var animation_player: AnimationPlayer = $visual/AnimationPlayer
 @onready var weapon_pivot: Node2D = $weapon_pivot
 
-
 var health: int = 100
 var death_tick: int = -1
 var did_respawn := false
+var respawn_tick: int = -1
+var respawn_position: Vector2
 
 func _ready() -> void:
 	# Take a frame to allow the network to synchronize, etc, and let peer_id
@@ -46,37 +47,51 @@ func _ready() -> void:
 	# Authority to the player_input node.
 	player_input.set_multiplayer_authority(peer_id)
 	
-	# Activate the Rollback Synchronizer's settings
-	rollback_synchronizer.process_settings()
+	# Activate the Rollback Synchronizer's settings - is this needed?
+	#rollback_synchronizer.process_settings()
 	
 	NetworkTime.on_tick.connect(_tick)
-	NetworkTime.after_tick_loop.connect(_after_tick_loop)
+	#NetworkTime.after_tick_loop.connect(_after_tick_loop)
 	
+	respawn_tick = NetworkTime.tick + 100 # Some time in the very near future
 	# Might need to set the camera appropriately to follow this player - TBD
+
 
 @warning_ignore("unused_parameter")
 func _tick(_dt:float, tick: int):
+	## Check for (re)spawn
+	#if tick == respawn_tick:
+		#if is_multiplayer_authority():
+			#global_position = respawn_position
+			#Log.pr("Teleporting " + str(peer_id) + " to global_position " + str(respawn_position))
+			#tick_interpolator.teleport()
+	
+	# Check health
 	if health <= 0:
 		Log.pr("Player died")
-	
-	#if player_input.just_fired and player_input.get_multiplayer_authority() == get_multiplayer_authority():
-	if player_input.just_fired:
-		Events.game_events.player_fired.emit(peer_id, global_position, weapon_pivot.rotation)
 
 
-func _after_tick_loop():
-	if did_respawn:
-		tick_interpolator.teleport()
+#func _after_tick_loop():
+	#if did_respawn:
+		#Log.pr(str(multiplayer.get_unique_id()) +  " teleporting")
+		#tick_interpolator.teleport()
 		
 		
 func _rollback_tick(_delta, tick, _is_fresh) -> void:
 	# Handle respawn
-	if tick == death_tick:
-		global_position = Vector2.ZERO
-		did_respawn = true
-	else:
-		did_respawn = false
+	#if tick == death_tick:
+		##global_position = Vector2.ZERO
+		#did_respawn = true
+	#else:
+		#did_respawn = false
 		
+	# Check for (re)spawn
+	if tick == respawn_tick:
+		if is_multiplayer_authority():
+			global_position = respawn_position
+			Log.pr("Teleporting " + str(peer_id) + " to global_position " + str(respawn_position))
+			tick_interpolator.teleport()
+	
 	velocity = player_input.input_direction * speed
 	velocity *= NetworkTime.physics_factor
 	move_and_slide()
@@ -93,7 +108,7 @@ func _process(_delta: float) -> void:
 	#input_authority_id_label.text = "input_auth_id : " + str(player_input.get_multiplayer_authority())
 	
 	apply_animation()
-	#check_fired()
+
 
 # Play the appropriate animation based on the player's velocity
 func apply_animation() -> void:
@@ -103,13 +118,7 @@ func apply_animation() -> void:
 		animation_player.play("walk")
 
 
-#func check_fired() -> void:
-	#if player_input.just_fired:
-		#Events.game_events.player_fired.emit(peer_id, global_position, weapon_pivot.rotation)
-		#
-		#player_input.just_fired = false
-
-
 func die()-> void:
-	pass
-	# Not yet implemented
+	#respawn_position = get_some_position()
+	death_tick = NetworkTime.tick
+	

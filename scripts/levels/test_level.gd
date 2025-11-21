@@ -11,8 +11,9 @@ const SPAWN_RANDOM: int = 25
 
 @onready var spawned_players: Node2D = $spawned_players
 @onready var spawned_enemies: Node2D = $spawned_enemies
-@onready var spawned_projectiles: Node2D = $spawned_projectiles
+#@onready var spawned_projectiles: Node2D = $spawned_projectiles
 
+var spawn_points: Array
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -23,35 +24,11 @@ func _ready() -> void:
 	else:
 		Network.server_disconnected.connect(_on_server_disconnected)
 	
-	# Connect to game signals
-	#Events.game_events.player_fired.connect(_on_player_fired)
-	
 	# Let the Network Server know that we have loaded the level
 	Network.player_loaded.rpc_id(1)
 
-
-
-#func _on_player_fired(peer_id: int, projectile_position: Vector2, projectile_rotation: float) -> void:
-	#pass
-	#Events.error_messages.error_message.emit("_on_player_fired " + str(peer_id), 1.0)
-	#spawn_projectile.rpc(peer_id, projectile_position, projectile_rotation)
-		
-
-@rpc("any_peer", "call_local", "reliable")
-func spawn_projectile(peer_id, projectile_global_position: Vector2, projectile_rotation: float) -> void:
-	#Events.error_messages.error_message.emit("Spawned for peer " + str(peer_id), 1.0)
-	var bullet_instance: Bullet = bullet_scene.instantiate() as Bullet
-	
-	bullet_instance.set_multiplayer_authority(peer_id)
-	
-	bullet_instance.fired_by = peer_id
-	bullet_instance.global_position = projectile_global_position
-	bullet_instance.rotation = projectile_rotation
-	
-	spawned_projectiles.add_child(bullet_instance, true)
-	
-	
-
+	# Find the level's spawn locations
+	spawn_points = get_node("spawn_points").get_children()
 
 
 # This function is called when all the peers have successfully loaded the
@@ -97,15 +74,22 @@ func spawn_player(this_peer_id: int) -> void:
 	
 	# Set the player's position to a random offset from an initial value - replace this with spawn pads later
 	var pos: Vector2 = Vector2.from_angle(randf() * 2 * PI)
-	player_instance.position = Vector2(50, 120) + Vector2(pos.x * SPAWN_RANDOM * randf(), pos.y * SPAWN_RANDOM * randf())
+	#player_instance.position = Vector2(50, 120) + Vector2(pos.x * SPAWN_RANDOM * randf(), pos.y * SPAWN_RANDOM * randf())
+	#player_instance.respawn_position = Vector2(50, 120) + Vector2(pos.x * SPAWN_RANDOM * randf(), pos.y * SPAWN_RANDOM * randf())
+	for spawn_point: SpawnPoint in spawn_points:
+		if spawn_point.is_available():
+			player_instance.respawn_position = spawn_point.global_position
 	
 	# Add the player instance to the scene tree, under the MultiplayerSpawner's spawn path.
 	# This causes the instance to also be spawned on all the client peers too.
 	# We add the 'true' argument to force readable names - required by MultiplayerSpawner.
 	spawned_players.add_child(player_instance, true)
 
+	# Wait a frame between spawning players to gie the spawn points a chance to register the player appearing
+	#await get_tree().process_frame
 
 func spawn_enemy() -> void:
 	Log.pr(str(get_tree()) + "Spawning enemy")
 	var enemy_skeleton_instance = enemy_skeleton_scene.instantiate()
+	enemy_skeleton_instance.global_position = Vector2(30, 30)
 	spawned_enemies.add_child(enemy_skeleton_instance, true)

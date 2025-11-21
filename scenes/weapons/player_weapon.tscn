@@ -6,3 +6,4 @@
 [node name="player_weapon" type="Node2D"]
 script = ExtResource("1_nqevj")
 projectile_scene = ExtResource("2_0nx0v")
+distance_threshold = 5.0

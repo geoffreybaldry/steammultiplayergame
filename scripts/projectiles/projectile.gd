@@ -8,7 +8,6 @@ class_name Projectile
 @onready var audio_stream_player_2d: AudioStreamPlayer2D = $AudioStreamPlayer2D
 
 var fired_by:int
-#var is_first_tick: bool = true
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -17,14 +16,6 @@ func _ready() -> void:
 
 func _tick(_delta, _t) -> void:
 	pass
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(_delta: float) -> void:
-	#pass
-#
-#
-#func _physics_process(_delta: float) -> void:
-	#pass
 
 
 func remove_projectile() -> void:
