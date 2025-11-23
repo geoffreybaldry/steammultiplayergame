@@ -11,9 +11,8 @@ const SPAWN_RANDOM: int = 25
 
 @onready var spawned_players: Node2D = $spawned_players
 @onready var spawned_enemies: Node2D = $spawned_enemies
-#@onready var spawned_projectiles: Node2D = $spawned_projectiles
 
-var spawn_points: Array
+var spawn_points: Array[Node]
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -27,16 +26,16 @@ func _ready() -> void:
 	# Let the Network Server know that we have loaded the level
 	Network.player_loaded.rpc_id(1)
 
-	# Find the level's spawn locations
-	spawn_points = get_node("spawn_points").get_children()
-
 
 # This function is called when all the peers have successfully loaded the
 # level - it creates the player objects on the server peer, and allows the
 # MultiplayerSpawner to then replicate them across the client peers.
 func _on_all_peers_loaded() -> void:
 	Log.pr(str(get_tree()) + "Spawning Players into Level...")
+	
 	for this_player in Network.players:
+		# Spread out the initial spawning, to give the spawn points time to recognize if they are occupied
+		await get_tree().create_timer(1.0).timeout
 		spawn_player(this_player)
 		
 	Log.pr(str(get_tree()) + "Spawning Enemies into Level...")
@@ -73,20 +72,14 @@ func spawn_player(this_peer_id: int) -> void:
 	player_instance.name = str(this_peer_id) 
 	
 	# Set the player's position to a random offset from an initial value - replace this with spawn pads later
-	var pos: Vector2 = Vector2.from_angle(randf() * 2 * PI)
+	#var pos: Vector2 = Vector2.from_angle(randf() * 2 * PI)
 	#player_instance.position = Vector2(50, 120) + Vector2(pos.x * SPAWN_RANDOM * randf(), pos.y * SPAWN_RANDOM * randf())
-	#player_instance.respawn_position = Vector2(50, 120) + Vector2(pos.x * SPAWN_RANDOM * randf(), pos.y * SPAWN_RANDOM * randf())
-	for spawn_point: SpawnPoint in spawn_points:
-		if spawn_point.is_available():
-			player_instance.respawn_position = spawn_point.global_position
 	
 	# Add the player instance to the scene tree, under the MultiplayerSpawner's spawn path.
 	# This causes the instance to also be spawned on all the client peers too.
 	# We add the 'true' argument to force readable names - required by MultiplayerSpawner.
 	spawned_players.add_child(player_instance, true)
 
-	# Wait a frame between spawning players to gie the spawn points a chance to register the player appearing
-	#await get_tree().process_frame
 
 func spawn_enemy() -> void:
 	Log.pr(str(get_tree()) + "Spawning enemy")

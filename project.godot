@@ -32,7 +32,7 @@ NetworkTimeSynchronizer="*res://addons/netfox/network-time-synchronizer.gd"
 NetworkRollback="*res://addons/netfox/rollback/network-rollback.gd"
 NetworkPerformance="*res://addons/netfox/network-performance.gd"
 NetworkEvents="*res://addons/netfox/network-events.gd"
-Projectiles="*res://scripts/autoloads/projectiles.gd"
+SpawnPoints="*res://scripts/autoloads/spawn_points.gd"
 
 [debug]
 

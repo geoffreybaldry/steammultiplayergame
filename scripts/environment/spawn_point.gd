@@ -1,7 +1,17 @@
 extends Area2D
 class_name SpawnPoint
 
+
+@onready var timer: Timer = $Timer
+
+var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var occupying_players: Array[String]
+
+func _ready() -> void:
+	_rng.randomize()
+	
+	# Let the spawn manager know we're here
+	SpawnPoints.register(self, generate_id())
 
 
 func is_available() -> bool:
@@ -11,7 +21,8 @@ func is_available() -> bool:
 func _on_body_entered(body: Node2D) -> void:
 	Log.pr("Spawn point " + self.name + " area entered by body : " + body.name)
 	
-	occupying_players.append(body.name)
+	if not occupying_players.has(body.name):
+		occupying_players.append(body.name)
 	
 
 func _on_body_exited(body: Node2D) -> void:
@@ -19,3 +30,14 @@ func _on_body_exited(body: Node2D) -> void:
 	
 	if occupying_players.has(body.name):
 		occupying_players.erase(body.name)
+
+
+func generate_id(length: int = 12, charset: String = "abcdefghijklmnopqrstuvwxyz0123456789") -> String:
+	var result = ""
+
+	# Generate a random ID
+	for i in range(length):
+		var idx = _rng.randi_range(0, charset.length() - 1)
+		result += charset[idx]
+
+	return result
