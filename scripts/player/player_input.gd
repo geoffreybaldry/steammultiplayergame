@@ -18,6 +18,9 @@ var sample_count: int = 0
 var just_fired: bool = false
 var just_fired_buf: bool = false
 
+var just_die: bool = false
+var just_die_buf: bool = false
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	NetworkTime.before_tick_loop.connect(_gather)
@@ -47,6 +50,8 @@ func _process(_delta: float) -> void:
 	if Focus.input_is_action_just_pressed("fire"):
 		just_fired_buf = true
 
+	if Focus.input_is_action_just_pressed("die"):
+		just_die_buf = true
 
 func _gather():
 	# Don't run if this node is in the process of being freed
@@ -75,3 +80,6 @@ func _gather_always():
 	
 	just_fired = just_fired_buf
 	just_fired_buf = false
+	
+	just_die = just_die_buf
+	just_die_buf = false

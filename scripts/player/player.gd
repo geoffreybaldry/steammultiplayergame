@@ -30,10 +30,11 @@ extends CharacterBody2D
 @onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
 
 var health: int = 100
-var death_tick: int = -1
+#var death_tick: int = -1
 var did_respawn := false
 var respawn_tick: int = -1
 var respawn_position: Vector2 = Vector2.ZERO
+var waiting_to_spawn = false
 
 func _ready() -> void:
 	# Take a frame to allow the network to synchronize, etc, and let peer_id
@@ -52,13 +53,13 @@ func _ready() -> void:
 	rollback_synchronizer.process_settings()
 	
 	NetworkTime.on_tick.connect(_tick)
-	#NetworkTime.after_tick_loop.connect(_after_tick_loop)
+	NetworkTime.after_tick_loop.connect(_after_tick_loop)
 	
 	respawn_tick = NetworkTime.tick + 10 # Some time in the very near future
-	respawn_position = SpawnPoints.get_free_spawn_point_position()
 	
-	# Start with collider off, so that players don't clash at Vector2(0,0)
-	disable()
+	# Start with collider off, so that players don't clash at Vector2.ZERO
+	#disable_player()
+	waiting_to_spawn = true
 
 	# Might need to set the camera appropriately to follow this player - TBD
 
@@ -67,22 +68,33 @@ func _tick(_dt:float, _tk: int):
 	# Check health
 	if health <= 0:
 		Log.pr("Player died")
+		
+	if player_input.just_die:
+		Log.pr(str(multiplayer.get_unique_id()) + " Dying")
+		die()
 
 
-#func _after_tick_loop():
-	#if did_respawn:
+func _after_tick_loop():
+	if did_respawn:
 		#Log.pr(str(multiplayer.get_unique_id()) +  " teleporting")
-		#tick_interpolator.teleport()
+		tick_interpolator.teleport()
+		#enable_player()
+		did_respawn = false
 		
 		
 func _rollback_tick(_delta, tick, _is_fresh) -> void:
 	# Check for (re)spawn
-	if tick == respawn_tick:
-		if is_multiplayer_authority():
+	if tick >= respawn_tick and waiting_to_spawn:
+		respawn_position = SpawnPoints.get_free_spawn_point_position()
+		if respawn_position:
 			global_position = respawn_position
-			Log.pr("Teleporting " + str(peer_id) + " to global_position " + str(respawn_position))
-			tick_interpolator.teleport()
-			enable()
+			waiting_to_spawn = false
+			did_respawn = true
+			#Log.pr("Teleporting " + str(peer_id) + " to global_position " + str(respawn_position))
+			#tick_interpolator.teleport()
+			#enable_player()
+		else:
+			Log.pr("Unable to find a respawn_position")
 	
 	velocity = player_input.input_direction * speed
 	velocity *= NetworkTime.physics_factor
@@ -112,13 +124,15 @@ func apply_animation() -> void:
 
 func die() -> void:
 	#respawn_position = get_some_position()
-	death_tick = NetworkTime.tick
+	#death_tick = NetworkTime.tick
+	respawn_tick = NetworkTime.tick + 20
+	waiting_to_spawn = true
 
 
-func enable() -> void:
+func enable_player() -> void:
 	collision_shape_2d.disabled = false
 	#visible = true
 	
-func disable() -> void:
+func disable_player() -> void:
 	collision_shape_2d.disabled = true
 	#visible = false

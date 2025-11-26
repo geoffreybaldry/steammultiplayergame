@@ -1,11 +1,11 @@
 extends Area2D
 class_name SpawnPoint
 
-
 @onready var timer: Timer = $Timer
 
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var occupying_players: Array[String]
+var just_selected: bool = false
 
 func _ready() -> void:
 	_rng.randomize()
@@ -14,19 +14,24 @@ func _ready() -> void:
 	SpawnPoints.register(self, generate_id())
 
 
+func select() -> void:
+	just_selected = true
+	timer.start()
+
+
 func is_available() -> bool:
-	return occupying_players.is_empty()
+	return occupying_players.is_empty() and not just_selected
 
 
 func _on_body_entered(body: Node2D) -> void:
-	Log.pr("Spawn point " + self.name + " area entered by body : " + body.name)
+	#Log.pr("Spawn point " + self.name + " area entered by body : " + body.name)
 	
 	if not occupying_players.has(body.name):
 		occupying_players.append(body.name)
 	
 
 func _on_body_exited(body: Node2D) -> void:
-	Log.pr("Spawn point " + self.name + " area exited by body : " + body.name)
+	#Log.pr("Spawn point " + self.name + " area exited by body : " + body.name)
 	
 	if occupying_players.has(body.name):
 		occupying_players.erase(body.name)
@@ -41,3 +46,7 @@ func generate_id(length: int = 12, charset: String = "abcdefghijklmnopqrstuvwxyz
 		result += charset[idx]
 
 	return result
+
+
+func _on_timer_timeout() -> void:
+	just_selected = false

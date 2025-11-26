@@ -1293,3 +1293,9 @@ position = Vector2(32, 112)
 
 [node name="spawn_point2" parent="spawn_points" instance=ExtResource("7_cyt5c")]
 position = Vector2(72, 112)
+
+[node name="spawn_point3" parent="spawn_points" instance=ExtResource("7_cyt5c")]
+position = Vector2(72, 128)
+
+[node name="spawn_point4" parent="spawn_points" instance=ExtResource("7_cyt5c")]
+position = Vector2(32, 128)

@@ -75,6 +75,9 @@ _data = {
 properties/0/path = NodePath(".:peer_id")
 properties/0/spawn = true
 properties/0/replication_mode = 2
+properties/1/path = NodePath(".:respawn_position")
+properties/1/spawn = true
+properties/1/replication_mode = 2
 
 [node name="player" type="CharacterBody2D" groups=["Players"]]
 collision_layer = 8
@@ -154,7 +157,7 @@ replication_config = SubResource("SceneReplicationConfig_0owmy")
 [node name="RollbackSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("5_qek5x")
 root = NodePath("..")
-state_properties = Array[String]([":global_position", ":velocity", "weapon_pivot:rotation"])
+state_properties = Array[String]([":global_position", ":velocity", "weapon_pivot:rotation", ":did_respawn"])
 input_properties = Array[String](["player_input:input_direction", "player_input:aim_direction"])
 enable_input_broadcast = false
 metadata/_custom_type_script = "uid://d350u8evihs1u"
@@ -162,5 +165,5 @@ metadata/_custom_type_script = "uid://d350u8evihs1u"
 [node name="TickInterpolator" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("6_qek5x")
 root = NodePath("..")
-properties = Array[String]([":global_position", ":velocity", "weapon_pivot:rotation"])
+properties = Array[String]([":global_position", "weapon_pivot:rotation"])
 metadata/_custom_type_script = "uid://dour8fehaaugp"
