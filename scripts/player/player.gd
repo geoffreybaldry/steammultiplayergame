@@ -75,51 +75,38 @@ func _tick(_dt:float, _tk: int):
 		Log.pr(str(multiplayer.get_unique_id()) + " Dying")
 		die()
 
+	apply_animation()
 
 func _after_tick_loop():
 	if did_respawn:
-		#Log.pr(str(multiplayer.get_unique_id()) +  " teleporting")
 		tick_interpolator.teleport()
-		#enable_player()
-		#did_respawn = false
 		
-		
+
 func _rollback_tick(_delta, tick, _is_fresh) -> void:
 	# Check for (re)spawn
-	#if tick >= respawn_tick and waiting_to_spawn:
-		#respawn_position = SpawnPoints.get_free_spawn_point_position()
-		#if respawn_position:
-			#global_position = respawn_position
-			#waiting_to_spawn = false
-			#did_respawn = true
-			##Log.pr("Teleporting " + str(peer_id) + " to global_position " + str(respawn_position))
-			##tick_interpolator.teleport()
-			##enable_player()
-		#else:
-			#Log.pr("Unable to find a respawn_position")
-	
 	if tick == death_tick:
 		global_position = respawn_position
 		did_respawn = true
 	else:
 		did_respawn = false
 	
+	# Calculate movement from velocity
 	velocity = player_input.input_direction * speed
 	velocity *= NetworkTime.physics_factor
 	move_and_slide()
 	velocity /= NetworkTime.physics_factor
 	
+	# Aim weapon
 	weapon_pivot.look_at(position + player_input.aim_direction)
 	
 
 func _process(_delta: float) -> void:
+	pass
 	# Temporary - used to show the player_id, and the id of the authority of the player node
 	# Helps with debugging who is in charge of which player nodes.
 	#peer_id_label.text = "id : " + str(peer_id)
 	#peer_authority_id_label.text = "auth_id : " + str(get_multiplayer_authority())
 	#input_authority_id_label.text = "input_auth_id : " + str(player_input.get_multiplayer_authority())
-	
-	apply_animation()
 
 
 # Play the appropriate animation based on the player's velocity
@@ -131,14 +118,13 @@ func apply_animation() -> void:
 
 
 func die() -> void:
+	# Only the authority can decide if a player died
 	if not is_multiplayer_authority():
 		return
-		
-	#respawn_position = get_some_position()
-		
+
+	# The recent death_tick is conveyed to the clients by the
+	# authority as a synchronized variable
 	death_tick = NetworkTime.tick
-	#respawn_tick = NetworkTime.tick + 20
-	#waiting_to_spawn = true
 
 
 func enable_player() -> void:
