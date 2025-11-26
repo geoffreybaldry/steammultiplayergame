@@ -33,6 +33,7 @@ NetworkRollback="*res://addons/netfox/rollback/network-rollback.gd"
 NetworkPerformance="*res://addons/netfox/network-performance.gd"
 NetworkEvents="*res://addons/netfox/network-events.gd"
 SpawnPoints="*res://scripts/autoloads/spawn_points.gd"
+PhantomCameraManager="*res://addons/phantom_camera/scripts/managers/phantom_camera_manager.gd"
 
 [debug]
 
@@ -49,7 +50,7 @@ window/stretch/scale_mode="integer"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/log/plugin.cfg", "res://addons/netfox.extras/plugin.cfg", "res://addons/netfox.internals/plugin.cfg", "res://addons/netfox/plugin.cfg")
+enabled=PackedStringArray("res://addons/log/plugin.cfg", "res://addons/netfox.extras/plugin.cfg", "res://addons/netfox.internals/plugin.cfg", "res://addons/netfox/plugin.cfg", "res://addons/phantom_camera/plugin.cfg")
 
 [input]
 
