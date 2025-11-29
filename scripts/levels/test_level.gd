@@ -71,7 +71,7 @@ func spawn_player(this_peer_id: int) -> void:
 	# Useful for debugging in the "remote" scene view, and also for later despawning if necessary
 	player_instance.name = str(this_peer_id) 
 	
-	# Set the player's position to a random offset from an initial value - replace this with spawn pads later
+	# Set the player's position to a random offst from an initial value - replace this with spawn pads later
 	#var pos: Vector2 = Vector2.from_angle(randf() * 2 * PI)
 	#player_instance.position = Vector2(50, 120) + Vector2(pos.x * SPAWN_RANDOM * randf(), pos.y * SPAWN_RANDOM * randf())
 	

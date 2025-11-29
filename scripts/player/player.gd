@@ -9,6 +9,8 @@ extends CharacterBody2D
 ## node, but still have the sever/host own the overall player object.
 ## The player object has a RollbackSynchronizer, which allows certain 'state'
 ## to be lag-compensated, such as position.
+## It also has a MultiplayerSynchronizer to allow some of the server's state
+## variables to br synchronized to the client, such as peer_id, etc.
 
 @export var speed = 30.0
 @export var acceleration = 300.0
@@ -36,6 +38,8 @@ var respawn_tick: int = -1
 var respawn_position: Vector2 = Vector2.ZERO
 var waiting_to_spawn = false
 
+var pcam: PhantomCamera2D
+
 func _ready() -> void:
 	# Take a frame to allow the network to synchronize, etc, and let peer_id
 	# be set.
@@ -54,16 +58,16 @@ func _ready() -> void:
 	
 	NetworkTime.on_tick.connect(_tick)
 	NetworkTime.after_tick_loop.connect(_after_tick_loop)
-	
-	#respawn_tick = NetworkTime.tick + 10 # Some time in the very near future
-	
-	# Start with collider off, so that players don't clash at Vector2.ZERO
-	#disable_player()
-	#waiting_to_spawn = true
 
 	respawn_position = SpawnPoints.get_free_spawn_point_position()
 
-	# Might need to set the camera appropriately to follow this player - TBD
+	# Get hold of the camera so it can track the player
+	#Log.pr("Curr scene " + str(get_tree().current_scene.name))
+	#pcam = get_tree().current_scene.find_child("PhantomCamera2D")
+	#Log.pr("Curr cam " + str(get_tree().current_scene.find_child("PhantomCamera2D")))
+	if player_input.is_multiplayer_authority():
+		pcam = get_tree().get_root().find_child("PhantomCamera2D", true, false)
+		pcam.set_follow_target(self)
 
 
 func _tick(_dt:float, _tk: int):
@@ -85,7 +89,8 @@ func _after_tick_loop():
 func _rollback_tick(_delta, tick, _is_fresh) -> void:
 	# Check for (re)spawn
 	if tick == death_tick:
-		global_position = respawn_position
+		#global_position = respawn_position
+		spawn_player()
 		did_respawn = true
 	else:
 		did_respawn = false
@@ -99,6 +104,10 @@ func _rollback_tick(_delta, tick, _is_fresh) -> void:
 	# Aim weapon
 	weapon_pivot.look_at(position + player_input.aim_direction)
 	
+
+func spawn_player() -> void:
+	global_position = respawn_position
+
 
 func _process(_delta: float) -> void:
 	pass
