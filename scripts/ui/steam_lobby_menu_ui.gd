@@ -350,7 +350,8 @@ func display_message(message: String) -> void:
 	
 
 func start_game() -> void:
-	Levels.goto_scene.rpc("res://scenes/levels/test_level.tscn")
+	#Levels.goto_scene.rpc("res://scenes/levels/test_level.tscn")
+	Levels.goto_next_scene()
 	
 	
 func join_game() -> void:

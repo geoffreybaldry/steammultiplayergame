@@ -24,6 +24,7 @@ GameState="*res://scripts/autoloads/game_state.gd"
 Steamworks="*res://scripts/autoloads/steamworks.gd"
 Network="*res://scripts/autoloads/network.gd"
 SaveLoad="*res://scripts/autoloads/save_load.gd"
+SpawnPoints="*res://scripts/autoloads/spawn_points.gd"
 Levels="*res://scripts/autoloads/levels.gd"
 WindowTiler="*res://addons/netfox.extras/window-tiler.gd"
 NetworkSimulator="*res://addons/netfox.extras/network-simulator.gd"
@@ -32,7 +33,6 @@ NetworkTimeSynchronizer="*res://addons/netfox/network-time-synchronizer.gd"
 NetworkRollback="*res://addons/netfox/rollback/network-rollback.gd"
 NetworkPerformance="*res://addons/netfox/network-performance.gd"
 NetworkEvents="*res://addons/netfox/network-events.gd"
-SpawnPoints="*res://scripts/autoloads/spawn_points.gd"
 PhantomCameraManager="*res://addons/phantom_camera/scripts/managers/phantom_camera_manager.gd"
 
 [debug]
@@ -41,8 +41,9 @@ file_logging/enable_file_logging=true
 
 [display]
 
-window/size/viewport_width=320
-window/size/viewport_height=180
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/size/resizable=false
 window/size/window_width_override=1280
 window/size/window_height_override=720
 window/stretch/mode="viewport"
@@ -132,6 +133,10 @@ die={
 [netfox]
 
 events/enabled=false
+
+[physics]
+
+common/physics_interpolation=true
 
 [rendering]
 

@@ -1,8 +1,9 @@
-[gd_scene load_steps=17 format=3 uid="uid://cdg0vfkaa0w3v"]
+[gd_scene load_steps=19 format=3 uid="uid://cdg0vfkaa0w3v"]
 
 [ext_resource type="Script" uid="uid://g1v38iwbwey" path="res://scripts/player/player.gd" id="1_8afob"]
-[ext_resource type="Texture2D" uid="uid://bv0netwfa0sdd" path="res://assets/sprites/4_characters.png" id="2_dovo2"]
+[ext_resource type="Texture2D" uid="uid://cr63fvns0bj6v" path="res://assets/sprite/players.png" id="2_5gtgg"]
 [ext_resource type="Script" uid="uid://dlhab88x572jk" path="res://scripts/player/player_input.gd" id="3_gmlin"]
+[ext_resource type="AnimationLibrary" uid="uid://n1n580g3sb2p" path="res://animations/player/player_animations.res" id="4_h17s1"]
 [ext_resource type="FontFile" uid="uid://c1l47aekqn13v" path="res://assets/fonts/m3x6.ttf" id="4_lvxji"]
 [ext_resource type="Texture2D" uid="uid://bixw1tij30ea2" path="res://assets/sprites/2d_lights_and_shadows_neutral_point_light.png" id="5_p47bc"]
 [ext_resource type="Script" uid="uid://d350u8evihs1u" path="res://addons/netfox/rollback/rollback-synchronizer.gd" id="5_qek5x"]
@@ -64,10 +65,27 @@ tracks/0/keys = {
 "values": [2, 3]
 }
 
+[sub_resource type="Animation" id="Animation_h17s1"]
+resource_name = "player_idle"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("visual/Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [0, 1]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_75vfm"]
 _data = {
 &"RESET": SubResource("Animation_p47bc"),
 &"idle": SubResource("Animation_lvxji"),
+&"player_idle": SubResource("Animation_h17s1"),
 &"walk": SubResource("Animation_75vfm")
 }
 
@@ -81,6 +99,9 @@ properties/1/replication_mode = 2
 properties/2/path = NodePath(".:death_tick")
 properties/2/spawn = true
 properties/2/replication_mode = 2
+properties/3/path = NodePath(".:health")
+properties/3/spawn = true
+properties/3/replication_mode = 2
 
 [node name="player" type="CharacterBody2D" groups=["Players"]]
 collision_layer = 8
@@ -100,9 +121,11 @@ shape = SubResource("CircleShape2D_qek5x")
 [node name="visual" type="Node2D" parent="."]
 
 [node name="Sprite2D" type="Sprite2D" parent="visual"]
-texture = ExtResource("2_dovo2")
+texture = ExtResource("2_5gtgg")
 hframes = 6
 vframes = 4
+region_enabled = true
+region_rect = Rect2(0, 0, 192, 128)
 
 [node name="peer_id_label" type="Label" parent="visual"]
 visible = false
@@ -134,9 +157,10 @@ text = "input_auth_id : n/a"
 [node name="AnimationPlayer" type="AnimationPlayer" parent="visual"]
 root_node = NodePath("../..")
 libraries = {
-&"": SubResource("AnimationLibrary_75vfm")
+&"": SubResource("AnimationLibrary_75vfm"),
+&"player_animations": ExtResource("4_h17s1")
 }
-autoplay = "idle"
+autoplay = "player_animations/player_idle"
 
 [node name="PointLight2D" type="PointLight2D" parent="visual"]
 visible = false

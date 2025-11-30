@@ -29,8 +29,8 @@ var players = {}
 # entered in a UI scene.
 var my_player_info = {"name": "Not yet set"}
 
-# Used by the server to keep track of how many players have loaded the level
-var players_loaded: int = 0
+## Used by the server to keep track of how many players have loaded the level
+#var players_loaded: int = 0
 
 # Our multiplayer peer id, 0 for not set, 1 for server, any other number for client
 var peer_id: int = 0:
@@ -40,13 +40,13 @@ var peer_id: int = 0:
 	get:
 		return peer_id
 
-
+# Our own internal signals that we might want to pass game-wide
 signal server_started()							# Emitted when this peer starts as a server
 #signal networktime_client_synced(peer_id: int)	# Emitted when a client syncs its NetFox network time with the server
 signal server_disconnected         				# Emitted if we see the host server disconnect - bad news
 signal peer_connected(peer_id: int)				# Emitted if a peer connects
 signal peer_disconnected(peer_id: int)			# Emitted if a peer disconnects so we can let the rest of the game know
-signal all_peers_loaded							# Emitted when all peers have loaded the chosen level
+#signal all_peers_loaded						# Emitted when all peers have loaded the chosen level (moved to Levels.gd)
 signal peer_id_changed(peer_id: int)			# Emitted when our peer_id changes
 
 func _ready() -> void:
@@ -218,15 +218,15 @@ func register_player(this_player_info) -> void:
 	Log.prn(players)
 	
 
-# Every peer will call this when they have loaded the game scene.
-# Only the server needs to keep track of the number of players loaded.
-@rpc("any_peer", "call_local", "reliable")
-func player_loaded():
-	Log.pr("Player loaded scene - Player ID : " + str(multiplayer.get_remote_sender_id()))
-	if multiplayer.is_server():
-		players_loaded += 1
-		Log.pr("Players in game : " + str(players_loaded) + "/" + str(players.size()))
-		if players_loaded == players.size():
-			Log.pr("All required players in game : " + str(players_loaded) + "/" + str(players.size()))
-			all_peers_loaded.emit()
-			players_loaded = 0
+## Every peer will call this when they have loaded the game scene.
+## Only the server needs to keep track of the number of players loaded.
+#@rpc("any_peer", "call_local", "reliable")
+#func player_loaded():
+	#Log.pr("Player loaded scene - Player ID : " + str(multiplayer.get_remote_sender_id()))
+	#if multiplayer.is_server():
+		#players_loaded += 1
+		#Log.pr("Players in game : " + str(players_loaded) + "/" + str(players.size()))
+		#if players_loaded == players.size():
+			#Log.pr("All required players in game : " + str(players_loaded) + "/" + str(players.size()))
+			#all_peers_loaded.emit()
+			#players_loaded = 0

@@ -1,37 +1,15 @@
-extends Node2D
-
-# Pre-loads
-#var bullet_scene: PackedScene = preload("res://scenes/projectiles/bullet.tscn")
-
-# Temporary help in stopping players spawning on top of eachother
-#const SPAWN_RANDOM: int = 25
+extends Node
 
 @export var player_scene: PackedScene
-@export var enemy_skeleton_scene: PackedScene
 
-#@onready var spawned_players: Node2D = $spawned_players
-#@onready var spawned_enemies: Node2D = $spawned_enemies
+@onready var spawned_players: Node = $spawned_players
+@onready var spawned_enemies: Node = $spawned_enemies
 
-var spawned_players: Node
-var spawned_enemies: Node
-
-var spawn_points: Array[Node]
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	# Connect to Network signals
-	if multiplayer.is_server():
-		Network.all_peers_loaded.connect(_on_all_peers_loaded)
-		Network.peer_disconnected.connect(_on_peer_disconnected)
-	else:
-		Network.server_disconnected.connect(_on_server_disconnected)
-	
-	spawned_players = get_tree().current_scene.get_node("spawned_players")
-	spawned_enemies = get_tree().current_scene.get_node("spawned_enemies")
-	
-	
-	# Let the Network Server know that we have loaded the level
-	Network.player_loaded.rpc_id(1)
+	Levels.all_peers_loaded.connect(_on_all_peers_loaded)
+
 
 
 # This function is called when all the peers have successfully loaded the
@@ -45,25 +23,10 @@ func _on_all_peers_loaded() -> void:
 		#await get_tree().create_timer(1.0).timeout
 		spawn_player(this_player)
 		
-	Log.pr(str(get_tree()) + "Spawning Enemies into Level...")
-	spawn_enemy()
-
-
-# This only runs on the server, and removes the peer's player.
-# This despawn is then replicated to the client peers
-func _on_peer_disconnected(peer_id: int) -> void:
-	spawned_players.get_node(str(peer_id)).queue_free()
+	#Log.pr(str(get_tree()) + "Spawning Enemies into Level...")
+	#spawn_enemy()
 	
 	
-func _on_server_disconnected() -> void:
-	Log.warn("Server got disconnected!")
-	
-	# No sense carrying on the charade, we've lost the server!
-	#NetworkTime.stop()
-	
-	#unload_level_entities()	# Not sure if this graceful removal of spawned entities is needed
-	Levels.return_to_main_menu()
-
 
 # This function only happens on the server - the MultiplayerSpawner replicates 
 # any spawned player nodes on all the peer clients.
@@ -86,10 +49,3 @@ func spawn_player(this_peer_id: int) -> void:
 	# This causes the instance to also be spawned on all the client peers too.
 	# We add the 'true' argument to force readable names - required by MultiplayerSpawner.
 	spawned_players.add_child(player_instance, true)
-
-
-func spawn_enemy() -> void:
-	Log.pr(str(get_tree()) + "Spawning enemy")
-	var enemy_skeleton_instance = enemy_skeleton_scene.instantiate()
-	enemy_skeleton_instance.global_position = Vector2(30, 30)
-	spawned_enemies.add_child(enemy_skeleton_instance, true)

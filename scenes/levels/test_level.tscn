@@ -1,12 +1,10 @@
-[gd_scene load_steps=13 format=4 uid="uid://cjcrlrdi47dw3"]
+[gd_scene load_steps=10 format=4 uid="uid://cjcrlrdi47dw3"]
 
 [ext_resource type="Script" uid="uid://do00viek7ibq0" path="res://scripts/levels/test_level.gd" id="1_fr1um"]
 [ext_resource type="Texture2D" uid="uid://c1sb1gyasxnjo" path="res://assets/sprites/1-Bit-8x8.png" id="1_jbqir"]
 [ext_resource type="PackedScene" uid="uid://cdg0vfkaa0w3v" path="res://scenes/player/player.tscn" id="2_6xh4u"]
 [ext_resource type="Texture2D" uid="uid://bixw1tij30ea2" path="res://assets/sprites/2d_lights_and_shadows_neutral_point_light.png" id="2_fr1um"]
 [ext_resource type="PackedScene" uid="uid://c7njnx2d0nquw" path="res://scenes/enemies/skeleton.tscn" id="3_6xh4u"]
-[ext_resource type="Script" uid="uid://bhexx6mj1xv3q" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_2d.gd" id="4_hfwtw"]
-[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="5_2mu0v"]
 [ext_resource type="PackedScene" uid="uid://dntcnn5dmt28f" path="res://scenes/ui/latency_label.tscn" id="6_6xh4u"]
 [ext_resource type="PackedScene" uid="uid://r5fv0gwhe8aj" path="res://scenes/environment/spawn_point.tscn" id="7_cyt5c"]
 
@@ -1240,12 +1238,6 @@ terrain_set_0/terrain_0/name = "ground"
 terrain_set_0/terrain_0/color = Color(1, 0, 0, 1)
 sources/0 = SubResource("TileSetAtlasSource_yautc")
 
-[sub_resource type="Resource" id="Resource_hfwtw"]
-script = ExtResource("5_2mu0v")
-duration = 1.0
-transition = 0
-ease = 2
-
 [node name="test_level" type="Node2D"]
 script = ExtResource("1_fr1um")
 player_scene = ExtResource("2_6xh4u")
@@ -1304,13 +1296,3 @@ position = Vector2(72, 128)
 
 [node name="spawn_point4" parent="spawn_points" instance=ExtResource("7_cyt5c")]
 position = Vector2(32, 128)
-
-[node name="PhantomCamera2D" type="Node2D" parent="."]
-top_level = true
-script = ExtResource("4_hfwtw")
-follow_mode = 1
-tween_resource = SubResource("Resource_hfwtw")
-draw_limits = true
-metadata/_custom_type_script = "uid://bhexx6mj1xv3q"
-
-[node name="Camera2D" type="Camera2D" parent="PhantomCamera2D"]

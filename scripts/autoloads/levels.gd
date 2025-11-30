@@ -7,6 +7,7 @@ extends Node
 signal scene_loading_progress_updated(progress_percent: int)
 signal scene_loaded(scene_filepath: String)
 signal scene_unloaded
+signal all_peers_loaded						# Emitted when all peers have loaded the chosen level
 
 var scene_filepath: String = ""			# e.g. "res://scenes/levels/test_level.tscn"
 var current_scene_name: String = ""
@@ -18,13 +19,22 @@ var progress_value: float = 0.0:
 		progress_value = value
 	get:
 		return progress_value
-		
+
+# A list of all the games scenes
+var scenes = [
+	"res://scenes/levels/level_1.tscn"
+]
+
+# Start the index pointing at the first element in scenes
+var next_scene_idx:int = 0
+
+# Used by the server to keep track of how many players have loaded the level
+var players_loaded: int = 0
 
 func _ready() -> void:
 	# Connect Signals
 	#GameState.game_state_changed.connect(_on_game_state_changed)
 	scene_loaded.connect(_on_scene_loaded)
-	
 
 
 # This monitors the progress of any background scene loading taking place
@@ -66,13 +76,20 @@ func _process(_delta: float) -> void:
 			#pass
 
 
-# When the server decides to start the game from a UI scene,
-# do Levels.goto_scene.rpc(scene_filepath)
+# Go to a specific scene, by index
 @rpc("call_local", "reliable")
-func goto_scene(this_scene_filepath: String) -> void:
-	Log.pr("Loading scene : " + this_scene_filepath)
+func goto_scene(idx: int) -> void:
+	Log.pr("Loading scene : " + scenes[idx])
 	# Start the asynchronous loading of the desired scene
-	load_scene(this_scene_filepath)
+	load_scene(scenes[idx])
+	next_scene_idx = idx + 1
+
+@rpc("call_local", "reliable")
+func goto_next_scene() -> void:
+	Log.pr("Loading scene : " + scenes[next_scene_idx])
+	# Start the asynchronous loading of the desired scene
+	load_scene(scenes[next_scene_idx])
+	next_scene_idx += 1
 
 
 func load_scene(this_scene_filepath: String) -> void:
@@ -138,3 +155,17 @@ func return_to_main_menu() -> void:
 	remove_current_scene()
 	
 	GameState.change_game_state(GameState.GAME_STATES.MAIN_MENU)
+
+
+# Every peer will call this when they have loaded the game scene.
+# Only the server needs to keep track of the number of players loaded.
+@rpc("any_peer", "call_local", "reliable")
+func player_loaded():
+	Log.pr("Player loaded scene - Player ID : " + str(multiplayer.get_remote_sender_id()))
+	if multiplayer.is_server():
+		players_loaded += 1
+		Log.pr("Players in game : " + str(players_loaded) + "/" + str(Network.players.size()))
+		if players_loaded == Network.players.size():
+			Log.pr("All required players in game : " + str(players_loaded) + "/" + str(Network.players.size()))
+			all_peers_loaded.emit()
+			players_loaded = 0

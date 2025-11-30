@@ -74,7 +74,10 @@ func _on_join_button_pressed() -> void:
 
 
 func _on_start_game_button_pressed() -> void:
-	Levels.goto_scene.rpc("res://scenes/levels/test_level.tscn")
+	#Levels.goto_scene.rpc("res://scenes/levels/test_level.tscn")
+	#Levels.goto_scene.rpc("res://scenes/levels/level_1.tscn")
+	Levels.goto_next_scene.rpc()
+
 
 
 func _on_main_menu_button_pressed() -> void:

@@ -12,7 +12,7 @@ extends CharacterBody2D
 ## It also has a MultiplayerSynchronizer to allow some of the server's state
 ## variables to br synchronized to the client, such as peer_id, etc.
 
-@export var speed = 30.0
+@export var speed = 120.0
 @export var acceleration = 300.0
 @export var deceleration = 300.0
 
@@ -66,7 +66,8 @@ func _ready() -> void:
 	#pcam = get_tree().current_scene.find_child("PhantomCamera2D")
 	#Log.pr("Curr cam " + str(get_tree().current_scene.find_child("PhantomCamera2D")))
 	if player_input.is_multiplayer_authority():
-		pcam = get_tree().get_root().find_child("PhantomCamera2D", true, false)
+		#pcam = get_tree().current_scene.get_node("Camera2D").get_node("PhantomCamera2D")
+		pcam = get_tree().current_scene.get_node("PhantomCamera2D")
 		pcam.set_follow_target(self)
 
 
