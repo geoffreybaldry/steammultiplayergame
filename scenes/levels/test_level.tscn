@@ -1257,19 +1257,12 @@ tile_map_data = PackedByteArray("AAAlAAEAAAADAA4AAAAkAAEAAAACABAAAAAjAAEAAAACAA4
 tile_set = SubResource("TileSet_fr1um")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="environment"]
-visible = false
 color = Color(0, 0, 0, 1)
 
 [node name="PointLight2D" type="PointLight2D" parent="environment"]
 position = Vector2(67, 75)
 energy = 1.5
 texture = ExtResource("2_fr1um")
-
-[node name="spawned_players" type="Node2D" parent="."]
-
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="spawned_players"]
-_spawnable_scenes = PackedStringArray("uid://cdg0vfkaa0w3v")
-spawn_path = NodePath("..")
 
 [node name="spawned_enemies" type="Node2D" parent="."]
 

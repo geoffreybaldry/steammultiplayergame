@@ -7,7 +7,7 @@
 [ext_resource type="FontFile" uid="uid://c1l47aekqn13v" path="res://assets/fonts/m3x6.ttf" id="4_lvxji"]
 [ext_resource type="Texture2D" uid="uid://bixw1tij30ea2" path="res://assets/sprites/2d_lights_and_shadows_neutral_point_light.png" id="5_p47bc"]
 [ext_resource type="Script" uid="uid://d350u8evihs1u" path="res://addons/netfox/rollback/rollback-synchronizer.gd" id="5_qek5x"]
-[ext_resource type="Texture2D" uid="uid://8jbiyn7wodcq" path="res://assets/sprites/weapon_pointer.png" id="6_75vfm"]
+[ext_resource type="Texture2D" uid="uid://b43bod4d31r2y" path="res://assets/sprite/weapon_pointer.png" id="6_h17s1"]
 [ext_resource type="Script" uid="uid://dour8fehaaugp" path="res://addons/netfox/tick-interpolator.gd" id="6_qek5x"]
 [ext_resource type="PackedScene" uid="uid://cmbfgg8vtwhrg" path="res://scenes/weapons/player_weapon.tscn" id="7_5gtgg"]
 
@@ -48,6 +48,22 @@ tracks/0/keys = {
 "values": [0, 1]
 }
 
+[sub_resource type="Animation" id="Animation_h17s1"]
+resource_name = "player_idle"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("visual/Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [0, 1]
+}
+
 [sub_resource type="Animation" id="Animation_75vfm"]
 resource_name = "walk"
 length = 0.4
@@ -64,21 +80,22 @@ tracks/0/keys = {
 "update": 1,
 "values": [2, 3]
 }
-
-[sub_resource type="Animation" id="Animation_h17s1"]
-resource_name = "player_idle"
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("visual/Sprite2D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 1),
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2),
 "transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [0, 1]
+"values": [{
+"args": [],
+"method": &"footstep_audio"
+}, {
+"args": [],
+"method": &"footstep_audio"
+}]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_75vfm"]
@@ -167,11 +184,16 @@ visible = false
 scale = Vector2(0.179688, 0.203125)
 texture = ExtResource("5_p47bc")
 
+[node name="audio" type="Node2D" parent="."]
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="audio"]
+volume_db = -10.0
+
 [node name="weapon_pivot" type="Node2D" parent="."]
 
 [node name="Sprite2D" type="Sprite2D" parent="weapon_pivot"]
-position = Vector2(6, 0)
-texture = ExtResource("6_75vfm")
+position = Vector2(22, 0)
+texture = ExtResource("6_h17s1")
 
 [node name="player_input" type="Node2D" parent="."]
 script = ExtResource("3_gmlin")

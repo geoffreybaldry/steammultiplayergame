@@ -30,6 +30,15 @@ extends CharacterBody2D
 @onready var animation_player: AnimationPlayer = $visual/AnimationPlayer
 @onready var weapon_pivot: Node2D = $weapon_pivot
 @onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
+@onready var audio_stream_player_2d: AudioStreamPlayer2D = $audio/AudioStreamPlayer2D
+
+var audio_footsteps = [
+	preload("res://assets/audio/effects/footsteps/footstep_concrete_000.ogg"),
+	preload("res://assets/audio/effects/footsteps/footstep_concrete_001.ogg"),
+	preload("res://assets/audio/effects/footsteps/footstep_concrete_002.ogg"),
+	preload("res://assets/audio/effects/footsteps/footstep_concrete_003.ogg"),
+	preload("res://assets/audio/effects/footsteps/footstep_concrete_004.ogg"),
+]
 
 var health: int = 100
 var death_tick: int = -1
@@ -62,11 +71,7 @@ func _ready() -> void:
 	respawn_position = SpawnPoints.get_free_spawn_point_position()
 
 	# Get hold of the camera so it can track the player
-	#Log.pr("Curr scene " + str(get_tree().current_scene.name))
-	#pcam = get_tree().current_scene.find_child("PhantomCamera2D")
-	#Log.pr("Curr cam " + str(get_tree().current_scene.find_child("PhantomCamera2D")))
 	if player_input.is_multiplayer_authority():
-		#pcam = get_tree().current_scene.get_node("Camera2D").get_node("PhantomCamera2D")
 		pcam = get_tree().current_scene.get_node("PhantomCamera2D")
 		pcam.set_follow_target(self)
 
@@ -81,6 +86,7 @@ func _tick(_dt:float, _tk: int):
 		die()
 
 	apply_animation()
+	#apply_audio()
 
 func _after_tick_loop():
 	if did_respawn:
@@ -124,8 +130,20 @@ func apply_animation() -> void:
 	if velocity == Vector2.ZERO:
 		animation_player.play("idle")
 	else:
+		animation_player.speed_scale = clampf(player_input.input_direction.length(), 0.2, 1.0)
 		animation_player.play("walk")
 
+
+#func apply_audio() -> void:
+	#if velocity != Vector2.ZERO:
+		#audio_stream_player_2d.play()
+
+func footstep_audio() -> void:
+	#audio_stream_player_2d.stream = audio_footsteps["footstep_concrete_000"]
+	audio_stream_player_2d.stream = audio_footsteps.pick_random()
+
+	audio_stream_player_2d.pitch_scale = randf_range(0.8, 1.2)
+	audio_stream_player_2d.play()
 
 func die() -> void:
 	# Only the authority can decide if a player died

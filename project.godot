@@ -44,10 +44,7 @@ file_logging/enable_file_logging=true
 window/size/viewport_width=1280
 window/size/viewport_height=720
 window/size/resizable=false
-window/size/window_width_override=1280
-window/size/window_height_override=720
 window/stretch/mode="viewport"
-window/stretch/scale_mode="integer"
 
 [editor_plugins]
 
@@ -122,6 +119,7 @@ die={
 
 [layer_names]
 
+2d_render/layer_1="wall_light_occluder"
 2d_physics/layer_1="wall"
 2d_physics/layer_2="projectile_collision"
 2d_physics/layer_3="enemy_collision"
@@ -142,6 +140,7 @@ common/physics_interpolation=true
 
 textures/canvas_textures/default_texture_filter=0
 environment/defaults/default_clear_color=Color(0.301961, 0.301961, 0.301961, 1)
+2d/snap/snap_2d_transforms_to_pixel=true
 
 [steam]
 

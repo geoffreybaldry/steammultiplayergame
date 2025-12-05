@@ -1,6 +1,7 @@
 extends Node
 
 @export var player_scene: PackedScene
+@export var enemy_skeleton_scene: PackedScene
 
 @onready var spawned_players: Node = $spawned_players
 @onready var spawned_enemies: Node = $spawned_enemies
@@ -23,8 +24,8 @@ func _on_all_peers_loaded() -> void:
 		#await get_tree().create_timer(1.0).timeout
 		spawn_player(this_player)
 		
-	#Log.pr(str(get_tree()) + "Spawning Enemies into Level...")
-	#spawn_enemy()
+	Log.pr(str(get_tree()) + "Spawning Enemies into Level...")
+	spawn_enemy()
 	
 	
 
@@ -49,3 +50,10 @@ func spawn_player(this_peer_id: int) -> void:
 	# This causes the instance to also be spawned on all the client peers too.
 	# We add the 'true' argument to force readable names - required by MultiplayerSpawner.
 	spawned_players.add_child(player_instance, true)
+
+
+func spawn_enemy() -> void:
+	Log.pr(str(get_tree()) + "Spawning enemy")
+	var enemy_skeleton_instance = enemy_skeleton_scene.instantiate()
+	enemy_skeleton_instance.global_position = Vector2(30, 30)
+	spawned_enemies.add_child(enemy_skeleton_instance, true)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://cmrw5rswvfbdj"]
+[gd_scene load_steps=15 format=3 uid="uid://cmrw5rswvfbdj"]
 
 [ext_resource type="Script" uid="uid://dy34yfx3ut15n" path="res://scripts/world.gd" id="1_nnsk1"]
 [ext_resource type="PackedScene" uid="uid://dy6qu38rl2hod" path="res://scenes/ui/main_menu_ui.tscn" id="2_4wyf3"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://bicd8f3r5out6" path="res://scenes/ui/error_message_ui.tscn" id="6_qfnet"]
 [ext_resource type="Script" uid="uid://bhexx6mj1xv3q" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_2d.gd" id="8_7r4gi"]
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="9_w7kh3"]
+[ext_resource type="PackedScene" uid="uid://c7njnx2d0nquw" path="res://scenes/enemies/skeleton.tscn" id="10_jhx03"]
 [ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="10_q5onr"]
 [ext_resource type="Script" uid="uid://cdmrn5rt461kh" path="res://scripts/managers/entities.gd" id="10_w7kh3"]
 [ext_resource type="PackedScene" uid="uid://cdg0vfkaa0w3v" path="res://scenes/player/player.tscn" id="11_e3hyu"]
@@ -45,6 +46,7 @@ visible = false
 [node name="entities" type="Node" parent="."]
 script = ExtResource("10_w7kh3")
 player_scene = ExtResource("11_e3hyu")
+enemy_skeleton_scene = ExtResource("10_jhx03")
 
 [node name="spawned_players" type="Node" parent="entities"]
 
@@ -59,7 +61,6 @@ _spawnable_scenes = PackedStringArray("uid://c7njnx2d0nquw")
 spawn_path = NodePath("..")
 
 [node name="Camera2D" type="Camera2D" parent="."]
-editor_draw_limits = true
 
 [node name="PhantomCameraHost" type="Node" parent="Camera2D"]
 process_priority = 300
@@ -70,8 +71,9 @@ metadata/_custom_type_script = "uid://bd046eokvcnu2"
 [node name="PhantomCamera2D" type="Node2D" parent="."]
 top_level = true
 script = ExtResource("8_7r4gi")
-follow_mode = 1
-snap_to_pixel = true
+follow_mode = 5
 tween_resource = SubResource("Resource_e3hyu")
-draw_limits = true
+follow_damping = true
+dead_zone_width = 0.5
+dead_zone_height = 0.5
 metadata/_custom_type_script = "uid://bhexx6mj1xv3q"

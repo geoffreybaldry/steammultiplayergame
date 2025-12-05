@@ -36,9 +36,9 @@ func _process(delta: float) -> void:
 
 func apply_animation() -> void:
 	if velocity == Vector2.ZERO:
-		animation_player.play("skeleton_animations/idle")
+		animation_player.play("skeleton_animations/skeleton_idle")
 	else:
-		animation_player.play("skeleton_animations/walk")
+		animation_player.play("skeleton_animations/skeleton_walk")
 		
 		
 func find_nearby_player() -> Node2D:
