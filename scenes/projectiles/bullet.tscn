@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://dut7ss1ful8un"]
+[gd_scene load_steps=10 format=3 uid="uid://dut7ss1ful8un"]
 
 [ext_resource type="Script" uid="uid://btroiwlncosvf" path="res://scripts/projectiles/bullet.gd" id="1_48g2p"]
 [ext_resource type="PackedScene" uid="uid://be4llp00irwma" path="res://scenes/projectiles/projectile.tscn" id="1_k5ji7"]
-[ext_resource type="Texture2D" uid="uid://b4n3kqck5uw0c" path="res://assets/sprites/projectile_bullet_yellow.png" id="1_yvfy2"]
+[ext_resource type="Texture2D" uid="uid://m84u6aodlwam" path="res://assets/sprite/weapons/All_Fire_Bullet_Pixel_16x16_00.png" id="3_kxxn2"]
 [ext_resource type="AudioStream" uid="uid://cm0qps5muchqr" path="res://assets/audio/effects/weapon/mixkit-short-laser-gun-shot-1670.wav" id="4_i2bxc"]
+[ext_resource type="AnimationLibrary" uid="uid://brwwbxalcpio" path="res://animations/weapons/bullet_animations.res" id="5_jobuq"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k5ji7"]
 size = Vector2(4, 2)
@@ -11,17 +12,41 @@ size = Vector2(4, 2)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_i2bxc"]
 size = Vector2(4, 2)
 
+[sub_resource type="Animation" id="Animation_s83xh"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_lwnxk"]
+_data = {
+&"RESET": SubResource("Animation_s83xh")
+}
+
 [node name="bullet" instance=ExtResource("1_k5ji7")]
 collision_mask = 1
 script = ExtResource("1_48g2p")
-speed = 100
+speed = 400
 damage = 1
 
 [node name="CollisionShape2D" parent="." index="0"]
 shape = SubResource("RectangleShape2D_k5ji7")
 
 [node name="Sprite2D" parent="." index="1"]
-texture = ExtResource("1_yvfy2")
+scale = Vector2(2, 2)
+texture = ExtResource("3_kxxn2")
+hframes = 4
+region_enabled = true
+region_rect = Rect2(256, 128, 64, 16)
 
 [node name="Timer" parent="." index="2"]
 wait_time = 3.0
@@ -36,6 +61,13 @@ collision_mask = 32
 
 [node name="CollisionShape2D" parent="HurtBox" index="0"]
 shape = SubResource("RectangleShape2D_i2bxc")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." index="6"]
+libraries = {
+&"": SubResource("AnimationLibrary_lwnxk"),
+&"bullet_animations": ExtResource("5_jobuq")
+}
+autoplay = "bullet_animations/bullet_anim"
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
