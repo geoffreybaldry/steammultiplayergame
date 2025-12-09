@@ -134,10 +134,6 @@ func apply_animation() -> void:
 		animation_player.play("walk")
 
 
-#func apply_audio() -> void:
-	#if velocity != Vector2.ZERO:
-		#audio_stream_player_2d.play()
-
 func footstep_audio() -> void:
 	#audio_stream_player_2d.stream = audio_footsteps["footstep_concrete_000"]
 	audio_stream_player_2d.stream = audio_footsteps.pick_random()

@@ -1,8 +1,8 @@
-@tool
 extends Enemy
 class_name Skeleton
 
 var target_vector: Vector2 = Vector2.ZERO
+var shove_vector: Vector2 = Vector2.ZERO
 
 func _rollback_tick(delta, _tick, _is_fresh: bool):
 	target_vector = Vector2.ZERO
@@ -10,20 +10,26 @@ func _rollback_tick(delta, _tick, _is_fresh: bool):
 	
 	# Check if we are near a player
 	if nearby_player:
-		#nearby_player_label.text = "nearby player : " + nearby_player.name
-		
 		# Calculate difference as vector
 		target_vector = nearby_player.global_position - global_position
 		
 		# Set the desired target vector
-		target_vector = target_vector.normalized() * speed
+		target_vector = target_vector.normalized() * max_speed
 		
 		# Set desired velocity towards target
 		velocity = velocity.move_toward(target_vector, acceleration * delta)
 	else:
-		## Set desired velocity to zero
+		# Set desired velocity to zero
 		velocity = velocity.move_toward(Vector2.ZERO, deceleration * delta)
-	
+
+	# Apply a shove vector if the actor has been shoved
+	if shove_vector:
+		velocity += shove_vector * delta
+		shove_vector = Vector2.ZERO
+
+	# Limit the maximum velocity of the actor
+	velocity = velocity.limit_length(max_speed)
+
 	velocity *= NetworkTime.physics_factor
 	move_and_slide()
 	velocity /= NetworkTime.physics_factor
@@ -63,4 +69,14 @@ func find_nearby_player() -> Node2D:
 
 	return closest_player
 
+# Used to reduce the health of the enemy
+func damage(value:float) -> void:
+	super(value)
+	health -= value
 	
+	
+# Used to perform "push back" on an enemy
+func shove(direction: Vector2, force: float) -> void:
+	Log.pr("Oooh, I got shoved in direction " + str(direction))
+	
+	shove_vector = direction * force

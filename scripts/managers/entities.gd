@@ -55,5 +55,5 @@ func spawn_player(this_peer_id: int) -> void:
 func spawn_enemy() -> void:
 	Log.pr(str(get_tree()) + "Spawning enemy")
 	var enemy_skeleton_instance = enemy_skeleton_scene.instantiate()
-	enemy_skeleton_instance.global_position = Vector2(30, 30)
+	enemy_skeleton_instance.global_position = Vector2(130, 130)
 	spawned_enemies.add_child(enemy_skeleton_instance, true)

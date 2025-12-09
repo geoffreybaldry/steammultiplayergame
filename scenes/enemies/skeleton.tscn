@@ -1,9 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://c7njnx2d0nquw"]
+[gd_scene load_steps=11 format=3 uid="uid://c7njnx2d0nquw"]
 
 [ext_resource type="PackedScene" uid="uid://6f2otn0dh6q5" path="res://scenes/enemies/enemy.tscn" id="1_5365w"]
 [ext_resource type="Script" uid="uid://ba6leokbin1kh" path="res://scripts/enemies/skeleton.gd" id="2_esykl"]
 [ext_resource type="Texture2D" uid="uid://fbqpv78ngo5l" path="res://assets/sprite/skeleton.png" id="3_038oa"]
 [ext_resource type="AnimationLibrary" uid="uid://4yfq655wpl3w" path="res://animations/skeleton/skeleton_animations.res" id="4_038oa"]
+[ext_resource type="Texture2D" uid="uid://bi6q2qm5x1pdd" path="res://assets/sprite/health/healthbar_under.png" id="5_3mw36"]
+[ext_resource type="Texture2D" uid="uid://dpklnujlg5nc5" path="res://assets/sprite/health/healthbar_progress.png" id="5_s0h66"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_esykl"]
 radius = 14.0
@@ -13,7 +15,7 @@ length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/path = NodePath("visual/Sprite2D:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -35,18 +37,27 @@ radius = 17.0294
 collision_layer = 4
 collision_mask = 13
 script = ExtResource("2_esykl")
-speed = 40.0
-acceleration = 300.0
-deceleration = 300.0
+max_speed = 40.0
+acceleration = 50.0
+deceleration = 50.0
 sensor_radius = 120.0
 min_sensor_radius = 20.0
 
 [node name="CollisionShape2D" parent="." index="0"]
 shape = SubResource("CircleShape2D_esykl")
 
-[node name="Sprite2D" parent="." index="1"]
+[node name="Sprite2D" parent="visual" index="0"]
 texture = ExtResource("3_038oa")
 hframes = 6
+
+[node name="TextureProgressBar" parent="visual" index="1"]
+offset_left = -16.0
+offset_top = -23.0
+offset_right = 16.0
+offset_bottom = -19.0
+value = 50.0
+texture_under = ExtResource("5_3mw36")
+texture_progress = ExtResource("5_s0h66")
 
 [node name="RollbackSynchronizer" parent="." index="2"]
 enable_prediction = true
