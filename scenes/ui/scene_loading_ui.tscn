@@ -36,6 +36,7 @@ grow_vertical = 0
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_fonts/font = ExtResource("2_5fj0j")
+theme_override_font_sizes/font_size = 32
 text = "Loading bro, just chill..."
 horizontal_alignment = 1
 
@@ -45,10 +46,12 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_fonts/font = ExtResource("3_s2kth")
+theme_override_font_sizes/font_size = 32
 
 [node name="loading_hint_label" type="Label" parent="loading_container"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("3_s2kth")
+theme_override_font_sizes/font_size = 32
 text = "here is a nice hint about something"
 horizontal_alignment = 1
 
@@ -67,6 +70,7 @@ grow_vertical = 0
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_fonts/font = ExtResource("2_5fj0j")
+theme_override_font_sizes/font_size = 32
 text = "Returning to Main Menu, hold tight..."
 horizontal_alignment = 1
 

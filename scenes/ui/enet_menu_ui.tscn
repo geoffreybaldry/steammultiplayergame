@@ -38,11 +38,13 @@ grow_vertical = 2
 [node name="host_button" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_o2sq8")
+theme_override_font_sizes/font_size = 32
 text = "Host"
 
 [node name="join_button" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_o2sq8")
+theme_override_font_sizes/font_size = 32
 text = "Join"
 
 [node name="start_game_button" type="Button" parent="."]
@@ -60,6 +62,7 @@ offset_bottom = -5.0
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_fonts/font = ExtResource("2_o2sq8")
+theme_override_font_sizes/font_size = 32
 text = "Start Game
 "
 
@@ -74,6 +77,7 @@ offset_right = 68.0
 offset_bottom = -5.0
 grow_vertical = 0
 theme_override_fonts/font = ExtResource("2_o2sq8")
+theme_override_font_sizes/font_size = 32
 text = "Main Menu"
 
 [node name="leave_network_button" type="Button" parent="."]
@@ -88,6 +92,7 @@ offset_right = 52.0
 offset_bottom = -5.0
 grow_vertical = 0
 theme_override_fonts/font = ExtResource("2_o2sq8")
+theme_override_font_sizes/font_size = 32
 text = "Leave Network"
 
 [node name="Panel" type="Panel" parent="."]

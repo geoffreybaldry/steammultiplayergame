@@ -202,6 +202,8 @@ position = Vector2(22, 0)
 script = ExtResource("3_gmlin")
 
 [node name="player_weapon" parent="." instance=ExtResource("7_5gtgg")]
+fire_cooldown = 0.1
+distance_threshold = 20.0
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_0owmy")

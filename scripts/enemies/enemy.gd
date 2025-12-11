@@ -27,10 +27,10 @@ func apply_animation() -> void:
 	
 	
 # Used to reduce the health of the enemy
-func damage(value:float) -> void:
+func damage(_value:float) -> void:
 	pass
 	
 	
 # Used to perform "push back" on an enemy
-func shove(direction: Vector2, force: float) -> void:
+func shove(_direction: Vector2, _force: float) -> void:
 	pass

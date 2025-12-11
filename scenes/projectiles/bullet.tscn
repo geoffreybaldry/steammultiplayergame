@@ -45,6 +45,7 @@ shape = SubResource("RectangleShape2D_i2bxc")
 libraries = {
 &"bullet_animations": ExtResource("5_jobuq")
 }
+autoplay = "bullet_animations/bullet_anim"
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="area_entered" from="HurtBox" to="." method="_on_hurt_box_area_entered"]

@@ -69,6 +69,7 @@ func _ready() -> void:
 	NetworkTime.after_tick_loop.connect(_after_tick_loop)
 
 	respawn_position = SpawnPoints.get_free_spawn_point_position()
+	Log.pr("Peer ID : " + str(peer_id) + " has spawn location : " + str(respawn_position))
 
 	# Get hold of the camera so it can track the player
 	if player_input.is_multiplayer_authority():
@@ -90,13 +91,13 @@ func _tick(_dt:float, _tk: int):
 
 func _after_tick_loop():
 	if did_respawn:
+		Log.pr("Did Respawn!")
 		tick_interpolator.teleport()
 		
 
 func _rollback_tick(_delta, tick, _is_fresh) -> void:
 	# Check for (re)spawn
 	if tick == death_tick:
-		#global_position = respawn_position
 		spawn_player()
 		did_respawn = true
 	else:
@@ -135,7 +136,6 @@ func apply_animation() -> void:
 
 
 func footstep_audio() -> void:
-	#audio_stream_player_2d.stream = audio_footsteps["footstep_concrete_000"]
 	audio_stream_player_2d.stream = audio_footsteps.pick_random()
 
 	audio_stream_player_2d.pitch_scale = randf_range(0.8, 1.2)

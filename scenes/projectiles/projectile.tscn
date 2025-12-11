@@ -32,7 +32,7 @@ collision_mask = 0
 [node name="TickInterpolator" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("2_wndne")
 root = NodePath("..")
-properties = Array[String]([":global_position"])
+properties = Array[String]([":global_transform"])
 metadata/_custom_type_script = "uid://dour8fehaaugp"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]

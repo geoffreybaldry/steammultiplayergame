@@ -21,10 +21,11 @@ func _on_all_peers_loaded() -> void:
 	
 	for this_player in Network.players:
 		# Spread out the initial spawning, to give the spawn points time to recognize if they are occupied
-		#await get_tree().create_timer(1.0).timeout
+		await get_tree().create_timer(1.0).timeout
 		spawn_player(this_player)
 		
 	Log.pr(str(get_tree()) + "Spawning Enemies into Level...")
+	await get_tree().create_timer(1.0).timeout
 	spawn_enemy()
 	
 	

@@ -7,7 +7,7 @@ extends Node
 signal scene_loading_progress_updated(progress_percent: int)
 signal scene_loaded(scene_filepath: String)
 signal scene_unloaded
-signal all_peers_loaded						# Emitted when all peers have loaded the chosen level
+signal all_peers_loaded					# Emitted when all peers have loaded the chosen level
 
 var scene_filepath: String = ""			# e.g. "res://scenes/levels/test_level.tscn"
 var current_scene_name: String = ""
@@ -83,6 +83,7 @@ func goto_scene(idx: int) -> void:
 	# Start the asynchronous loading of the desired scene
 	load_scene(scenes[idx])
 	next_scene_idx = idx + 1
+
 
 @rpc("call_local", "reliable")
 func goto_next_scene() -> void:
