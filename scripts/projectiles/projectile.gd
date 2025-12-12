@@ -14,8 +14,8 @@ var fired_by:int
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	await get_tree().process_frame
 	NetworkTime.on_tick.connect(_tick)
+	audio_stream_player_2d.play()
 
 
 func _tick(_delta, _t) -> void:

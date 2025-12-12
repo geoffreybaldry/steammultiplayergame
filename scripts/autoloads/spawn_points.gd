@@ -19,5 +19,12 @@ func get_free_spawn_point_position():
 	return null
 
 
+func has_free_spawn_point() -> bool:
+	for spawn_point_id: String in spawn_points.keys():
+		if spawn_points[spawn_point_id].is_available():
+			return true
+	return false
+	
+
 func clear_spawn_points() -> void:
 	spawn_points.clear()

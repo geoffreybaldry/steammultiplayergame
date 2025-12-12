@@ -4,7 +4,7 @@ class_name Bullet
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	super()
-	audio_stream_player_2d.play()
+	
 
 func _tick(delta, _t) -> void:
 	position += transform.x * speed * delta

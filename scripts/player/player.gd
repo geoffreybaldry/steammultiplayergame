@@ -12,7 +12,7 @@ extends CharacterBody2D
 ## It also has a MultiplayerSynchronizer to allow some of the server's state
 ## variables to br synchronized to the client, such as peer_id, etc.
 
-@export var speed = 120.0
+@export var max_speed = 120.0
 @export var acceleration = 300.0
 @export var deceleration = 300.0
 
@@ -68,8 +68,8 @@ func _ready() -> void:
 	NetworkTime.on_tick.connect(_tick)
 	NetworkTime.after_tick_loop.connect(_after_tick_loop)
 
-	respawn_position = SpawnPoints.get_free_spawn_point_position()
-	Log.pr("Peer ID : " + str(peer_id) + " has spawn location : " + str(respawn_position))
+	#respawn_position = SpawnPoints.get_free_spawn_point_position()
+	#Log.pr("Peer ID : " + str(peer_id) + " has spawn location : " + str(respawn_position))
 
 	# Get hold of the camera so it can track the player
 	if player_input.is_multiplayer_authority():
@@ -104,7 +104,11 @@ func _rollback_tick(_delta, tick, _is_fresh) -> void:
 		did_respawn = false
 	
 	# Calculate movement from velocity
-	velocity = player_input.input_direction * speed
+	velocity = player_input.input_direction * max_speed
+	
+	# Limit the maximum velocity of the actor
+	velocity = velocity.limit_length(max_speed)
+	
 	velocity *= NetworkTime.physics_factor
 	move_and_slide()
 	velocity /= NetworkTime.physics_factor
@@ -131,7 +135,8 @@ func apply_animation() -> void:
 	if velocity == Vector2.ZERO:
 		animation_player.play("idle")
 	else:
-		animation_player.speed_scale = clampf(player_input.input_direction.length(), 0.2, 1.0)
+		#animation_player.speed_scale = clampf(player_input.input_direction.length(), 0.2, 1.0)
+		animation_player.speed_scale = clampf(velocity.length() / max_speed, 0.2, 1.0)
 		animation_player.play("walk")
 
 

@@ -39,12 +39,12 @@ func _after_fire(projectile: Node2D):
 func _spawn() -> Node2D:
 	var projectile_bullet_instance: Bullet = projectile_scene.instantiate() as Bullet
 	
-	#get_tree().root.add_child(projectile_bullet_instance, true) # <- Give's me a positional glitch on clients
-
-	projectile_bullet_instance.global_position = player.global_position
+	#get_tree().root.add_child(projectile_bullet_instance, true) # <- Give's me a positional glitch only on peers
+	get_tree().root.call_deferred("add_child", projectile_bullet_instance, true) # The call_deferred() fixes the glitch
+	projectile_bullet_instance.global_position = weapon_pivot.get_node("Marker2D").global_position
 	projectile_bullet_instance.rotation = weapon_pivot.rotation
 	projectile_bullet_instance.fired_by = get_parent().peer_id
-	get_tree().root.add_child(projectile_bullet_instance, true)
+	#get_tree().root.add_child(projectile_bullet_instance, true) # <- Doing the add_child here removes the glitch
 	
 	return projectile_bullet_instance
 
