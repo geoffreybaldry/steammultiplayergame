@@ -1,10 +1,9 @@
-[gd_scene load_steps=19 format=3 uid="uid://cdg0vfkaa0w3v"]
+[gd_scene load_steps=18 format=3 uid="uid://cdg0vfkaa0w3v"]
 
 [ext_resource type="Script" uid="uid://g1v38iwbwey" path="res://scripts/player/player.gd" id="1_8afob"]
 [ext_resource type="Texture2D" uid="uid://cr63fvns0bj6v" path="res://assets/sprite/players.png" id="2_5gtgg"]
 [ext_resource type="Script" uid="uid://dlhab88x572jk" path="res://scripts/player/player_input.gd" id="3_gmlin"]
 [ext_resource type="AnimationLibrary" uid="uid://n1n580g3sb2p" path="res://animations/player/player_animations.res" id="4_h17s1"]
-[ext_resource type="FontFile" uid="uid://c1l47aekqn13v" path="res://assets/fonts/m3x6.ttf" id="4_lvxji"]
 [ext_resource type="Texture2D" uid="uid://bixw1tij30ea2" path="res://assets/sprites/2d_lights_and_shadows_neutral_point_light.png" id="5_p47bc"]
 [ext_resource type="Script" uid="uid://d350u8evihs1u" path="res://addons/netfox/rollback/rollback-synchronizer.gd" id="5_qek5x"]
 [ext_resource type="Texture2D" uid="uid://b43bod4d31r2y" path="res://assets/sprite/weapon_pointer.png" id="6_h17s1"]
@@ -106,7 +105,7 @@ _data = {
 &"walk": SubResource("Animation_75vfm")
 }
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_0owmy"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_5gtgg"]
 properties/0/path = NodePath(".:peer_id")
 properties/0/spawn = true
 properties/0/replication_mode = 2
@@ -116,9 +115,6 @@ properties/1/replication_mode = 2
 properties/2/path = NodePath(".:death_tick")
 properties/2/spawn = true
 properties/2/replication_mode = 2
-properties/3/path = NodePath(".:health")
-properties/3/spawn = true
-properties/3/replication_mode = 2
 
 [node name="player" type="CharacterBody2D" groups=["Players"]]
 collision_layer = 8
@@ -143,33 +139,6 @@ hframes = 6
 vframes = 4
 region_enabled = true
 region_rect = Rect2(0, 0, 192, 128)
-
-[node name="peer_id_label" type="Label" parent="visual"]
-visible = false
-offset_left = -6.0
-offset_top = -18.0
-offset_right = 24.0
-offset_bottom = -5.0
-theme_override_fonts/font = ExtResource("4_lvxji")
-text = "id : n/a"
-
-[node name="peer_authority_id_label" type="Label" parent="visual"]
-visible = false
-offset_left = -6.0
-offset_top = -27.245
-offset_right = 66.0
-offset_bottom = -14.245
-theme_override_fonts/font = ExtResource("4_lvxji")
-text = "auth_id : n/a"
-
-[node name="input_authority_id_label" type="Label" parent="visual"]
-visible = false
-offset_left = -6.0
-offset_top = -35.745
-offset_right = 66.0
-offset_bottom = -22.745
-theme_override_fonts/font = ExtResource("4_lvxji")
-text = "input_auth_id : n/a"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="visual"]
 root_node = NodePath("../..")
@@ -205,9 +174,6 @@ script = ExtResource("3_gmlin")
 fire_cooldown = 0.1
 distance_threshold = 20.0
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_0owmy")
-
 [node name="RollbackSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("5_qek5x")
 root = NodePath("..")
@@ -219,5 +185,8 @@ metadata/_custom_type_script = "uid://d350u8evihs1u"
 [node name="TickInterpolator" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("6_qek5x")
 root = NodePath("..")
-properties = Array[String]([":global_position", "weapon_pivot:rotation"])
+properties = Array[String]([":global_position"])
 metadata/_custom_type_script = "uid://dour8fehaaugp"
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_5gtgg")

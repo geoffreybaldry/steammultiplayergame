@@ -19,6 +19,7 @@ func _on_hurt_box_area_entered(area: Area2D) -> void:
 	
 	# Perform a "shove" on the actor
 	area.get_parent().shove(Vector2(1,0).rotated(rotation), 1000.0)
+	area.get_parent().damage(1.0)
 	NetworkRollback.mutate(area.get_parent())
 	
 	disable_projectile()

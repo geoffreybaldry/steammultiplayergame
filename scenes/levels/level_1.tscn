@@ -66,13 +66,10 @@ tile_set = ExtResource("6_sk5k4")
 [node name="spawn_points" type="Node2D" parent="."]
 
 [node name="spawn_point" parent="spawn_points" instance=ExtResource("2_nsrm0")]
-position = Vector2(0, 32)
+position = Vector2(-64, 0)
 
 [node name="spawn_point2" parent="spawn_points" instance=ExtResource("2_nsrm0")]
-position = Vector2(128, 32)
-
-[node name="spawn_point3" parent="spawn_points" instance=ExtResource("2_nsrm0")]
-position = Vector2(64, 160)
+position = Vector2(-64, 64)
 
 [node name="end_points" type="Node2D" parent="."]
 

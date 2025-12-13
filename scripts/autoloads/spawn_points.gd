@@ -1,5 +1,8 @@
 extends Node
 
+const TILE_SIZE_PX: int = 32
+const HALF_TILE_SIZE_PX: int = 16
+
 var spawn_points = {}
 
 
@@ -14,7 +17,7 @@ func get_free_spawn_point_position():
 		if spawn_points[spawn_point_id].is_available():
 			# Mark this spawn point temporarily as selected
 			spawn_points[spawn_point_id].select() 
-			return spawn_points[spawn_point_id].global_position
+			return spawn_points[spawn_point_id].global_position + Vector2(HALF_TILE_SIZE_PX, HALF_TILE_SIZE_PX)
 			
 	return null
 

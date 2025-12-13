@@ -1,7 +1,8 @@
-[gd_scene load_steps=11 format=3 uid="uid://c7njnx2d0nquw"]
+[gd_scene load_steps=13 format=3 uid="uid://c7njnx2d0nquw"]
 
 [ext_resource type="PackedScene" uid="uid://6f2otn0dh6q5" path="res://scenes/enemies/enemy.tscn" id="1_5365w"]
 [ext_resource type="Script" uid="uid://ba6leokbin1kh" path="res://scripts/enemies/skeleton.gd" id="2_esykl"]
+[ext_resource type="Shader" uid="uid://dvfjf0rl65ehj" path="res://shaders/blink.gdshader" id="3_6ucyf"]
 [ext_resource type="Texture2D" uid="uid://fbqpv78ngo5l" path="res://assets/sprite/skeleton.png" id="3_038oa"]
 [ext_resource type="AnimationLibrary" uid="uid://4yfq655wpl3w" path="res://animations/skeleton/skeleton_animations.res" id="4_038oa"]
 [ext_resource type="Texture2D" uid="uid://bi6q2qm5x1pdd" path="res://assets/sprite/health/healthbar_under.png" id="5_3mw36"]
@@ -9,6 +10,12 @@
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_esykl"]
 radius = 14.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vncds"]
+resource_local_to_scene = true
+shader = ExtResource("3_6ucyf")
+shader_parameter/blink_color = Color(1, 0, 0, 1)
+shader_parameter/blink_intensity = 0.0
 
 [sub_resource type="Animation" id="Animation_038oa"]
 length = 0.001
@@ -47,6 +54,7 @@ min_sensor_radius = 20.0
 shape = SubResource("CircleShape2D_esykl")
 
 [node name="Sprite2D" parent="visual" index="0"]
+material = SubResource("ShaderMaterial_vncds")
 texture = ExtResource("3_038oa")
 hframes = 6
 
