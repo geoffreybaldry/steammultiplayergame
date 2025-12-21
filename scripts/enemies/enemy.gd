@@ -51,7 +51,7 @@ func _ready() -> void:
 	multiplayer_synchronizer.delta_synchronized.connect(_on_multiplayer_synchronizer_synchronized)
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	pass
 
 func _tick(_dt:float, _tk: int):
@@ -66,7 +66,7 @@ func set_movement_target(movement_target: Vector2):
 	navigation_agent_2d.set_target_position(movement_target)
 
 
-func _rollback_tick(_delta, _tick, _is_fresh: bool):
+func _rollback_tick(_delta, _tk, _is_fresh: bool):
 	pass
 
 

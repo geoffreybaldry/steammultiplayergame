@@ -34,7 +34,7 @@ func _tick(_dt:float, _tk: int) -> void:
 				# Re-position the player instance on a spawn point
 				Log.pr("Re-positioning instance for peer id " + str(this_peer_id))
 				player_instances[this_peer_id].respawn_position = SpawnPoints.get_free_spawn_point_position()
-				player_instances[this_peer_id].enabled = true
+				#player_instances[this_peer_id].enabled = true
 				player_queue.pop_front()
 		else:
 			Log.pr("No free spawn points for player " + str(this_peer_id) + " on tick " + str(_tk))

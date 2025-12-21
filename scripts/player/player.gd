@@ -142,6 +142,7 @@ func die() -> void:
 	# The recent death_tick is conveyed to the clients by the
 	# authority as a synchronized variable
 	death_tick = NetworkTime.tick
-	respawn_position = SpawnPoints.get_free_spawn_point_position()
+	#respawn_position = SpawnPoints.get_free_spawn_point_position()
 	
-	#Events.game_events.player_died.emit(peer_id)
+	
+	Events.game_events.player_died.emit(peer_id)
