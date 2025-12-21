@@ -61,6 +61,7 @@ _spawnable_scenes = PackedStringArray("uid://c7njnx2d0nquw")
 spawn_path = NodePath("..")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+process_callback = 0
 
 [node name="PhantomCameraHost" type="Node" parent="Camera2D"]
 process_priority = 300

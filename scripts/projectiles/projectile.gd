@@ -3,10 +3,12 @@ class_name Projectile
 
 @export var speed:int
 @export var damage:int
+@export var shove_force:float
 
 @onready var long_running_timer: Timer = $long_running_timer
 @onready var freeing_timer: Timer = $freeing_timer
-@onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
+@onready var projectile_collision_shape_2d: CollisionShape2D = $projectile_collision_shape_2d
+@onready var projectile_hurtbox_collision_shape_2d: CollisionShape2D = $HurtBox/projectile_hurtbox_collision_shape_2d
 @onready var audio_stream_player_2d: AudioStreamPlayer2D = $AudioStreamPlayer2D
 @onready var tick_interpolator: TickInterpolator = $TickInterpolator
 
@@ -23,7 +25,8 @@ func _tick(_delta, _t) -> void:
 
 
 func disable_projectile() -> void:
-	#collision_shape_2d.disabled = true
+	projectile_collision_shape_2d.set_deferred("disabled", true)
+	projectile_hurtbox_collision_shape_2d.set_deferred("disabled", true)
 	visible = false
 	freeing_timer.start()
 	

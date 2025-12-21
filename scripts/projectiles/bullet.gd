@@ -18,8 +18,9 @@ func _on_hurt_box_area_entered(area: Area2D) -> void:
 	Log.pr("Bullet from peer " + str(fired_by) + " Hit HitBox " + area.get_parent().name)
 	
 	# Perform a "shove" on the actor
-	area.get_parent().shove(Vector2(1,0).rotated(rotation), 1000.0)
-	area.get_parent().damage(1.0)
-	NetworkRollback.mutate(area.get_parent())
+	var actor: Node2D = area.get_parent()
+	actor.shove(Vector2(1,0).rotated(rotation), shove_force)
+	actor.damage(1.0)
+	NetworkRollback.mutate(actor) # Is this doing anything?
 	
 	disable_projectile()

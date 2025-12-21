@@ -1,10 +1,9 @@
-[gd_scene load_steps=18 format=3 uid="uid://cdg0vfkaa0w3v"]
+[gd_scene load_steps=17 format=3 uid="uid://cdg0vfkaa0w3v"]
 
 [ext_resource type="Script" uid="uid://g1v38iwbwey" path="res://scripts/player/player.gd" id="1_8afob"]
 [ext_resource type="Texture2D" uid="uid://cr63fvns0bj6v" path="res://assets/sprite/players.png" id="2_5gtgg"]
 [ext_resource type="Script" uid="uid://dlhab88x572jk" path="res://scripts/player/player_input.gd" id="3_gmlin"]
 [ext_resource type="AnimationLibrary" uid="uid://n1n580g3sb2p" path="res://animations/player/player_animations.res" id="4_h17s1"]
-[ext_resource type="Texture2D" uid="uid://bixw1tij30ea2" path="res://assets/sprites/2d_lights_and_shadows_neutral_point_light.png" id="5_p47bc"]
 [ext_resource type="Script" uid="uid://d350u8evihs1u" path="res://addons/netfox/rollback/rollback-synchronizer.gd" id="5_qek5x"]
 [ext_resource type="Texture2D" uid="uid://b43bod4d31r2y" path="res://assets/sprite/weapon_pointer.png" id="6_h17s1"]
 [ext_resource type="Script" uid="uid://dour8fehaaugp" path="res://addons/netfox/tick-interpolator.gd" id="6_qek5x"]
@@ -147,11 +146,6 @@ libraries = {
 &"player_animations": ExtResource("4_h17s1")
 }
 autoplay = "player_animations/player_idle"
-
-[node name="PointLight2D" type="PointLight2D" parent="visual"]
-visible = false
-scale = Vector2(0.179688, 0.203125)
-texture = ExtResource("5_p47bc")
 
 [node name="audio" type="Node2D" parent="."]
 

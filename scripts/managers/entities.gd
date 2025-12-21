@@ -58,7 +58,7 @@ func _on_all_peers_loaded() -> void:
 	Log.pr(str(get_tree()) + "Spawning Enemies into Level...")
 	#await get_tree().create_timer(1.0).timeout
 	spawn_enemy(Vector2(130, 130))
-	spawn_enemy(Vector2(160, 160))
+	#spawn_enemy(Vector2(160, 160))
 
 func _on_player_died(this_peer_id: int) -> void:
 	player_queue.append(this_peer_id)

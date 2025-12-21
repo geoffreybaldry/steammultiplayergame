@@ -6,20 +6,21 @@
 [ext_resource type="AudioStream" uid="uid://cm0qps5muchqr" path="res://assets/audio/effects/weapon/mixkit-short-laser-gun-shot-1670.wav" id="4_i2bxc"]
 [ext_resource type="AnimationLibrary" uid="uid://brwwbxalcpio" path="res://animations/weapons/bullet_animations.res" id="5_jobuq"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_k5ji7"]
-size = Vector2(4, 2)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kxxn2"]
+size = Vector2(32, 12)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_i2bxc"]
-size = Vector2(28, 8)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jobuq"]
+size = Vector2(36, 16)
 
 [node name="bullet" instance=ExtResource("1_k5ji7")]
 collision_mask = 1
 script = ExtResource("1_48g2p")
 speed = 400
 damage = 1
+shove_force = 50.0
 
-[node name="CollisionShape2D" parent="." index="0"]
-shape = SubResource("RectangleShape2D_k5ji7")
+[node name="projectile_collision_shape_2d" parent="." index="0"]
+shape = SubResource("RectangleShape2D_kxxn2")
 
 [node name="Sprite2D" parent="." index="1"]
 scale = Vector2(2, 2)
@@ -37,9 +38,8 @@ stream = ExtResource("4_i2bxc")
 [node name="HurtBox" parent="." index="5"]
 collision_mask = 32
 
-[node name="CollisionShape2D" parent="HurtBox" index="0"]
-position = Vector2(0, 1)
-shape = SubResource("RectangleShape2D_i2bxc")
+[node name="projectile_hurtbox_collision_shape_2d" parent="HurtBox" index="0"]
+shape = SubResource("RectangleShape2D_jobuq")
 
 [node name="AnimationPlayer" parent="." index="7"]
 libraries = {
