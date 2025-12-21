@@ -51,14 +51,13 @@ func _on_all_peers_loaded() -> void:
 	# Spawn Players
 	for peer_id in Network.players:
 		player_queue.append(peer_id)
-		#await get_tree().create_timer(0.5).timeout
 		
 
 	# Spawn Static Enemies
 	Log.pr(str(get_tree()) + "Spawning Enemies into Level...")
-	#await get_tree().create_timer(1.0).timeout
 	spawn_enemy(Vector2(130, 130))
-	#spawn_enemy(Vector2(160, 160))
+	spawn_enemy(Vector2(160, 160))
+
 
 func _on_player_died(this_peer_id: int) -> void:
 	player_queue.append(this_peer_id)
@@ -79,6 +78,9 @@ func spawn_player(this_peer_id: int, this_position: Vector2) -> void:
 	
 	# Set the player's position to a random offst from an initial value - replace this with spawn pads later)
 	player_instance.position = this_position
+	
+	# Set the color of the player
+	player_instance.player_color = Network.seats.find(this_peer_id)
 	
 	# Add the player instance to the scene tree, under the MultiplayerSpawner's spawn path.
 	# This causes the instance to also be spawned on all the client peers too.

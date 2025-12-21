@@ -114,6 +114,9 @@ properties/1/replication_mode = 2
 properties/2/path = NodePath(".:death_tick")
 properties/2/spawn = true
 properties/2/replication_mode = 2
+properties/3/path = NodePath(".:player_color")
+properties/3/spawn = true
+properties/3/replication_mode = 0
 
 [node name="player" type="CharacterBody2D" groups=["Players"]]
 collision_layer = 8
@@ -145,7 +148,7 @@ libraries = {
 &"": SubResource("AnimationLibrary_75vfm"),
 &"player_animations": ExtResource("4_h17s1")
 }
-autoplay = "player_animations/player_idle"
+autoplay = "player_animations/player_idle_yellow"
 
 [node name="audio" type="Node2D" parent="."]
 

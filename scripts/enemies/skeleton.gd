@@ -7,7 +7,16 @@ func _ready() -> void:
 	navigation_agent_2d.velocity_computed.connect(Callable(_on_velocity_computed))
 
 
+func _process(delta: float) -> void:
+	super(delta)
+	state_label.text = str(STATES.keys()[current_state])
+	velocity_label.text = str(velocity)
+	shove_vector_label.text = str(shove_vector)
+	apply_animation()
+
+
 func _tick(_dt:float, _tk: int):
+	super(_dt, _tk)
 	if current_state == STATES.DYING:
 		return
 	
@@ -18,8 +27,8 @@ func _tick(_dt:float, _tk: int):
 
 
 func _rollback_tick(_delta, _tk, _is_fresh: bool):
-	if not is_multiplayer_authority():
-		return
+	#if not is_multiplayer_authority():
+		#return
 	
 	if current_state == STATES.DYING:
 		return
@@ -32,22 +41,25 @@ func _rollback_tick(_delta, _tk, _is_fresh: bool):
 	if apply_shove:
 		# Shove navigation logic
 		velocity = shove_vector
-		velocity = velocity.limit_length(max_speed)
-		velocity *= NetworkTime.physics_factor
-		move_and_slide()
-		velocity /= NetworkTime.physics_factor
+		_on_velocity_computed(velocity)
 		shove_vector = shove_vector.move_toward(Vector2.ZERO, deceleration * _delta)
 		if shove_vector.length() < 10:
 			shove_vector = Vector2.ZERO
 			apply_shove = false
 	else:
-		# Path navigation logic
-		var next_path_position: Vector2 = navigation_agent_2d.get_next_path_position()
-		var target_vector: Vector2 = global_position.direction_to(next_path_position).normalized() * max_speed
-		velocity = velocity.move_toward(target_vector, acceleration * _delta) 
-		
-		#navigation_agent_2d.set_velocity(velocity)
-		_on_velocity_computed(velocity)
+		if current_state == STATES.IDLE:
+			velocity = velocity.move_toward(Vector2.ZERO, deceleration * _delta)
+			_on_velocity_computed(velocity)
+		else:
+			# Path navigation logic
+			var next_path_position: Vector2 = navigation_agent_2d.get_next_path_position()
+			var target_vector: Vector2 = global_position.direction_to(next_path_position).normalized() * max_speed
+			velocity = velocity.move_toward(target_vector, acceleration * _delta) 
+			
+			if navigation_agent_2d.avoidance_enabled:
+				navigation_agent_2d.set_velocity(velocity)
+			else:
+				_on_velocity_computed(velocity)
 
 
 func _on_velocity_computed(safe_velocity: Vector2):
@@ -58,14 +70,6 @@ func _on_velocity_computed(safe_velocity: Vector2):
 	move_and_slide()
 	velocity /= NetworkTime.physics_factor
 
-	
-func _process(delta: float) -> void:
-	#super(delta)
-	state_label.text = str(STATES.keys()[current_state])
-	velocity_label.text = str(velocity)
-	shove_vector_label.text = str(shove_vector)
-	apply_animation()
-	
 
 func apply_animation() -> void:
 	match current_state:
@@ -73,8 +77,6 @@ func apply_animation() -> void:
 			animation_player.play("skeleton_animations/skeleton_die")
 		STATES.IDLE:
 			animation_player.play("skeleton_animations/skeleton_idle")
-		STATES.WALKING:
-			animation_player.play("skeleton_animations/skeleton_walk")
 		STATES.CHASING:
 			animation_player.play("skeleton_animations/skeleton_walk")
 			

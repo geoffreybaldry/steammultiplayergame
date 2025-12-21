@@ -27,10 +27,10 @@ var players = {}
 # before the connection is made. It will be passed to every other peer.
 # For example, the value of "name" can be set to something the player
 # entered in a UI scene.
-var my_player_info = {"name": "Not yet set"}
+var my_player_info = {
+	"name": "Not yet set"
+}
 
-## Used by the server to keep track of how many players have loaded the level
-#var players_loaded: int = 0
 
 # Our multiplayer peer id, 0 for not set, 1 for server, any other number for client
 var peer_id: int = 0:
@@ -40,13 +40,15 @@ var peer_id: int = 0:
 	get:
 		return peer_id
 
+# 4 Seats for the peers to sit at - helps decide their player color
+var seats: Array[int] = [-1, -1, -1, -1]
+
 # Our own internal signals that we might want to pass game-wide
 signal server_started()							# Emitted when this peer starts as a server
 #signal networktime_client_synced(peer_id: int)	# Emitted when a client syncs its NetFox network time with the server
 signal server_disconnected         				# Emitted if we see the host server disconnect - bad news
 signal peer_connected(peer_id: int)				# Emitted if a peer connects
 signal peer_disconnected(peer_id: int)			# Emitted if a peer disconnects so we can let the rest of the game know
-#signal all_peers_loaded						# Emitted when all peers have loaded the chosen level (moved to Levels.gd)
 signal peer_id_changed(peer_id: int)			# Emitted when our peer_id changes
 
 func _ready() -> void:
@@ -83,6 +85,27 @@ func _on_peer_connected(this_peer_id: int) -> void:
 	
 	# Let the player know about us by contacting them directly with an RPC direct to their id (rpc_id)
 	register_player.rpc_id(this_peer_id, my_player_info)
+	
+	# The server keeps track of the seats the peers are sitting at
+	if multiplayer.is_server():
+		seat_player(this_peer_id)
+
+
+func seat_player(this_peer_id: int) -> bool:
+	for idx in range(0, seats.size()):
+		if seats[idx] == -1:
+			seats[idx] = this_peer_id
+			Log.pr(seats)
+			return true
+	return false
+
+
+func unseat_player(this_peer_id: int) -> bool:
+	for idx in range(0, seats.size()):
+		if seats[idx] == this_peer_id:
+			seats[idx] = -1
+			return true
+	return false
 
 
 func _on_peer_disconnected(this_peer_id: int) -> void:
@@ -162,6 +185,8 @@ func create_network() -> void:
 
 		my_player_info["name"] = "Host User"
 		players[peer_id] = my_player_info
+		
+		seat_player(peer_id)
 	else:
 		Log.warn("Error creating Host Network, Error: " + error_string(err))
 	
@@ -217,16 +242,3 @@ func register_player(this_player_info) -> void:
 	
 	Log.prn(players)
 	
-
-## Every peer will call this when they have loaded the game scene.
-## Only the server needs to keep track of the number of players loaded.
-#@rpc("any_peer", "call_local", "reliable")
-#func player_loaded():
-	#Log.pr("Player loaded scene - Player ID : " + str(multiplayer.get_remote_sender_id()))
-	#if multiplayer.is_server():
-		#players_loaded += 1
-		#Log.pr("Players in game : " + str(players_loaded) + "/" + str(players.size()))
-		#if players_loaded == players.size():
-			#Log.pr("All required players in game : " + str(players_loaded) + "/" + str(players.size()))
-			#all_peers_loaded.emit()
-			#players_loaded = 0

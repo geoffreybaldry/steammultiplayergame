@@ -79,3 +79,5 @@ collision_layer = 0
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox"]
+
+[connection signal="navigation_finished" from="navigation/NavigationAgent2D" to="." method="_on_navigation_agent_2d_navigation_finished"]

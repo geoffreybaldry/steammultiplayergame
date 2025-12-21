@@ -129,6 +129,7 @@ die={
 2d_physics/layer_5="player_hitbox"
 2d_physics/layer_6="enemy_hitbox"
 2d_physics/layer_7="spawn_point"
+avoidance/layer_1="enemy"
 
 [netfox]
 

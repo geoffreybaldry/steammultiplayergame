@@ -21,14 +21,11 @@ class_name Enemy
 @onready var velocity_label: Label = $visual/velocity_label
 @onready var shove_vector_label: Label = $visual/shove_vector_label
 
-
-
 enum STATES {
 	IDLE,
-	WALKING,
+	SEARCHIG,
 	CHASING,
 	ATTACKING,
-	DAMAGED,
 	DYING,
 }
 
@@ -36,7 +33,6 @@ var current_state = STATES.IDLE		# Synchronized
 var health: float					# Synchronized
 var apply_shove: bool = false
 var shove_vector: Vector2
-#var target_vector: Vector2
 
 var audio = {
 	"impactMetal_002" = preload("res://assets/audio/effects/sci-fi/impactMetal_002.ogg")
@@ -55,10 +51,10 @@ func _ready() -> void:
 	multiplayer_synchronizer.delta_synchronized.connect(_on_multiplayer_synchronizer_synchronized)
 
 
-func _tick(_dt:float, _tk: int):
+func _process(delta: float) -> void:
 	pass
 
-func _process(delta: float) -> void:
+func _tick(_dt:float, _tk: int):
 	pass
 
 
@@ -98,7 +94,6 @@ func damage(value:float) -> void:
 	
 # Used to perform "push back" on an enemy
 func shove(direction: Vector2, force: float) -> void:
-	Log.pr("Oooh, I got shoved in direction " + str(direction))
 	apply_shove = true
 	shove_vector = direction * force
 
@@ -110,7 +105,6 @@ func set_shader_blink_intensity(new_value: float) -> void:
 
 # Used to play out death sequence, sounds, etc.
 func die() -> void:
-	
 	if is_multiplayer_authority():
 		Log.pr("State is DYING")
 		current_state = STATES.DYING
@@ -118,8 +112,14 @@ func die() -> void:
 
 # Used when the enemy is fully dead, to clean-up, remove the object, etc.
 func dead() -> void:
+	# Disconnect signals
 	multiplayer_synchronizer.synchronized.disconnect(_on_multiplayer_synchronizer_synchronized)
 	multiplayer_synchronizer.delta_synchronized.disconnect(_on_multiplayer_synchronizer_synchronized)
+	NetworkTime.on_tick.disconnect(_tick)
 	
 	if is_multiplayer_authority():
 		queue_free()
+
+
+func _on_navigation_agent_2d_navigation_finished() -> void:
+	current_state = STATES.IDLE

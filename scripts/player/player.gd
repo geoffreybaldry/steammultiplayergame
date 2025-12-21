@@ -12,6 +12,13 @@ extends CharacterBody2D
 ## It also has a MultiplayerSynchronizer to allow some of the server's state
 ## variables to br synchronized to the client, such as peer_id, etc.
 
+enum PLAYER_COLOR {
+	YELLOW,
+	GREEN,
+	BLUE,
+	RED,
+}
+
 @export var max_speed = 120.0
 @export var acceleration = 300.0
 @export var deceleration = 300.0
@@ -41,6 +48,7 @@ var health: int = 100
 var death_tick: int = -1
 var did_respawn: bool = false
 var respawn_position: Vector2
+var player_color: PLAYER_COLOR
 
 var pcam: PhantomCamera2D
 
@@ -113,10 +121,10 @@ func _rollback_tick(_delta, tick, _is_fresh) -> void:
 func apply_animation() -> void:
 	if velocity == Vector2.ZERO:
 		animation_player.speed_scale = 1.0
-		animation_player.play("idle")
+		animation_player.play("player_animations/player_idle" + "_" + PLAYER_COLOR.keys()[player_color].to_lower())
 	else:
 		animation_player.speed_scale = clampf(velocity.length() / max_speed, 0.2, 1.0)
-		animation_player.play("walk")
+		animation_player.play("player_animations/player_walk" + "_" + PLAYER_COLOR.keys()[player_color].to_lower())
 
 
 func footstep_audio() -> void:
