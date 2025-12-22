@@ -3,8 +3,8 @@ extends Node
 @export var player_scene: PackedScene
 @export var enemy_skeleton_scene: PackedScene
 
-@onready var spawned_players: Node = $spawned_players
-@onready var spawned_enemies: Node = $spawned_enemies
+@onready var player_multiplayer_spawner: MultiplayerSpawner = $spawned_players/player_multiplayer_spawner
+@onready var enemy_multiplayer_spawner: MultiplayerSpawner = $spawned_enemies/enemy_multiplayer_spawner
 
 var player_queue: Array[int] = []	# A list of player ids waiting to spawn
 var player_instances = {}			# A dictionary of the player instances
@@ -16,6 +16,9 @@ func _ready() -> void:
 		NetworkTime.on_tick.connect(_tick)
 		Levels.all_peers_loaded.connect(_on_all_peers_loaded)
 		Events.game_events.player_died.connect(_on_player_died)
+		
+	player_multiplayer_spawner.spawn_function = spawn_player
+	enemy_multiplayer_spawner.spawn_function = spawn_enemy
 
 
 func _tick(_dt:float, _tk: int) -> void:
@@ -29,12 +32,16 @@ func _tick(_dt:float, _tk: int) -> void:
 			if not player_instances.has(this_peer_id):
 				# Spawn a brand new player instance
 				Log.pr("Spawning a brand new instance for peer id " + str(this_peer_id))
-				spawn_player(player_queue.pop_front(), SpawnPoints.get_free_spawn_point_position())
+				#spawn_player(player_queue.pop_front(), SpawnPoints.get_free_spawn_point_position())
+				var spawn_data = {
+					"peer_id": player_queue.pop_front(),
+					"global_position": SpawnPoints.get_free_spawn_point_position(),
+				}
+				player_multiplayer_spawner.spawn(spawn_data)
 			else:
 				# Re-position the player instance on a spawn point
 				Log.pr("Re-positioning instance for peer id " + str(this_peer_id))
 				player_instances[this_peer_id].respawn_position = SpawnPoints.get_free_spawn_point_position()
-				#player_instances[this_peer_id].enabled = true
 				player_queue.pop_front()
 		else:
 			Log.pr("No free spawn points for player " + str(this_peer_id) + " on tick " + str(_tk))
@@ -55,44 +62,35 @@ func _on_all_peers_loaded() -> void:
 
 	# Spawn Static Enemies
 	Log.pr(str(get_tree()) + "Spawning Enemies into Level...")
-	spawn_enemy(Vector2(130, 130))
-	spawn_enemy(Vector2(160, 160))
+	
+	var spawn_data = {
+		"global_position" : Vector2(160, 160),
+	}
+	enemy_multiplayer_spawner.spawn(spawn_data)
 
 
 func _on_player_died(this_peer_id: int) -> void:
 	player_queue.append(this_peer_id)
 
 
-# This function only happens on the server - the MultiplayerSpawner replicates 
-# any spawned player nodes on all the peer clients.
-func spawn_player(this_peer_id: int, this_position: Vector2) -> void:
-	Log.pr(str(get_tree()) + "Spawning player with id : " + str(this_peer_id))
+func spawn_player(data: Variant) -> Node:
+	var this_peer_id = data["peer_id"]
+	var this_global_position = data["global_position"]
 	
-	# Instantiate a player scene, and give it the correct peer id
 	var player_instance = player_scene.instantiate()
 	player_instance.peer_id = this_peer_id
-	
-	# This makes the player node in the scene tree have the player's id as its name
-	# Useful for debugging in the "remote" scene view, and also for later despawning if necessary
 	player_instance.name = str(this_peer_id) 
+	player_instance.global_position = this_global_position
 	
-	# Set the player's position to a random offst from an initial value - replace this with spawn pads later)
-	player_instance.position = this_position
-	
-	# Set the color of the player
-	player_instance.player_color = Network.seats.find(this_peer_id)
-	
-	# Add the player instance to the scene tree, under the MultiplayerSpawner's spawn path.
-	# This causes the instance to also be spawned on all the client peers too.
-	# We add the 'true' argument to force readable names - required by MultiplayerSpawner.
-	spawned_players.call_deferred("add_child", player_instance, true)
-	
-	# Add the instantiated scene to the player instances dictionary
-	player_instances[this_peer_id] = player_instance
+	# Godot automatically adds the node to the scene tree
+	return player_instance
 
 
-func spawn_enemy(this_position: Vector2) -> void:
-	Log.pr(str(get_tree()) + "Spawning enemy")
+func spawn_enemy(data: Variant) -> Node:
+	var this_global_position = data["global_position"]
 	var enemy_skeleton_instance = enemy_skeleton_scene.instantiate()
-	enemy_skeleton_instance.global_position = this_position
-	spawned_enemies.call_deferred("add_child", enemy_skeleton_instance, true)
+	enemy_skeleton_instance.global_position = this_global_position
+	
+	# Godot automatically adds the node to the scene tree
+	return enemy_skeleton_instance
+	

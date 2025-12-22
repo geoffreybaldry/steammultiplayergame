@@ -49,12 +49,19 @@ func _ready() -> void:
 	# React to changes in synchronized values
 	multiplayer_synchronizer.synchronized.connect(_on_multiplayer_synchronizer_synchronized)
 	multiplayer_synchronizer.delta_synchronized.connect(_on_multiplayer_synchronizer_synchronized)
+	
+	navigation_agent_2d.velocity_computed.connect(Callable(_on_velocity_computed))
 
 
 func _process(_delta: float) -> void:
-	pass
+	apply_animation()
+
 
 func _tick(_dt:float, _tk: int):
+	pass
+
+
+func _rollback_tick(_delta, _tk, _is_fresh: bool):
 	pass
 
 
@@ -64,10 +71,6 @@ func _on_multiplayer_synchronizer_synchronized() -> void:
 
 func set_movement_target(movement_target: Vector2):
 	navigation_agent_2d.set_target_position(movement_target)
-
-
-func _rollback_tick(_delta, _tk, _is_fresh: bool):
-	pass
 
 
 func apply_animation() -> void:
@@ -120,6 +123,9 @@ func dead() -> void:
 	if is_multiplayer_authority():
 		queue_free()
 
+
+func _on_velocity_computed(safe_velocity: Vector2):
+	pass
 
 func _on_navigation_agent_2d_navigation_finished() -> void:
 	current_state = STATES.IDLE

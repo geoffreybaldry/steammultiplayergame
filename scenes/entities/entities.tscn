@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://coouhq5c56mee"]
+
+[ext_resource type="Script" uid="uid://cdmrn5rt461kh" path="res://scripts/managers/entities.gd" id="1_i6nll"]
+[ext_resource type="PackedScene" uid="uid://cdg0vfkaa0w3v" path="res://scenes/player/player.tscn" id="2_dwgrt"]
+[ext_resource type="PackedScene" uid="uid://c7njnx2d0nquw" path="res://scenes/enemies/skeleton.tscn" id="3_2ktcp"]
+
+[node name="entities" type="Node"]
+script = ExtResource("1_i6nll")
+player_scene = ExtResource("2_dwgrt")
+enemy_skeleton_scene = ExtResource("3_2ktcp")
+
+[node name="spawned_players" type="Node" parent="."]
+
+[node name="player_multiplayer_spawner" type="MultiplayerSpawner" parent="spawned_players"]
+_spawnable_scenes = PackedStringArray("uid://cdg0vfkaa0w3v")
+spawn_path = NodePath("..")
+
+[node name="spawned_enemies" type="Node" parent="."]
+
+[node name="enemy_multiplayer_spawner" type="MultiplayerSpawner" parent="spawned_enemies"]
+_spawnable_scenes = PackedStringArray("uid://c7njnx2d0nquw")
+spawn_path = NodePath("..")

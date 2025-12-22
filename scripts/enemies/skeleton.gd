@@ -4,16 +4,21 @@ class_name Skeleton
 
 func _ready() -> void:
 	super()
-	navigation_agent_2d.velocity_computed.connect(Callable(_on_velocity_computed))
-
+	
+	if not is_multiplayer_authority():
+		Log.pr("Ready Postion : " + str(global_position))
+	
+	#tick_interpolator.teleport()
 
 func _process(delta: float) -> void:
 	super(delta)
 	state_label.text = str(STATES.keys()[current_state])
 	velocity_label.text = str(velocity)
 	shove_vector_label.text = str(shove_vector)
-	apply_animation()
-
+	
+	if not is_multiplayer_authority():
+		Log.pr("Process Postion : " + str(global_position))
+	
 
 func _tick(_dt:float, _tk: int):
 	super(_dt, _tk)
@@ -27,8 +32,12 @@ func _tick(_dt:float, _tk: int):
 
 
 func _rollback_tick(_delta, _tk, _is_fresh: bool):
+	super(_delta, _tk, _is_fresh)
 	#if not is_multiplayer_authority():
 		#return
+	
+	if not is_multiplayer_authority():
+		Log.pr("Rollback Postion : " + str(global_position))
 	
 	if current_state == STATES.DYING:
 		return
@@ -63,6 +72,8 @@ func _rollback_tick(_delta, _tk, _is_fresh: bool):
 
 
 func _on_velocity_computed(safe_velocity: Vector2):
+	super(safe_velocity)
+	
 	velocity = safe_velocity
 	velocity = velocity.limit_length(max_speed)
 	
@@ -72,6 +83,7 @@ func _on_velocity_computed(safe_velocity: Vector2):
 
 
 func apply_animation() -> void:
+	super()
 	match current_state:
 		STATES.DYING:
 			animation_player.play("skeleton_animations/skeleton_die")
@@ -102,6 +114,10 @@ func find_nearby_player() -> Node2D:
 			closest_player = player
 
 	return closest_player
+	
+
+func damage(value:float) -> void:
+	super(value)
 	
 	
 # Used to perform "push back" on an enemy

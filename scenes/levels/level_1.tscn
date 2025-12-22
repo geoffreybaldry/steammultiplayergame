@@ -20,6 +20,7 @@ script = ExtResource("1_x42e6")
 environment = SubResource("Environment_6761a")
 
 [node name="ColorRect" type="ColorRect" parent="environment"]
+visible = false
 offset_left = -512.0
 offset_top = -480.0
 offset_right = 3072.0
@@ -27,6 +28,7 @@ offset_bottom = 1824.0
 color = Color(0, 0, 0, 1)
 
 [node name="CanvasModulate" type="CanvasModulate" parent="environment"]
+visible = false
 color = Color(0, 0, 0, 1)
 
 [node name="lights" type="Node" parent="environment"]
