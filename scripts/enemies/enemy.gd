@@ -20,6 +20,7 @@ class_name Enemy
 @onready var state_label: Label = $visual/state_label
 @onready var velocity_label: Label = $visual/velocity_label
 @onready var shove_vector_label: Label = $visual/shove_vector_label
+@onready var ready_position_label: Label = $visual/ready_position_label
 
 enum STATES {
 	IDLE,
@@ -119,12 +120,13 @@ func dead() -> void:
 	multiplayer_synchronizer.synchronized.disconnect(_on_multiplayer_synchronizer_synchronized)
 	multiplayer_synchronizer.delta_synchronized.disconnect(_on_multiplayer_synchronizer_synchronized)
 	NetworkTime.on_tick.disconnect(_tick)
+	navigation_agent_2d.velocity_computed.disconnect(Callable(_on_velocity_computed))
 	
 	if is_multiplayer_authority():
 		queue_free()
 
 
-func _on_velocity_computed(safe_velocity: Vector2):
+func _on_velocity_computed(_safe_velocity: Vector2):
 	pass
 
 func _on_navigation_agent_2d_navigation_finished() -> void:

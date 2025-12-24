@@ -3,15 +3,17 @@ class_name SpawnPoint
 
 @onready var timer: Timer = $Timer
 
+var id: String = ""
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var occupying_players: Array[String]
 var just_selected: bool = false
 
 func _ready() -> void:
+	# Let the spawn manager know we're here (on the server)
 	_rng.randomize()
-	
-	# Let the spawn manager know we're here
-	SpawnPoints.register(self, generate_id())
+	if is_multiplayer_authority():
+		id = generate_id()
+		SpawnPoints.register(self, id)
 
 
 func select() -> void:

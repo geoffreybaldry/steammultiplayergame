@@ -8,12 +8,12 @@ extends Node
 
 var player_queue: Array[int] = []	# A list of player ids waiting to spawn
 var player_instances = {}			# A dictionary of the player instances
+var enemy_instances = {}			# A dictionary of the spawned enemy instances
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	if is_multiplayer_authority():
-		NetworkTime.on_tick.connect(_tick)
 		Levels.all_peers_loaded.connect(_on_all_peers_loaded)
 		Events.game_events.player_died.connect(_on_player_died)
 		
@@ -21,32 +21,27 @@ func _ready() -> void:
 	enemy_multiplayer_spawner.spawn_function = spawn_enemy
 
 
-func _tick(_dt:float, _tk: int) -> void:
+func _process(delta: float) -> void:
 	if not is_multiplayer_authority():
 		return
 	
 	# If a player is waiting to spawn, find a spawn point
-	if player_queue:
+	if not player_queue.is_empty():
 		var this_peer_id: int = player_queue[0]
-		if SpawnPoints.has_free_spawn_point():
+		var free_spawn_position = SpawnPoints.get_free_spawn_point_position()
+		if free_spawn_position:
 			if not player_instances.has(this_peer_id):
-				# Spawn a brand new player instance
-				Log.pr("Spawning a brand new instance for peer id " + str(this_peer_id))
-				#spawn_player(player_queue.pop_front(), SpawnPoints.get_free_spawn_point_position())
 				var spawn_data = {
-					"peer_id": player_queue.pop_front(),
-					"global_position": SpawnPoints.get_free_spawn_point_position(),
+					"peer_id": this_peer_id,
+					"global_position": free_spawn_position,
+					"player_color": Network.seats.find(this_peer_id)
 				}
-				player_multiplayer_spawner.spawn(spawn_data)
-			else:
-				# Re-position the player instance on a spawn point
-				Log.pr("Re-positioning instance for peer id " + str(this_peer_id))
-				player_instances[this_peer_id].respawn_position = SpawnPoints.get_free_spawn_point_position()
+				var player_instance:Player = player_multiplayer_spawner.spawn(spawn_data)
+				player_instances[this_peer_id] = player_instance
+				# Remove the waiting player from the queue
 				player_queue.pop_front()
 		else:
-			Log.pr("No free spawn points for player " + str(this_peer_id) + " on tick " + str(_tk))
-			
-
+			Log.pr("No free spawn points for player " + str(this_peer_id))
 
 
 # This function is called when all the peers have successfully loaded the
@@ -59,7 +54,6 @@ func _on_all_peers_loaded() -> void:
 	for peer_id in Network.players:
 		player_queue.append(peer_id)
 		
-
 	# Spawn Static Enemies
 	Log.pr(str(get_tree()) + "Spawning Enemies into Level...")
 	
@@ -70,17 +64,20 @@ func _on_all_peers_loaded() -> void:
 
 
 func _on_player_died(this_peer_id: int) -> void:
+	player_instances.erase(this_peer_id)
 	player_queue.append(this_peer_id)
 
 
 func spawn_player(data: Variant) -> Node:
 	var this_peer_id = data["peer_id"]
 	var this_global_position = data["global_position"]
+	var this_player_color = data["player_color"]
 	
 	var player_instance = player_scene.instantiate()
 	player_instance.peer_id = this_peer_id
 	player_instance.name = str(this_peer_id) 
 	player_instance.global_position = this_global_position
+	player_instance.player_color = this_player_color
 	
 	# Godot automatically adds the node to the scene tree
 	return player_instance

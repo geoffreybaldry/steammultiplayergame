@@ -49,6 +49,12 @@ offset_bottom = 23.0
 theme_override_fonts/font = ExtResource("3_jt03m")
 text = "n/a"
 
+[node name="ready_position_label" type="Label" parent="visual"]
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_fonts/font = ExtResource("3_jt03m")
+text = "n/a"
+
 [node name="audio" type="Node2D" parent="."]
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="audio"]

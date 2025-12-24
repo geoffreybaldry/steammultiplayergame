@@ -4,20 +4,13 @@ class_name Skeleton
 
 func _ready() -> void:
 	super()
-	
-	if not is_multiplayer_authority():
-		Log.pr("Ready Postion : " + str(global_position))
-	
-	#tick_interpolator.teleport()
+	ready_position_label.text = str(global_position)
 
 func _process(delta: float) -> void:
 	super(delta)
 	state_label.text = str(STATES.keys()[current_state])
 	velocity_label.text = str(velocity)
 	shove_vector_label.text = str(shove_vector)
-	
-	if not is_multiplayer_authority():
-		Log.pr("Process Postion : " + str(global_position))
 	
 
 func _tick(_dt:float, _tk: int):
@@ -33,11 +26,6 @@ func _tick(_dt:float, _tk: int):
 
 func _rollback_tick(_delta, _tk, _is_fresh: bool):
 	super(_delta, _tk, _is_fresh)
-	#if not is_multiplayer_authority():
-		#return
-	
-	if not is_multiplayer_authority():
-		Log.pr("Rollback Postion : " + str(global_position))
 	
 	if current_state == STATES.DYING:
 		return

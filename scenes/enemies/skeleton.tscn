@@ -88,6 +88,12 @@ offset_top = -53.0
 offset_right = 33.0
 offset_bottom = -30.0
 
+[node name="ready_position_label" parent="visual" index="6"]
+offset_left = -7.0
+offset_top = -60.0
+offset_right = 33.0
+offset_bottom = -37.0
+
 [node name="RollbackSynchronizer" parent="." index="4"]
 enable_prediction = true
 state_properties = Array[String]([":position", ":velocity"])
