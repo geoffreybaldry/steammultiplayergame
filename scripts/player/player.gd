@@ -53,9 +53,9 @@ var audio_footsteps = [
 ]
 
 var health: int = 100
-var death_tick: int = -1
+#var death_tick: int = -1
 var did_respawn: bool = false
-var respawn_position: Vector2
+#var respawn_position: Vector2
 var player_color: PLAYER_COLORS
 
 var pcam: PhantomCamera2D
@@ -91,15 +91,13 @@ func _tick(_dt:float, _tk: int):
 	if health <= 0:
 		Log.pr("Player died")
 
-	apply_animation()
-
 
 #func _after_tick_loop():
 	#if did_respawn:
 		#tick_interpolator.teleport()
 
 
-func _rollback_tick(_delta, tick, _is_fresh) -> void:
+func _rollback_tick(_delta, _tk, _is_fresh) -> void:
 	# Handle respawn
 	#if tick == death_tick:
 		#global_position = respawn_position
@@ -118,6 +116,13 @@ func _rollback_tick(_delta, tick, _is_fresh) -> void:
 	# Limit the maximum velocity of the actor
 	velocity = velocity.limit_length(max_speed)
 	
+	# Set player's state based on velocity, etc.
+	if velocity.length() > 0:
+		current_state = STATES.WALKING
+	else:
+		current_state = STATES.IDLE
+	
+	# Apply the velocity
 	velocity *= NetworkTime.physics_factor
 	move_and_slide()
 	velocity /= NetworkTime.physics_factor
@@ -125,20 +130,28 @@ func _rollback_tick(_delta, tick, _is_fresh) -> void:
 	# Aim weapon
 	weapon_pivot.look_at(position + player_input.aim_direction)
 
+	apply_animation()
 
 # Play the appropriate animation based on the player's velocity
 func apply_animation() -> void:
-	if velocity == Vector2.ZERO:
-		animation_player.speed_scale = 1.0
-		animation_player.play("player_animations/player_idle" + "_" + PLAYER_COLORS.keys()[player_color].to_lower())
-	else:
-		animation_player.speed_scale = clampf(velocity.length() / max_speed, 0.2, 1.0)
-		animation_player.play("player_animations/player_walk" + "_" + PLAYER_COLORS.keys()[player_color].to_lower())
+	match current_state:
+		STATES.IDLE:
+			animation_player.speed_scale = 1.0
+			animation_player.play("player_animations/player_idle" + "_" + PLAYER_COLORS.keys()[player_color].to_lower())
+		STATES.WALKING:
+			animation_player.speed_scale = clampf(velocity.length() / max_speed, 0.2, 1.0)
+			animation_player.play("player_animations/player_walk" + "_" + PLAYER_COLORS.keys()[player_color].to_lower())
+			
+	#if velocity == Vector2.ZERO:
+		#animation_player.speed_scale = 1.0
+		#animation_player.play("player_animations/player_idle" + "_" + PLAYER_COLORS.keys()[player_color].to_lower())
+	#else:
+		#animation_player.speed_scale = clampf(velocity.length() / max_speed, 0.2, 1.0)
+		#animation_player.play("player_animations/player_walk" + "_" + PLAYER_COLORS.keys()[player_color].to_lower())
 
 
 func footstep_audio() -> void:
 	audio_stream_player_2d.stream = audio_footsteps.pick_random()
-
 	audio_stream_player_2d.pitch_scale = randf_range(0.8, 1.2)
 	audio_stream_player_2d.play()
 
@@ -153,6 +166,14 @@ func die() -> void:
 	#death_tick = NetworkTime.tick
 	#respawn_position = SpawnPoints.get_free_spawn_point_position()
 	
+	current_state = STATES.DYING
+	
 	Events.game_events.player_died.emit(peer_id)
-	Log.pr("Emitted die signal")
+	
+	# Once cleaned up, call dead
+	dead()
+
+
+func dead() -> void:
 	queue_free()
+	

@@ -76,4 +76,4 @@ position = Vector2(-64, 64)
 [node name="end_points" type="Node2D" parent="."]
 
 [node name="end_point" parent="end_points" instance=ExtResource("3_x42e6")]
-position = Vector2(320, 192)
+position = Vector2(64, 0)

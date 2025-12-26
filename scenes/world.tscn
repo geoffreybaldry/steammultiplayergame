@@ -44,6 +44,7 @@ visible = false
 [node name="entities" parent="." instance=ExtResource("8_e3hyu")]
 
 [node name="Camera2D" type="Camera2D" parent="."]
+process_callback = 0
 
 [node name="PhantomCameraHost" type="Node" parent="Camera2D"]
 process_priority = 300

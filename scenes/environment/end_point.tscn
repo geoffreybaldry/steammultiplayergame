@@ -1,28 +1,75 @@
-[gd_scene load_steps=5 format=3 uid="uid://b8xii0uwxjsda"]
+[gd_scene load_steps=6 format=3 uid="uid://b8xii0uwxjsda"]
 
 [ext_resource type="Script" uid="uid://lsorgwuxl06" path="res://scripts/environment/end_point.gd" id="1_ci3xq"]
 [ext_resource type="Texture2D" uid="uid://cfi6xajxp4yfy" path="res://assets/sprite/level_props.png" id="1_xglol"]
 [ext_resource type="Texture2D" uid="uid://chksl8hvss267" path="res://assets/sprite/2d_lights_and_shadows_neutral_point_light.png" id="3_gcg5w"]
+[ext_resource type="Texture2D" uid="uid://bi6q2qm5x1pdd" path="res://assets/sprite/health/healthbar_under.png" id="4_uy5sd"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ci3xq"]
-size = Vector2(40, 40)
+size = Vector2(72, 72)
 
 [node name="end_point" type="Area2D"]
+collision_layer = 128
+collision_mask = 8
 script = ExtResource("1_ci3xq")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(16, 16)
+position = Vector2(32, 32)
 shape = SubResource("RectangleShape2D_ci3xq")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(16, 16)
-texture = ExtResource("1_xglol")
-region_enabled = true
-region_rect = Rect2(0, 0, 32, 32)
+[node name="visual" type="Node2D" parent="."]
 
-[node name="PointLight2D" type="PointLight2D" parent="."]
-position = Vector2(16, 16)
+[node name="NinePatchRect" type="NinePatchRect" parent="visual"]
+offset_right = 64.0
+offset_bottom = 64.0
+texture = ExtResource("1_xglol")
+region_rect = Rect2(0, 0, 32, 32)
+patch_margin_left = 4
+patch_margin_top = 4
+patch_margin_right = 4
+patch_margin_bottom = 4
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="visual"]
+offset_top = 68.0
+offset_right = 64.0
+offset_bottom = 72.0
+step = 4.0
+value = 52.0
+nine_patch_stretch = true
+texture_progress = ExtResource("4_uy5sd")
+
+[node name="lights" type="Node2D" parent="visual"]
+
+[node name="PointLight2D" type="PointLight2D" parent="visual/lights"]
 color = Color(0.174317, 0.456963, 0.14389, 1)
 energy = 4.21
 texture = ExtResource("3_gcg5w")
 texture_scale = 0.35
+
+[node name="PointLight2D2" type="PointLight2D" parent="visual/lights"]
+position = Vector2(64, 0)
+color = Color(0.174317, 0.456963, 0.14389, 1)
+energy = 4.21
+texture = ExtResource("3_gcg5w")
+texture_scale = 0.35
+
+[node name="PointLight2D3" type="PointLight2D" parent="visual/lights"]
+position = Vector2(0, 64)
+color = Color(0.174317, 0.456963, 0.14389, 1)
+energy = 4.21
+texture = ExtResource("3_gcg5w")
+texture_scale = 0.35
+
+[node name="PointLight2D4" type="PointLight2D" parent="visual/lights"]
+position = Vector2(64, 64)
+color = Color(0.174317, 0.456963, 0.14389, 1)
+energy = 4.21
+texture = ExtResource("3_gcg5w")
+texture_scale = 0.35
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 3.0
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
