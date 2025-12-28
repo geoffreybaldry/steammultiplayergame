@@ -64,7 +64,6 @@ var pcam: PhantomCamera2D
 func _ready() -> void:
 	# Connect to NetworkTime signals
 	NetworkTime.on_tick.connect(_tick)
-	#NetworkTime.after_tick_loop.connect(_after_tick_loop)
 	
 	# Take a frame for the network to synchronize, etc, and let peer_id be set.
 	await get_tree().process_frame
@@ -91,20 +90,11 @@ func _tick(_dt:float, _tk: int):
 	if health <= 0:
 		Log.pr("Player died")
 
+	apply_animation()
 
-#func _after_tick_loop():
-	#if did_respawn:
-		#tick_interpolator.teleport()
 
 
 func _rollback_tick(_delta, _tk, _is_fresh) -> void:
-	# Handle respawn
-	#if tick == death_tick:
-		#global_position = respawn_position
-		#did_respawn = true
-	#else:
-		#did_respawn = false
-	
 	if player_input.just_die:
 		Log.pr("Noticed die signal in player's rollback tick")
 		die()
@@ -130,7 +120,6 @@ func _rollback_tick(_delta, _tk, _is_fresh) -> void:
 	# Aim weapon
 	weapon_pivot.look_at(position + player_input.aim_direction)
 
-	apply_animation()
 
 # Play the appropriate animation based on the player's velocity
 func apply_animation() -> void:

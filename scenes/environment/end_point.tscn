@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://lsorgwuxl06" path="res://scripts/environment/end_point.gd" id="1_ci3xq"]
 [ext_resource type="Texture2D" uid="uid://cfi6xajxp4yfy" path="res://assets/sprite/level_props.png" id="1_xglol"]
-[ext_resource type="Texture2D" uid="uid://chksl8hvss267" path="res://assets/sprite/2d_lights_and_shadows_neutral_point_light.png" id="3_gcg5w"]
+[ext_resource type="PackedScene" uid="uid://bywvs1gck0ktg" path="res://scenes/environment/lights/point_light_small_no_flicker.tscn" id="4_qg12y"]
 [ext_resource type="Texture2D" uid="uid://bi6q2qm5x1pdd" path="res://assets/sprite/health/healthbar_under.png" id="4_uy5sd"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ci3xq"]
@@ -40,35 +40,26 @@ texture_progress = ExtResource("4_uy5sd")
 
 [node name="lights" type="Node2D" parent="visual"]
 
-[node name="PointLight2D" type="PointLight2D" parent="visual/lights"]
-color = Color(0.174317, 0.456963, 0.14389, 1)
-energy = 4.21
-texture = ExtResource("3_gcg5w")
-texture_scale = 0.35
+[node name="point_light_small_no-flicker" parent="visual/lights" instance=ExtResource("4_qg12y")]
+color = Color(0, 1, 0, 1)
+energy = 2.0
 
-[node name="PointLight2D2" type="PointLight2D" parent="visual/lights"]
+[node name="point_light_small_no-flicker2" parent="visual/lights" instance=ExtResource("4_qg12y")]
 position = Vector2(64, 0)
-color = Color(0.174317, 0.456963, 0.14389, 1)
-energy = 4.21
-texture = ExtResource("3_gcg5w")
-texture_scale = 0.35
+color = Color(0, 1, 0, 1)
+energy = 2.0
 
-[node name="PointLight2D3" type="PointLight2D" parent="visual/lights"]
-position = Vector2(0, 64)
-color = Color(0.174317, 0.456963, 0.14389, 1)
-energy = 4.21
-texture = ExtResource("3_gcg5w")
-texture_scale = 0.35
-
-[node name="PointLight2D4" type="PointLight2D" parent="visual/lights"]
+[node name="point_light_small_no-flicker3" parent="visual/lights" instance=ExtResource("4_qg12y")]
 position = Vector2(64, 64)
-color = Color(0.174317, 0.456963, 0.14389, 1)
-energy = 4.21
-texture = ExtResource("3_gcg5w")
-texture_scale = 0.35
+color = Color(0, 1, 0, 1)
+energy = 2.0
+
+[node name="point_light_small_no-flicker4" parent="visual/lights" instance=ExtResource("4_qg12y")]
+position = Vector2(0, 64)
+color = Color(0, 1, 0, 1)
+energy = 2.0
 
 [node name="Timer" type="Timer" parent="."]
-wait_time = 3.0
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_body_exited"]

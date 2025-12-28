@@ -8,7 +8,8 @@ extends Node
 
 var player_queue: Array[int] = []	# A list of player ids waiting to spawn
 var player_instances = {}			# A dictionary of the player instances
-var enemy_instances = {}			# A dictionary of the spawned enemy instances
+#var enemy_instances = {}			# A dictionary of the spawned enemy instances
+var enemy_instances: Array[Enemy]	# An array of the spawned enemy instances
 
 
 # Called when the node enters the scene tree for the first time.
@@ -16,12 +17,13 @@ func _ready() -> void:
 	if is_multiplayer_authority():
 		Levels.all_peers_loaded.connect(_on_all_peers_loaded)
 		Events.game_events.player_died.connect(_on_player_died)
+		Events.game_events.level_complete.connect(_on_level_complete)
 		
 	player_multiplayer_spawner.spawn_function = spawn_player
 	enemy_multiplayer_spawner.spawn_function = spawn_enemy
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if not is_multiplayer_authority():
 		return
 	
@@ -60,13 +62,27 @@ func _on_all_peers_loaded() -> void:
 	var spawn_data = {
 		"global_position" : Vector2(160, 160),
 	}
-	enemy_multiplayer_spawner.spawn(spawn_data)
+	var enemy_instance: Enemy = enemy_multiplayer_spawner.spawn(spawn_data)
+	enemy_instances.append(enemy_instance)
 
 
 func _on_player_died(this_peer_id: int) -> void:
 	player_instances.erase(this_peer_id)
 	player_queue.append(this_peer_id)
 
+
+func _on_level_complete() -> void:
+	Log.pr("Clearing player instances")
+	for player_key in player_instances.keys():
+		player_instances[player_key].queue_free()
+	player_instances.clear()
+	Log.pr("Clearing enemy instances")
+	for enemy in enemy_instances:
+		enemy.queue_free()
+	enemy_instances.clear()
+	Log.pr("Clearing player waiting to spawn queue")
+	player_queue.clear()
+	
 
 func spawn_player(data: Variant) -> Node:
 	var this_peer_id = data["peer_id"]

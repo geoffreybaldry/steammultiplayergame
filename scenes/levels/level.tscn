@@ -1,0 +1,69 @@
+[gd_scene load_steps=9 format=3 uid="uid://4rac6jponypr"]
+
+[ext_resource type="Script" uid="uid://bn38b501xsyga" path="res://scripts/levels/level.gd" id="1_377w7"]
+[ext_resource type="TileSet" uid="uid://byhtlte2fr3bh" path="res://assets/tilesets/dungeon_ground.tres" id="2_bovvr"]
+[ext_resource type="TileSet" uid="uid://jr844yg7uh27" path="res://assets/tilesets/dungeon_walls.tres" id="3_b2cq8"]
+[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="4_d4w6o"]
+[ext_resource type="Script" uid="uid://bhexx6mj1xv3q" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_2d.gd" id="5_mbbpy"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="6_ouxo3"]
+
+[sub_resource type="Environment" id="Environment_b2cq8"]
+resource_local_to_scene = true
+
+[sub_resource type="Resource" id="Resource_icy5c"]
+script = ExtResource("6_ouxo3")
+duration = 1.0
+transition = 0
+ease = 2
+
+[node name="level" type="Node2D"]
+script = ExtResource("1_377w7")
+
+[node name="environment" type="Node2D" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="environment"]
+environment = SubResource("Environment_b2cq8")
+
+[node name="ColorRect" type="ColorRect" parent="environment"]
+offset_left = -1024.0
+offset_top = -768.0
+offset_right = 2304.0
+offset_bottom = 1536.0
+color = Color(0, 0, 0, 1)
+
+[node name="CanvasModulate" type="CanvasModulate" parent="environment"]
+color = Color(0.141894, 0.141894, 0.141894, 1)
+
+[node name="lights" type="Node2D" parent="environment"]
+
+[node name="DirectionalLight2D" type="DirectionalLight2D" parent="environment/lights"]
+height = 0.5
+
+[node name="tilemaps" type="Node2D" parent="."]
+
+[node name="ground_tilemap_layer" type="TileMapLayer" parent="tilemaps"]
+tile_set = ExtResource("2_bovvr")
+
+[node name="wall_tilemap_layer" type="TileMapLayer" parent="tilemaps"]
+tile_set = ExtResource("3_b2cq8")
+
+[node name="spawn_points" type="Node2D" parent="."]
+
+[node name="end_points" type="Node2D" parent="."]
+
+[node name="camera_start_marker" type="Marker2D" parent="."]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="PhantomCameraHost" type="Node" parent="Camera2D"]
+process_priority = 300
+process_physics_priority = 300
+script = ExtResource("4_d4w6o")
+metadata/_custom_type_script = "uid://bd046eokvcnu2"
+
+[node name="PhantomCamera2D" type="Node2D" parent="."]
+top_level = true
+script = ExtResource("5_mbbpy")
+follow_mode = 5
+tween_resource = SubResource("Resource_icy5c")
+metadata/_custom_type_script = "uid://bhexx6mj1xv3q"

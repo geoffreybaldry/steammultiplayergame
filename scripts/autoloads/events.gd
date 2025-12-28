@@ -35,3 +35,5 @@ class GameEvents:
 	#signal player_fired(peer_id: int, projectile_global_position: Vector2, projectile_rotation: float)
 	@warning_ignore("unused_signal")
 	signal player_died(peer_id: int)
+	@warning_ignore("unused_signal")
+	signal level_complete

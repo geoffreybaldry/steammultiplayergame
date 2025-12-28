@@ -1,5 +1,7 @@
 extends Area2D
 
+@export var endpoint_target_level: String
+
 @onready var texture_progress_bar: TextureProgressBar = $visual/TextureProgressBar
 @onready var timer: Timer = $Timer
 
@@ -12,7 +14,7 @@ func _ready() -> void:
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if occupying_players.is_empty():
 		texture_progress_bar.value = 0
 		return
@@ -42,6 +44,12 @@ func _on_body_exited(body: Node2D) -> void:
 
 
 func _on_timer_timeout() -> void:
-	Log.pr("Ping!")
 	timer.stop()
-	# Level completed, move to next level
+	Log.pr("Level Complete!")
+	
+	Events.game_events.level_complete.emit()
+	
+	if endpoint_target_level.is_empty():
+		Levels.goto_next_scene()
+	else:
+		Levels.goto_scene_name(endpoint_target_level)

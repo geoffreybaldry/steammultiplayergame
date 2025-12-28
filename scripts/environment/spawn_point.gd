@@ -2,6 +2,8 @@ extends Area2D
 class_name SpawnPoint
 
 @onready var timer: Timer = $Timer
+@onready var gpu_particles_2d: GPUParticles2D = $GPUParticles2D
+
 
 var id: String = ""
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()

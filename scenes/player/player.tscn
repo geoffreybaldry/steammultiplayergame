@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://cdg0vfkaa0w3v"]
+[gd_scene load_steps=19 format=3 uid="uid://cdg0vfkaa0w3v"]
 
 [ext_resource type="Script" uid="uid://g1v38iwbwey" path="res://scripts/player/player.gd" id="1_8afob"]
 [ext_resource type="Texture2D" uid="uid://cr63fvns0bj6v" path="res://assets/sprite/players.png" id="2_5gtgg"]
@@ -104,16 +104,22 @@ _data = {
 &"walk": SubResource("Animation_75vfm")
 }
 
+[sub_resource type="Gradient" id="Gradient_tg1mr"]
+offsets = PackedFloat32Array(0.215569, 0.756487)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_qek5x"]
+gradient = SubResource("Gradient_tg1mr")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_5gtgg"]
-properties/0/path = NodePath(".:death_tick")
+properties/0/path = NodePath(".:current_state")
 properties/0/spawn = true
 properties/0/replication_mode = 2
-properties/1/path = NodePath(".:current_state")
+properties/1/path = NodePath(".:health")
 properties/1/spawn = true
 properties/1/replication_mode = 2
-properties/2/path = NodePath(".:health")
-properties/2/spawn = true
-properties/2/replication_mode = 2
 
 [node name="player" type="CharacterBody2D" groups=["Players"]]
 collision_layer = 8
@@ -146,6 +152,12 @@ libraries = {
 &"player_animations": ExtResource("4_h17s1")
 }
 autoplay = "player_animations/player_idle_yellow"
+
+[node name="PointLight2D" type="PointLight2D" parent="visual"]
+scale = Vector2(2, 2)
+energy = 2.0
+shadow_enabled = true
+texture = SubResource("GradientTexture2D_qek5x")
 
 [node name="audio" type="Node2D" parent="."]
 

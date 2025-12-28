@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://bywvs1gck0ktg"]
+
+[sub_resource type="Gradient" id="Gradient_8mwnr"]
+offsets = PackedFloat32Array(0.0978044, 0.740519)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ldbei"]
+gradient = SubResource("Gradient_8mwnr")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[node name="point_light_small_no-flicker" type="PointLight2D"]
+shadow_enabled = true
+texture = SubResource("GradientTexture2D_ldbei")
+height = 50.0

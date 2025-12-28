@@ -1,11 +1,39 @@
-[gd_scene load_steps=5 format=3 uid="uid://r5fv0gwhe8aj"]
+[gd_scene load_steps=10 format=3 uid="uid://r5fv0gwhe8aj"]
 
 [ext_resource type="Script" uid="uid://dp6s40l0kiirw" path="res://scripts/environment/spawn_point.gd" id="1_tg1mr"]
 [ext_resource type="Texture2D" uid="uid://bmow0814215rg" path="res://assets/sprite/environment/spawn_pad_large.png" id="2_tg1mr"]
-[ext_resource type="Texture2D" uid="uid://chksl8hvss267" path="res://assets/sprite/2d_lights_and_shadows_neutral_point_light.png" id="3_vgdas"]
+[ext_resource type="Texture2D" uid="uid://mxe8btbclpt4" path="res://assets/sprite/environment/4x4_pixel.png" id="3_vgdas"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jdb1a"]
 size = Vector2(32, 32)
+
+[sub_resource type="Gradient" id="Gradient_tg1mr"]
+offsets = PackedFloat32Array(0.215569, 0.756487)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_vgdas"]
+gradient = SubResource("Gradient_tg1mr")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_bydq1"]
+colors = PackedColorArray(1, 1, 1, 1, 0.738766, 0.799353, 0.0377692, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ubud2"]
+gradient = SubResource("Gradient_bydq1")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ubud2"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(16, 16, 1)
+direction = Vector3(0, -1, 0)
+spread = 0.0
+initial_velocity_min = 70.0
+initial_velocity_max = 70.0
+gravity = Vector3(0, 0, 0)
+linear_accel_min = -50.0
+linear_accel_max = -50.0
+color_ramp = SubResource("GradientTexture1D_ubud2")
 
 [node name="spawn_point" type="Area2D" groups=["spawn_points"]]
 collision_layer = 64
@@ -25,9 +53,17 @@ wait_time = 2.0
 one_shot = true
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
-color = Color(0.970441, 0.860534, 7.70092e-07, 1)
-energy = 4.5
+position = Vector2(16, 16)
+scale = Vector2(2, 2)
+energy = 2.0
+shadow_enabled = true
+texture = SubResource("GradientTexture2D_vgdas")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+position = Vector2(16, 16)
+amount_ratio = 0.5
 texture = ExtResource("3_vgdas")
+process_material = SubResource("ParticleProcessMaterial_ubud2")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_body_exited"]

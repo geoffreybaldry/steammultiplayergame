@@ -1,6 +1,7 @@
-[gd_resource type="TileSet" load_steps=7 format=3 uid="uid://byhtlte2fr3bh"]
+[gd_resource type="TileSet" load_steps=9 format=3 uid="uid://byhtlte2fr3bh"]
 
 [ext_resource type="Texture2D" uid="uid://b08vfbl5hcxlv" path="res://assets/sprite/environment/ground.png" id="1_utm0w"]
+[ext_resource type="Texture2D" uid="uid://da6af75ee4d2v" path="res://assets/sprite/environment/ground_normal_map.png" id="2_cv14y"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_utm0w"]
 vertices = PackedVector2Array(16, 16, -16, 16, -16, -16, 16, -16)
@@ -26,9 +27,13 @@ polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
 outlines = Array[PackedVector2Array]([PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)])
 agent_radius = 0.0
 
+[sub_resource type="CanvasTexture" id="CanvasTexture_utm0w"]
+diffuse_texture = ExtResource("1_utm0w")
+normal_texture = ExtResource("2_cv14y")
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_sk5k4"]
 resource_name = "ground"
-texture = ExtResource("1_utm0w")
+texture = SubResource("CanvasTexture_utm0w")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
 0:0/0/probability = 0.85

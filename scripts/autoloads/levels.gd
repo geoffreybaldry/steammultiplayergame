@@ -8,6 +8,7 @@ signal scene_loading_progress_updated(progress_percent: int)
 signal scene_loaded(scene_filepath: String)
 signal scene_unloaded
 signal all_peers_loaded					# Emitted when all peers have loaded the chosen level
+#signal level_complete					# Emitted when the current level is complete
 
 var scene_filepath: String = ""			# e.g. "res://scenes/levels/test_level.tscn"
 var current_scene_name: String = ""
@@ -20,8 +21,9 @@ var progress_value: float = 0.0:
 	get:
 		return progress_value
 
-# A list of all the games scenes
+# A list of all the game's scenes
 var scenes = [
+	"res://scenes/levels/level_0.tscn",
 	"res://scenes/levels/level_1.tscn"
 ]
 
@@ -35,6 +37,8 @@ func _ready() -> void:
 	# Connect Signals
 	#GameState.game_state_changed.connect(_on_game_state_changed)
 	scene_loaded.connect(_on_scene_loaded)
+	
+	#level_complete.connect(_on_level_complete)
 
 
 # This monitors the progress of any background scene loading taking place
@@ -78,11 +82,25 @@ func _process(_delta: float) -> void:
 
 # Go to a specific scene, by index
 @rpc("call_local", "reliable")
-func goto_scene(idx: int) -> void:
-	Log.pr("Loading scene : " + scenes[idx])
+func goto_scene_idx(idx: int) -> void:
+	Log.pr("Loading scene index: " + str(idx) + " which is scene " + scenes[idx])
 	# Start the asynchronous loading of the desired scene
 	load_scene(scenes[idx])
 	next_scene_idx = idx + 1
+
+
+# Go to a specific scene, by name
+@rpc("call_local", "reliable")
+func goto_scene_name(this_scene_name: String) -> void:
+	var scene_index: int = scenes.find(this_scene_name)
+	if scene_index == -1:
+		Events.error_messages.error_message.emit("Failed to find scene name : " + this_scene_name, 3.0)
+		return
+		
+	Log.pr("Loading scene name : " + this_scene_name + " which is scene index " + str(scene_index))
+	# Start the asynchronous loading of the desired scene
+	load_scene(this_scene_name)
+	next_scene_idx = scene_index + 1
 
 
 @rpc("call_local", "reliable")
@@ -117,7 +135,6 @@ func deferred_goto_scene(this_scene_filepath: String) -> void:
 	
 	# Instantiate the new scene
 	var new_scene_instance: Node2D = new_scene_resource.instantiate()
-	#new_scene_instance.name = "current_level"
 	
 	# Remove the old level scene, if there is one
 	if current_scene_name:
@@ -132,6 +149,10 @@ func deferred_goto_scene(this_scene_filepath: String) -> void:
 	
 func remove_current_scene() -> void:
 	Log.pr("Unloading current level scene : " + current_scene_name)
+	# Remove entities from the current scene
+	SpawnPoints.clear_spawn_points()
+	
+	# Free the current scene
 	get_tree().current_scene.get_node("levels").get_node(current_scene_name).queue_free()
 	current_scene_name = ""
 	scene_unloaded.emit()
