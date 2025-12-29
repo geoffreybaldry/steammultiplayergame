@@ -39,6 +39,8 @@ var audio = {
 	"impactMetal_002" = preload("res://assets/audio/effects/sci-fi/impactMetal_002.ogg")
 }
 
+var id: String
+
 func _ready() -> void:
 	# The server must own the enemies
 	set_multiplayer_authority(1)
@@ -123,11 +125,13 @@ func dead() -> void:
 	navigation_agent_2d.velocity_computed.disconnect(Callable(_on_velocity_computed))
 	
 	if is_multiplayer_authority():
-		queue_free()
+		Events.game_events.enemy_died.emit(id)
+		#queue_free()
 
 
 func _on_velocity_computed(_safe_velocity: Vector2):
 	pass
+
 
 func _on_navigation_agent_2d_navigation_finished() -> void:
 	current_state = STATES.IDLE

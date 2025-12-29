@@ -1,7 +1,6 @@
 extends Node
 
 @export var player_scene: PackedScene
-#@export var enemy_skeleton_scene: PackedScene
 
 @onready var player_multiplayer_spawner: MultiplayerSpawner = $spawned_players/player_multiplayer_spawner
 @onready var enemy_multiplayer_spawner: MultiplayerSpawner = $spawned_enemies/enemy_multiplayer_spawner
@@ -14,9 +13,11 @@ var enemy_scenes = {
 	ENEMY_TYPES.SKELETON: preload("res://scenes/enemies/skeleton.tscn"),
 }
 
+var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
+
 var player_queue: Array[int] = []	# A list of player ids waiting to spawn
 var player_instances = {}			# A dictionary of the player instances
-var enemy_instances: Array[Enemy]	# An array of the spawned enemy instances
+var enemy_instances = {}			# An array of the spawned enemy instances
 
 
 # Called when the node enters the scene tree for the first time.
@@ -25,9 +26,10 @@ func _ready() -> void:
 		Levels.all_peers_loaded.connect(_on_all_peers_loaded)
 		Events.game_events.player_died.connect(_on_player_died)
 		Events.game_events.spawn_enemy_request.connect(_on_spawn_enemy_request)
-	
-	Events.game_events.level_complete.connect(_on_level_complete)
+		Events.game_events.level_complete.connect(_on_level_complete)
+		Events.game_events.enemy_died.connect(_on_enemy_died)
 
+	# Custom spawn functions
 	player_multiplayer_spawner.spawn_function = spawn_player
 	enemy_multiplayer_spawner.spawn_function = spawn_enemy
 
@@ -64,23 +66,28 @@ func _on_all_peers_loaded() -> void:
 	# Spawn Players
 	for peer_id in Network.players:
 		player_queue.append(peer_id)
-	
-	# Move the game state on to "PLAYING" now that all peers are loaded, and all entities created
-	#GameState.change_game_state(GameState.GAME_STATES.PLAYING)
 
 
 func _on_spawn_enemy_request(this_enemy_type: int, this_global_position: Vector2) -> void:
 	var spawn_data = {
-		"enemy_type" : this_enemy_type,
-		"global_position" : this_global_position,
+		"enemy_type": this_enemy_type,
+		"global_position": this_global_position,
+		"id": generate_id(),
 	}
 	var enemy_instance: Enemy = enemy_multiplayer_spawner.spawn(spawn_data)
-	enemy_instances.append(enemy_instance)
+	enemy_instances[enemy_instance.id] = enemy_instance
 
 
 func _on_player_died(this_peer_id: int) -> void:
 	player_instances.erase(this_peer_id)
 	player_queue.append(this_peer_id)
+
+
+func _on_enemy_died(this_id: String) -> void:
+	if enemy_instances.has(this_id):
+		Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Freeing enemy with id : " + this_id)
+		enemy_instances[this_id].queue_free()
+		enemy_instances.erase(this_id)
 
 
 func _on_level_complete() -> void:
@@ -114,6 +121,7 @@ func spawn_player(data: Variant) -> Node:
 func spawn_enemy(data: Variant) -> Node:
 	var this_enemy_type = data["enemy_type"]
 	var this_global_position = data["global_position"]
+	var this_id = data["id"]
 	
 	var enemy_instance: Node
 	match this_enemy_type:
@@ -121,9 +129,20 @@ func spawn_enemy(data: Variant) -> Node:
 			enemy_instance = enemy_scenes[ENEMY_TYPES.SKELETON].instantiate()
 		_:
 			Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Trying to instantiate Unknown enemy type " + str(this_enemy_type))
-			
+	
+	enemy_instance.id = this_id
 	enemy_instance.global_position = this_global_position
 	
 	# Godot automatically adds the node to the scene tree
 	return enemy_instance
 	
+	
+func generate_id(length: int = 12, charset: String = "abcdefghijklmnopqrstuvwxyz0123456789") -> String:
+	var result = ""
+
+	# Generate a random ID
+	for i in range(length):
+		var idx = _rng.randi_range(0, charset.length() - 1)
+		result += charset[idx]
+
+	return result

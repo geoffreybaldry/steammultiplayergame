@@ -8,6 +8,7 @@ signal scene_loading_progress_updated(progress_percent: int)
 signal scene_loaded(scene_filepath: String)
 signal scene_unloaded
 signal all_peers_loaded					# Emitted when all peers have loaded the chosen level
+signal level_ready						# Emitted when the level is populated with all required entities
 
 var scene_filepath: String = ""			# e.g. "res://scenes/levels/test_level.tscn"
 var current_scene_name: String = ""
@@ -20,7 +21,7 @@ var progress_value: float = 0.0:
 	get:
 		return progress_value
 
-# A list of all the game's scenes
+# A list of all the game's scenes, in order in which they should play out
 var scenes = [
 	"res://scenes/levels/level_0.tscn",
 	"res://scenes/levels/level_1.tscn"
