@@ -81,7 +81,7 @@ func _ready() -> void:
 	
 	# Get hold of the camera so it can track the player
 	if player_input.is_multiplayer_authority():
-		pcam = get_tree().current_scene.get_node("PhantomCamera2D")
+		pcam = get_tree().get_first_node_in_group("PhantomCamera2D")
 		pcam.set_follow_target(self)
 
 

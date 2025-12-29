@@ -16,6 +16,7 @@ enum GAME_STATES {
 	STEAM_LOBBY_MENU,
 	ENET_MENU,
 	SCENE_LOADING,
+	SCENE_LOADED_WAITING_FOR_ALL_PLAYERS,
 	SCENE_UNLOADING,	# State while all the level objects are freed off
 	PLAYING,
 	PAUSED,
@@ -28,8 +29,8 @@ var current_game_state: int = GAME_STATES.BOOT_SPLASH
 
 func change_game_state(new_game_state: int) -> void:
 	if current_game_state != new_game_state:
-		Log.pr("Changing game_state from " + GAME_STATES.keys()[current_game_state] + " to " + GAME_STATES.keys()[new_game_state])
+		Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Changing game_state from " + GAME_STATES.keys()[current_game_state] + " to " + GAME_STATES.keys()[new_game_state])
 		current_game_state = new_game_state
 		game_state_changed.emit(current_game_state, new_game_state)
 	else:
-		Log.warn("Trying to change game_state from " + GAME_STATES.keys()[current_game_state] + " to " + GAME_STATES.keys()[new_game_state])
+		Log.warn("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Trying to change game_state from " + GAME_STATES.keys()[current_game_state] + " to " + GAME_STATES.keys()[new_game_state])

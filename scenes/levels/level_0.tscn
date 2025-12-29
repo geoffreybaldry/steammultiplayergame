@@ -1,14 +1,14 @@
-[gd_scene load_steps=7 format=4 uid="uid://3v7xbxqt3mjb"]
+[gd_scene load_steps=8 format=4 uid="uid://3v7xbxqt3mjb"]
 
 [ext_resource type="PackedScene" uid="uid://4rac6jponypr" path="res://scenes/levels/level.tscn" id="1_sxr8l"]
 [ext_resource type="Script" uid="uid://dt1ey5fa3f854" path="res://scripts/levels/level_0.gd" id="2_bw3rj"]
 [ext_resource type="PackedScene" uid="uid://r5fv0gwhe8aj" path="res://scenes/environment/spawn_point.tscn" id="3_osc7o"]
 [ext_resource type="PackedScene" uid="uid://bywvs1gck0ktg" path="res://scenes/environment/lights/point_light_small_no_flicker.tscn" id="3_wjk5u"]
+[ext_resource type="PackedScene" uid="uid://bvlypyiu0isbl" path="res://scenes/environment/enemy_start_marker.tscn" id="5_jjvta"]
 [ext_resource type="PackedScene" uid="uid://b8xii0uwxjsda" path="res://scenes/environment/end_point.tscn" id="5_xy1qu"]
 
 [sub_resource type="Environment" id="Environment_wjk5u"]
 resource_local_to_scene = true
-glow_enabled = true
 
 [node name="level_0" instance=ExtResource("1_sxr8l")]
 script = ExtResource("2_bw3rj")
@@ -56,12 +56,15 @@ position = Vector2(416, 320)
 [node name="spawn_point4" parent="spawn_points" index="3" instance=ExtResource("3_osc7o")]
 position = Vector2(320, 320)
 
+[node name="enemy_start_marker" parent="enemy_start_markers" index="0" instance=ExtResource("5_jjvta")]
+position = Vector2(384, 768)
+
+[node name="enemy_start_marker2" parent="enemy_start_markers" index="1" instance=ExtResource("5_jjvta")]
+position = Vector2(384, 672)
+
 [node name="end_point" parent="end_points" index="0" instance=ExtResource("5_xy1qu")]
 position = Vector2(736, 352)
 endpoint_target_level = "res://scenes/levels/level_1.tscn"
 
-[node name="camera_start_marker" parent="." index="4"]
+[node name="camera_start_marker" parent="." index="6"]
 position = Vector2(384, 384)
-
-[node name="Camera2D" parent="." index="5"]
-process_callback = 1

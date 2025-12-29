@@ -63,10 +63,6 @@ func _ready() -> void:
 	# Connect to server signal(s)
 	server_started.connect(_on_server_started)
 
-	# Connect to NetworkTime signals
-	#if multiplayer.is_server():
-		#NetworkTime.after_client_sync.connect(_on_networktime_client_sync)
-
 	# Connect to game signals
 	GameState.game_state_changed.connect(_on_game_state_changed)
 
@@ -140,12 +136,6 @@ func _on_server_disconnected() -> void:
 	server_disconnected.emit()
 	Events.error_messages.error_message.emit("Host Server Disconnected from Network", 3.0)
 
-
-# Should use this as a way of deciding if clients are ready to start level?
-#func _on_networktime_client_sync(this_peer_id: int) -> void:
-	#Log.pr("Peer " + str(this_peer_id) + " synchronized its time to the server")
-	#networktime_client_synced.emit(this_peer_id)
-	
 
 # Watch for changes in the game state, and adjust steam networking to suit
 func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:

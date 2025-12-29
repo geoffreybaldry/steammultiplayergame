@@ -58,6 +58,7 @@ scale = Vector2(2, 2)
 energy = 2.0
 shadow_enabled = true
 texture = SubResource("GradientTexture2D_vgdas")
+height = 50.0
 
 [node name="GPUParticles2D" type="GPUParticles2D" parent="."]
 position = Vector2(16, 16)

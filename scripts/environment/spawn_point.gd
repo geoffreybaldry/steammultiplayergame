@@ -4,7 +4,6 @@ class_name SpawnPoint
 @onready var timer: Timer = $Timer
 @onready var gpu_particles_2d: GPUParticles2D = $GPUParticles2D
 
-
 var id: String = ""
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var occupying_players: Array[String]
@@ -28,15 +27,11 @@ func is_available() -> bool:
 
 
 func _on_body_entered(body: Node2D) -> void:
-	#Log.pr("Spawn point " + self.name + " area entered by body : " + body.name)
-	
 	if not occupying_players.has(body.name):
 		occupying_players.append(body.name)
 	
 
 func _on_body_exited(body: Node2D) -> void:
-	#Log.pr("Spawn point " + self.name + " area exited by body : " + body.name)
-	
 	if occupying_players.has(body.name):
 		occupying_players.erase(body.name)
 

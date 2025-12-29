@@ -45,11 +45,12 @@ func _on_body_exited(body: Node2D) -> void:
 
 func _on_timer_timeout() -> void:
 	timer.stop()
-	Log.pr("Level Complete!")
+	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Level Complete!")
 	
 	Events.game_events.level_complete.emit()
 	
-	if endpoint_target_level.is_empty():
-		Levels.goto_next_scene()
-	else:
-		Levels.goto_scene_name(endpoint_target_level)
+	if is_multiplayer_authority():
+		if endpoint_target_level.is_empty():
+			Levels.goto_next_scene.rpc()
+		else:
+			Levels.goto_scene_name.rpc(endpoint_target_level)
