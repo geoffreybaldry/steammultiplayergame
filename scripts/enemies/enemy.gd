@@ -126,7 +126,6 @@ func dead() -> void:
 	
 	if is_multiplayer_authority():
 		Events.game_events.enemy_died.emit(id)
-		#queue_free()
 
 
 func _on_velocity_computed(_safe_velocity: Vector2):

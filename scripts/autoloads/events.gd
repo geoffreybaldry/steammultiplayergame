@@ -40,5 +40,8 @@ class GameEvents:
 	@warning_ignore("unused_signal")
 	signal enemy_died(id: String)
 	
+	#@warning_ignore("unused_signal")
+	#signal level_ready_to_start			# Used to signal that the level is ready to start
+	
 	@warning_ignore("unused_signal")
-	signal level_complete
+	signal level_complete				# Used to signal that the level is complete

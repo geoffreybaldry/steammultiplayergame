@@ -9,9 +9,9 @@
 [sub_resource type="Environment" id="Environment_b2cq8"]
 resource_local_to_scene = true
 
-[sub_resource type="Resource" id="Resource_mbbpy"]
+[sub_resource type="Resource" id="Resource_urvlt"]
 script = ExtResource("6_ouxo3")
-duration = 1.0
+duration = 0.1
 transition = 0
 ease = 2
 
@@ -52,15 +52,15 @@ tile_set = ExtResource("3_b2cq8")
 
 [node name="end_points" type="Node2D" parent="."]
 
+[node name="camera_start_marker" type="Marker2D" parent="."]
+
 [node name="PhantomCamera2D" type="Node2D" parent="." groups=["PhantomCamera2D"]]
 top_level = true
 script = ExtResource("5_d4w6o")
 follow_mode = 5
 snap_to_pixel = true
-tween_resource = SubResource("Resource_mbbpy")
+tween_resource = SubResource("Resource_urvlt")
 dead_zone_width = 0.3
 dead_zone_height = 0.3
 show_viewfinder_in_play = true
 metadata/_custom_type_script = "uid://bhexx6mj1xv3q"
-
-[node name="camera_start_marker" type="Marker2D" parent="."]

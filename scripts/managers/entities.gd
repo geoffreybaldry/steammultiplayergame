@@ -26,9 +26,9 @@ func _ready() -> void:
 		Levels.all_peers_loaded.connect(_on_all_peers_loaded)
 		Events.game_events.player_died.connect(_on_player_died)
 		Events.game_events.spawn_enemy_request.connect(_on_spawn_enemy_request)
-		Events.game_events.level_complete.connect(_on_level_complete)
 		Events.game_events.enemy_died.connect(_on_enemy_died)
-
+		Events.game_events.level_complete.connect(_on_level_complete)
+		
 	# Custom spawn functions
 	player_multiplayer_spawner.spawn_function = spawn_player
 	enemy_multiplayer_spawner.spawn_function = spawn_enemy
@@ -96,8 +96,8 @@ func _on_level_complete() -> void:
 		player_instances[player_key].queue_free()
 	player_instances.clear()
 	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Clearing enemy instances")
-	for enemy in enemy_instances:
-		enemy.queue_free()
+	for enemy_id in enemy_instances.keys():
+		enemy_instances[enemy_id].queue_free()
 	enemy_instances.clear()
 	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Clearing player waiting to spawn queue")
 	player_queue.clear()

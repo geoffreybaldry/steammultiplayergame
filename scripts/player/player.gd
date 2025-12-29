@@ -53,11 +53,8 @@ var audio_footsteps = [
 ]
 
 var health: int = 100
-#var death_tick: int = -1
 var did_respawn: bool = false
-#var respawn_position: Vector2
 var player_color: PLAYER_COLORS
-
 var pcam: PhantomCamera2D
 
 

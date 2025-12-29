@@ -17,6 +17,8 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if occupying_players.is_empty():
 		texture_progress_bar.value = 0
+		timer.stop()
+		countdown_running = false
 		return
 		
 	if countdown_running:

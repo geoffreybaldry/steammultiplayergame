@@ -46,5 +46,5 @@ position = Vector2(608, 192)
 position = Vector2(576, 320)
 endpoint_target_level = "res://scenes/levels/level_0.tscn"
 
-[node name="camera_start_marker" parent="." index="6"]
+[node name="camera_start_marker" parent="." index="5"]
 position = Vector2(224, 256)

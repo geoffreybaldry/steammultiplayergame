@@ -8,7 +8,6 @@ signal scene_loading_progress_updated(progress_percent: int)
 signal scene_loaded(scene_filepath: String)
 signal scene_unloaded
 signal all_peers_loaded					# Emitted when all peers have loaded the chosen level
-signal level_ready						# Emitted when the level is populated with all required entities
 
 var scene_filepath: String = ""			# e.g. "res://scenes/levels/test_level.tscn"
 var current_scene_name: String = ""
@@ -168,12 +167,20 @@ func return_to_main_menu() -> void:
 # Only the server needs to keep track of the number of players loaded.
 @rpc("any_peer", "call_local", "reliable")
 func player_loaded():
-	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Player loaded scene - Player ID : " + str(multiplayer.get_remote_sender_id()))
+	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Peer loaded scene - Player ID : " + str(multiplayer.get_remote_sender_id()))
 	if multiplayer.is_server():
 		players_loaded += 1
-		Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Players in game : " + str(players_loaded) + "/" + str(Network.players.size()))
+		Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Peers in game : " + str(players_loaded) + "/" + str(Network.players.size()))
 		if players_loaded == Network.players.size():
-			Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "All required players in game : " + str(players_loaded) + "/" + str(Network.players.size()))
+			Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "All required Peers in game : " + str(players_loaded) + "/" + str(Network.players.size()))
 			all_peers_loaded.emit()
 			players_loaded = 0
 			
+
+@rpc("any_peer", "call_local", "reliable")
+func level_ready_to_start() -> void:
+	GameState.change_game_state(GameState.GAME_STATES.PLAYING)
+
+
+func _on_level_ready_to_start() -> void:
+	level_ready_to_start.rpc()

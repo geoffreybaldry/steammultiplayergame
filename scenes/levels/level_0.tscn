@@ -16,6 +16,12 @@ script = ExtResource("2_bw3rj")
 [node name="WorldEnvironment" parent="environment" index="0"]
 environment = SubResource("Environment_wjk5u")
 
+[node name="ColorRect" parent="environment" index="1"]
+offset_left = -992.0
+offset_top = -672.0
+offset_right = 2336.0
+offset_bottom = 1632.0
+
 [node name="CanvasModulate" parent="environment" index="2"]
 color = Color(0.139, 0.139, 0.139, 1)
 
@@ -66,5 +72,5 @@ position = Vector2(384, 672)
 position = Vector2(736, 352)
 endpoint_target_level = "res://scenes/levels/level_1.tscn"
 
-[node name="camera_start_marker" parent="." index="6"]
+[node name="camera_start_marker" parent="." index="5"]
 position = Vector2(384, 384)

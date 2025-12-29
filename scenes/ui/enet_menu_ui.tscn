@@ -103,6 +103,7 @@ layout_mode = 1
 offset_right = 26.0
 offset_bottom = 13.0
 theme_override_fonts/font = ExtResource("2_o2sq8")
+theme_override_font_sizes/font_size = 32
 horizontal_alignment = 1
 
 [connection signal="pressed" from="VBoxContainer/host_button" to="." method="_on_host_button_pressed"]
