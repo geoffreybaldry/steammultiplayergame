@@ -24,19 +24,10 @@ var just_die_buf: bool = false
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	NetworkTime.before_tick_loop.connect(_gather)
-	NetworkTime.after_tick.connect(func(_dt, _t): _gather_always())
+	#NetworkTime.after_tick.connect(func(_dt, _t): _gather_always())
+	NetworkTime.after_tick.connect(_gather_always)
 
 
-#func _input(event: InputEvent) -> void:
-	#if event is InputEventMouseMotion:
-		#aim_direction_buf += (get_viewport().get_camera_2d().get_global_mouse_position() - get_parent().global_position).normalized()
-	#elif event is InputEventJoypadMotion:
-		#input_direction_buf += Focus.input_get_vector("move_left", "move_right", "move_up", "move_down")
-		#aim_direction_buf += Focus.input_get_vector("aim_left", "aim_right", "aim_up", "aim_down")
-	##elif event is InputEventKey and event.
-#
-	#sample_count += 1
-	
 func _process(_delta: float) -> void:
 	# Only allow this player's authority to collect input
 	if not is_multiplayer_authority(): return
@@ -74,7 +65,7 @@ func _gather():
 	sample_count = 0
 	
 
-func _gather_always():
+func _gather_always(_dt, _t):
 	# Only allow this player's authority to collect input
 	if not is_multiplayer_authority(): return
 	
@@ -83,3 +74,8 @@ func _gather_always():
 	
 	just_die = just_die_buf
 	just_die_buf = false
+
+
+func _exit_tree() -> void:
+	NetworkTime.before_tick_loop.disconnect(_gather)
+	NetworkTime.after_tick.disconnect(_gather_always)

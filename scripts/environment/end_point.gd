@@ -1,6 +1,6 @@
 extends Area2D
 
-#@export var endpoint_target_level: String
+@export var endpoint_target_level: String
 
 @onready var texture_progress_bar: TextureProgressBar = $visual/TextureProgressBar
 @onready var timer: Timer = $Timer
@@ -51,5 +51,5 @@ func _on_timer_timeout() -> void:
 	# Only the Server decides if the level is complete
 	if is_multiplayer_authority():
 		Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Level Complete!")
-		# Let all the Peers know that the level is complete
-		Levels._on_level_complete.rpc()
+		
+		Levels.level_complete.emit(endpoint_target_level)

@@ -9,6 +9,7 @@ signal scene_loaded(scene_filepath: String)
 signal scene_unloaded
 signal all_peers_loaded					# Emitted when all peers have loaded the chosen level
 signal level_complete
+signal remove_entities
 signal entities_removed					# Emitted when all level entities are freed
 
 var scene_filepath: String = ""			# e.g. "res://scenes/levels/test_level.tscn"
@@ -22,7 +23,7 @@ var progress_value: float = 0.0:
 	get:
 		return progress_value
 
-# A list of all the game's scenes, in order in which they should play out
+# A list of all the game's levels, in order in which they should play out
 var scenes = [
 	"res://scenes/levels/level_0.tscn",
 	"res://scenes/levels/level_1.tscn"
@@ -37,7 +38,10 @@ var players_loaded: int = 0
 func _ready() -> void:
 	# Connect Signals
 	scene_loaded.connect(_on_scene_loaded)
-	entities_removed.connect(_on_entities_removed)
+	
+	if is_multiplayer_authority():
+		level_complete.connect(_on_level_complete)
+		entities_removed.connect(_on_entities_removed)
 
 
 # This monitors the progress of any background scene loading taking place
@@ -167,9 +171,6 @@ func return_to_main_menu() -> void:
 	GameState.change_game_state(GameState.GAME_STATES.MAIN_MENU)
 
 
-func _on_entities_removed() -> void:
-	goto_next_scene.rpc()
-
 # Every peer will call this when they have loaded the game scene.
 # Only the server needs to keep track of the number of players loaded.
 @rpc("any_peer", "call_local", "reliable")
@@ -192,14 +193,11 @@ func level_ready_to_start() -> void:
 	GameState.change_game_state(GameState.GAME_STATES.PLAYING)
 	
 	
-@rpc("any_peer", "call_local", "reliable")
-func _on_level_complete() -> void:
-	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "noticed level complete RPC")
+func _on_level_complete(target_scene_filepath: String) -> void:
+	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Level Complete signal received, target next level : " + target_scene_filepath)
 	
-	# If we are the server, clear down the enemy and player instances
-	if is_multiplayer_authority():
-		# This signal causes the entities to be cleared down
-		level_complete.emit()
-	# If we are a peer, wait to allow enemy and player instances to be destroyed
-	else:
-		pass
+	remove_entities.emit()
+	
+
+func _on_entities_removed() -> void:
+	goto_next_scene.rpc()

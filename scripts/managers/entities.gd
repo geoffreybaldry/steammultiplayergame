@@ -24,7 +24,8 @@ var enemy_instances = {}			# An array of the spawned enemy instances
 func _ready() -> void:
 	if is_multiplayer_authority():
 		Levels.all_peers_loaded.connect(_on_all_peers_loaded)
-		Levels.level_complete.connect(_on_level_complete)
+		#Levels.level_complete.connect(_on_level_complete)
+		Levels.remove_entities.connect(_on_remove_entities)
 		Events.game_events.player_died.connect(_on_player_died)
 		Events.game_events.spawn_enemy_request.connect(_on_spawn_enemy_request)
 		Events.game_events.enemy_died.connect(_on_enemy_died)
@@ -91,7 +92,7 @@ func _on_enemy_died(this_id: String) -> void:
 		enemy_instances.erase(this_id)
 
 
-func _on_level_complete() -> void:
+func _on_remove_entities() -> void:
 	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Clearing player instances")
 	for player_key in player_instances.keys():
 		player_instances[player_key].queue_free()
@@ -104,6 +105,7 @@ func _on_level_complete() -> void:
 	player_queue.clear()
 	
 	Levels.entities_removed.emit()
+
 
 func spawn_player(data: Variant) -> Node:
 	var this_peer_id = data["peer_id"]

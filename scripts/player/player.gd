@@ -163,3 +163,7 @@ func die() -> void:
 func dead() -> void:
 	queue_free()
 	
+
+
+func _exit_tree() -> void:
+	NetworkTime.on_tick.disconnect(_tick)
