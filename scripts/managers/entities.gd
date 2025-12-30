@@ -24,10 +24,11 @@ var enemy_instances = {}			# An array of the spawned enemy instances
 func _ready() -> void:
 	if is_multiplayer_authority():
 		Levels.all_peers_loaded.connect(_on_all_peers_loaded)
+		Levels.level_complete.connect(_on_level_complete)
 		Events.game_events.player_died.connect(_on_player_died)
 		Events.game_events.spawn_enemy_request.connect(_on_spawn_enemy_request)
 		Events.game_events.enemy_died.connect(_on_enemy_died)
-		Events.game_events.level_complete.connect(_on_level_complete)
+		
 		
 	# Custom spawn functions
 	player_multiplayer_spawner.spawn_function = spawn_player
@@ -102,6 +103,7 @@ func _on_level_complete() -> void:
 	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Clearing player waiting to spawn queue")
 	player_queue.clear()
 	
+	Levels.entities_removed.emit()
 
 func spawn_player(data: Variant) -> Node:
 	var this_peer_id = data["peer_id"]

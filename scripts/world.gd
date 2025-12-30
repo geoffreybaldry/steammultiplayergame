@@ -50,8 +50,8 @@ func _on_game_state_changed(_old_game_state: int, new_game_state: int) -> void:
 			enet_menu_ui.visible = true
 		GameState.GAME_STATES.SCENE_LOADING:
 			scene_loading_ui.visible = true
-		GameState.GAME_STATES.SCENE_LOADED_WAITING_FOR_ALL_PLAYERS:
-			pass
+		#GameState.GAME_STATES.SCENE_LOADED_WAITING_FOR_ALL_PLAYERS:
+			#pass
 		GameState.GAME_STATES.SCENE_UNLOADING:
 			scene_loading_ui.visible = true
 		GameState.GAME_STATES.PLAYING:

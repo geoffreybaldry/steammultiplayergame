@@ -82,6 +82,10 @@ func apply_animation() -> void:
 			
 
 func find_nearby_player() -> Node2D:
+	# Escape check in case this node is being freed from the scene tree
+	if not is_inside_tree():
+		return
+	
 	var players := get_tree().get_nodes_in_group(&"Players")
 	if players.is_empty():
 		return null

@@ -8,6 +8,8 @@ signal scene_loading_progress_updated(progress_percent: int)
 signal scene_loaded(scene_filepath: String)
 signal scene_unloaded
 signal all_peers_loaded					# Emitted when all peers have loaded the chosen level
+signal level_complete
+signal entities_removed					# Emitted when all level entities are freed
 
 var scene_filepath: String = ""			# e.g. "res://scenes/levels/test_level.tscn"
 var current_scene_name: String = ""
@@ -35,6 +37,7 @@ var players_loaded: int = 0
 func _ready() -> void:
 	# Connect Signals
 	scene_loaded.connect(_on_scene_loaded)
+	entities_removed.connect(_on_entities_removed)
 
 
 # This monitors the progress of any background scene loading taking place
@@ -64,6 +67,10 @@ func _process(_delta: float) -> void:
 # Go to the next scene, indicated by the next_scene_idx variable
 @rpc("call_local", "reliable")
 func goto_next_scene() -> void:
+	# If we are on the last scene, go back to the start, temporarily.
+	if next_scene_idx == scenes.size():
+		next_scene_idx = 0
+		
 	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Loading scene : " + scenes[next_scene_idx])
 	# Start the asynchronous loading of the desired scene
 	load_scene(scenes[next_scene_idx])
@@ -127,9 +134,6 @@ func deferred_goto_scene(this_scene_filepath: String) -> void:
 	get_tree().current_scene.get_node("levels").add_child(new_scene_instance, true)
 	current_scene_name = new_scene_instance.name
 	
-	#GameState.change_game_state(GameState.GAME_STATES.PLAYING)
-	GameState.change_game_state(GameState.GAME_STATES.SCENE_LOADED_WAITING_FOR_ALL_PLAYERS)
-	
 	
 func remove_current_scene() -> void:
 	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Unloading current level scene : " + current_scene_name)
@@ -163,6 +167,9 @@ func return_to_main_menu() -> void:
 	GameState.change_game_state(GameState.GAME_STATES.MAIN_MENU)
 
 
+func _on_entities_removed() -> void:
+	goto_next_scene.rpc()
+
 # Every peer will call this when they have loaded the game scene.
 # Only the server needs to keep track of the number of players loaded.
 @rpc("any_peer", "call_local", "reliable")
@@ -174,13 +181,25 @@ func player_loaded():
 		if players_loaded == Network.players.size():
 			Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "All required Peers in game : " + str(players_loaded) + "/" + str(Network.players.size()))
 			all_peers_loaded.emit()
+			
+			# Let all the Peers know the level is starting, to transition to PLAYING state
+			level_ready_to_start.rpc()
 			players_loaded = 0
 			
 
 @rpc("any_peer", "call_local", "reliable")
 func level_ready_to_start() -> void:
 	GameState.change_game_state(GameState.GAME_STATES.PLAYING)
-
-
-func _on_level_ready_to_start() -> void:
-	level_ready_to_start.rpc()
+	
+	
+@rpc("any_peer", "call_local", "reliable")
+func _on_level_complete() -> void:
+	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "noticed level complete RPC")
+	
+	# If we are the server, clear down the enemy and player instances
+	if is_multiplayer_authority():
+		# This signal causes the entities to be cleared down
+		level_complete.emit()
+	# If we are a peer, wait to allow enemy and player instances to be destroyed
+	else:
+		pass
