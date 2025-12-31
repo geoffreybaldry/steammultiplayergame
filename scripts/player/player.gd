@@ -39,6 +39,7 @@ enum STATES {
 
 @onready var rollback_synchronizer: RollbackSynchronizer = $RollbackSynchronizer
 @onready var tick_interpolator: TickInterpolator = $TickInterpolator
+@onready var multiplayer_synchronizer: MultiplayerSynchronizer = $MultiplayerSynchronizer
 @onready var animation_player: AnimationPlayer = $visual/AnimationPlayer
 @onready var weapon_pivot: Node2D = $weapon_pivot
 @onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
@@ -85,7 +86,7 @@ func _ready() -> void:
 func _tick(_dt:float, _tk: int):
 	# Check health
 	if health <= 0:
-		Log.pr("Player died")
+		Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Player died")
 
 	apply_animation()
 
@@ -93,7 +94,7 @@ func _tick(_dt:float, _tk: int):
 
 func _rollback_tick(_delta, _tk, _is_fresh) -> void:
 	if player_input.just_die:
-		Log.pr("Noticed die signal in player's rollback tick")
+		Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Noticed die signal in player's rollback tick")
 		die()
 	
 	
@@ -143,27 +144,35 @@ func footstep_audio() -> void:
 
 
 func die() -> void:
-	# Only the authority can decide if a player died
-	if not is_multiplayer_authority():
-		return
+	# Only the authority (Server) can decide if a player died
+	if is_multiplayer_authority():
+		current_state = STATES.DYING
 
-	# The recent death_tick is conveyed to the clients by the
-	# authority as a synchronized variable
-	#death_tick = NetworkTime.tick
-	#respawn_position = SpawnPoints.get_free_spawn_point_position()
-	
-	current_state = STATES.DYING
-	
-	Events.game_events.player_died.emit(peer_id)
-	
-	# Once cleaned up, call dead
-	dead()
+		Events.game_events.player_died.emit(peer_id)
+
+		# Once cleaned up, and house-keeping performed, call dead
+		# TBD - Some house-keeping??
+		await get_tree().create_timer(1.0).timeout
+		dead()
+	else:
+		# Turn off the rollbacksynchronizer
+		rollback_synchronizer.process_mode = Node.PROCESS_MODE_DISABLED
+
+
+@rpc("any_peer", "call_local", "reliable")
+func disable_rbs() -> void:
+	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Disabling RBS on player id " + str(peer_id))
+	rollback_synchronizer.state_properties = []
+	rollback_synchronizer.input_properties = []
+	rollback_synchronizer.process_settings()
 
 
 func dead() -> void:
+	if not is_multiplayer_authority():
+		return
+		
 	queue_free()
 	
 
-
-func _exit_tree() -> void:
+func _exit_tree() -> void:	
 	NetworkTime.on_tick.disconnect(_tick)

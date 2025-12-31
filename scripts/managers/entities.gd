@@ -95,15 +95,24 @@ func _on_enemy_died(this_id: String) -> void:
 func _on_remove_entities() -> void:
 	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Clearing player instances")
 	for player_key in player_instances.keys():
+		# Disable the peer's RBS
+		player_instances[player_key].disable_rbs.rpc()
+		# Let the in-flight RPCs drain
+		await get_tree().create_timer(0.5).timeout
+		# Get outta here
 		player_instances[player_key].queue_free()
+		
 	player_instances.clear()
+	
 	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Clearing enemy instances")
 	for enemy_id in enemy_instances.keys():
+		enemy_instances[enemy_id].disable_rbs.rpc()
+		await get_tree().create_timer(0.5).timeout
 		enemy_instances[enemy_id].queue_free()
 	enemy_instances.clear()
 	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Clearing player waiting to spawn queue")
 	player_queue.clear()
-	
+		
 	Levels.entities_removed.emit()
 
 

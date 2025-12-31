@@ -122,6 +122,14 @@ func die() -> void:
 	super()
 
 
+@rpc("any_peer", "call_local", "reliable")
+func disable_rbs() -> void:
+	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Disabling RBS on enemy " + str(id))
+	rollback_synchronizer.state_properties = []
+	rollback_synchronizer.input_properties = []
+	rollback_synchronizer.process_settings()
+	
+
 # Used when the enemy is fully dead, to clean-up, remove the object, etx.
 func dead() -> void:
 	super()

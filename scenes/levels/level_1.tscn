@@ -52,7 +52,10 @@ position = Vector2(192, 288)
 position = Vector2(256, 288)
 
 [node name="enemy_start_marker" parent="enemy_start_markers" index="0" instance=ExtResource("4_6761a")]
-position = Vector2(608, 192)
+position = Vector2(576, 192)
+
+[node name="enemy_start_marker2" parent="enemy_start_markers" index="1" instance=ExtResource("4_6761a")]
+position = Vector2(640, 192)
 
 [node name="end_point" parent="end_points" index="0" instance=ExtResource("3_x42e6")]
 position = Vector2(576, 320)
