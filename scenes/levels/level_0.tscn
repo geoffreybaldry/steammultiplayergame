@@ -53,15 +53,6 @@ tile_map_data = PackedByteArray("AAAIAAgAAAABAAcAAAAIAAkAAAAAAAQAAAAIAAoAAAAAAAQ
 [node name="spawn_point" parent="spawn_points" index="0" instance=ExtResource("3_osc7o")]
 position = Vector2(320, 416)
 
-[node name="spawn_point2" parent="spawn_points" index="1" instance=ExtResource("3_osc7o")]
-position = Vector2(416, 416)
-
-[node name="spawn_point3" parent="spawn_points" index="2" instance=ExtResource("3_osc7o")]
-position = Vector2(416, 320)
-
-[node name="spawn_point4" parent="spawn_points" index="3" instance=ExtResource("3_osc7o")]
-position = Vector2(320, 320)
-
 [node name="enemy_start_marker" parent="enemy_start_markers" index="0" instance=ExtResource("5_jjvta")]
 position = Vector2(384, 576)
 

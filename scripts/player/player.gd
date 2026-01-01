@@ -43,6 +43,7 @@ enum STATES {
 @onready var animation_player: AnimationPlayer = $visual/AnimationPlayer
 @onready var weapon_pivot: Node2D = $weapon_pivot
 @onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
+@onready var hitbox_collision_shape_2d: CollisionShape2D = $HitBox/CollisionShape2D
 @onready var audio_stream_player_2d: AudioStreamPlayer2D = $audio/AudioStreamPlayer2D
 
 var audio_footsteps = [
@@ -80,6 +81,7 @@ func _ready() -> void:
 	# Get hold of the camera so it can track the player
 	if player_input.is_multiplayer_authority():
 		pcam = get_tree().get_first_node_in_group("PhantomCamera2D")
+		#pcam.global_position = global_position
 		pcam.set_follow_target(self)
 
 
@@ -152,7 +154,7 @@ func die() -> void:
 
 		# Once cleaned up, and house-keeping performed, call dead
 		# TBD - Some house-keeping??
-		await get_tree().create_timer(1.0).timeout
+		#await get_tree().create_timer(1.0).timeout
 		dead()
 	else:
 		# Turn off the rollbacksynchronizer
@@ -160,11 +162,16 @@ func die() -> void:
 
 
 @rpc("any_peer", "call_local", "reliable")
-func disable_rbs() -> void:
+func disable_entity() -> void:
 	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Disabling RBS on player id " + str(peer_id))
+	# Disabling RBS and allowing in-flight RPCs to drain stops debug errors on the server
 	rollback_synchronizer.state_properties = []
 	rollback_synchronizer.input_properties = []
 	rollback_synchronizer.process_settings()
+	
+	visible = false
+	collision_shape_2d.disabled = true
+	hitbox_collision_shape_2d.disabled = true
 
 
 func dead() -> void:

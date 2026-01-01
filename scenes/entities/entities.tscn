@@ -18,3 +18,8 @@ spawn_path = NodePath("..")
 [node name="enemy_multiplayer_spawner" type="MultiplayerSpawner" parent="spawned_enemies"]
 _spawnable_scenes = PackedStringArray("uid://c7njnx2d0nquw")
 spawn_path = NodePath("..")
+
+[node name="Timer" type="Timer" parent="."]
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

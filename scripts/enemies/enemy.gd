@@ -8,6 +8,9 @@ class_name Enemy
 @export var min_sensor_radius: float = 10.0
 @export var max_health: float
 
+@onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
+@onready var hitbox_collision_shape_2d: CollisionShape2D = $HitBox/CollisionShape2D
+
 @onready var navigation_agent_2d: NavigationAgent2D = $navigation/NavigationAgent2D
 @onready var rollback_synchronizer: RollbackSynchronizer = $RollbackSynchronizer
 @onready var tick_interpolator: TickInterpolator = $TickInterpolator

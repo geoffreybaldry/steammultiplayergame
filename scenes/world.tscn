@@ -45,6 +45,7 @@ process_callback = 0
 process_priority = 300
 process_physics_priority = 300
 script = ExtResource("10_q5onr")
+interpolation_mode = 2
 metadata/_custom_type_script = "uid://bd046eokvcnu2"
 
 [editable path="entities"]

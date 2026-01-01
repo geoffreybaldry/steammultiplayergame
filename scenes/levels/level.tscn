@@ -62,4 +62,5 @@ snap_to_pixel = true
 tween_resource = SubResource("Resource_urvlt")
 dead_zone_width = 0.3
 dead_zone_height = 0.3
+show_viewfinder_in_play = true
 metadata/_custom_type_script = "uid://bhexx6mj1xv3q"

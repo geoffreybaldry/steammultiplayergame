@@ -22,6 +22,12 @@ script = ExtResource("1_38ino")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 
+[node name="HitBox" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox"]
+
 [node name="visual" type="Node2D" parent="."]
 
 [node name="Sprite2D" type="Sprite2D" parent="visual"]
@@ -80,11 +86,5 @@ metadata/_custom_type_script = "uid://dour8fehaaugp"
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_fcftc")
-
-[node name="HitBox" type="Area2D" parent="."]
-collision_layer = 0
-collision_mask = 0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox"]
 
 [connection signal="navigation_finished" from="navigation/NavigationAgent2D" to="." method="_on_navigation_agent_2d_navigation_finished"]

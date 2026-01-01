@@ -4,6 +4,7 @@ extends Node
 
 @onready var player_multiplayer_spawner: MultiplayerSpawner = $spawned_players/player_multiplayer_spawner
 @onready var enemy_multiplayer_spawner: MultiplayerSpawner = $spawned_enemies/enemy_multiplayer_spawner
+@onready var timer: Timer = $Timer
 
 enum ENEMY_TYPES {
 	SKELETON,
@@ -16,20 +17,18 @@ var enemy_scenes = {
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
 var player_queue: Array[int] = []	# A list of player ids waiting to spawn
-var player_instances = {}			# A dictionary of the player instances
-var enemy_instances = {}			# An array of the spawned enemy instances
+var player_instances = {}			# A dictionary of the spawned player instances
+var enemy_instances = {}			# An dictionary of the spawned enemy instances
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	if is_multiplayer_authority():
 		Levels.all_peers_loaded.connect(_on_all_peers_loaded)
-		#Levels.level_complete.connect(_on_level_complete)
 		Levels.remove_entities.connect(_on_remove_entities)
 		Events.game_events.player_died.connect(_on_player_died)
-		Events.game_events.spawn_enemy_request.connect(_on_spawn_enemy_request)
 		Events.game_events.enemy_died.connect(_on_enemy_died)
-		
+		Events.game_events.spawn_enemy_request.connect(_on_spawn_enemy_request)
 		
 	# Custom spawn functions
 	player_multiplayer_spawner.spawn_function = spawn_player
@@ -37,27 +36,8 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	if not is_multiplayer_authority():
-		return
+	pass
 	
-	# If a player is waiting to spawn, find a spawn point
-	if not player_queue.is_empty():
-		var this_peer_id: int = player_queue[0]
-		var free_spawn_position = SpawnPoints.get_free_spawn_point_position()
-		if free_spawn_position:
-			if not player_instances.has(this_peer_id):
-				var spawn_data = {
-					"peer_id": this_peer_id,
-					"global_position": free_spawn_position,
-					"player_color": Network.seats.find(this_peer_id)
-				}
-				var player_instance:Player = player_multiplayer_spawner.spawn(spawn_data)
-				player_instances[this_peer_id] = player_instance
-				# Remove the waiting player from the queue
-				player_queue.pop_front()
-		else:
-			Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "No free spawn points for player " + str(this_peer_id))
-
 
 # This function is called when all the peers have successfully loaded the
 # level - it creates the player objects on the server peer, and allows the
@@ -93,27 +73,40 @@ func _on_enemy_died(this_id: String) -> void:
 
 
 func _on_remove_entities() -> void:
+	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Clearing player waiting to spawn queue")
+	player_queue.clear()
+	
 	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Clearing player instances")
 	for player_key in player_instances.keys():
-		# Disable the peer's RBS
-		player_instances[player_key].disable_rbs.rpc()
-		# Let the in-flight RPCs drain
-		await get_tree().create_timer(0.5).timeout
-		# Get outta here
-		player_instances[player_key].queue_free()
-		
+		_free_entity(player_instances[player_key])
 	player_instances.clear()
 	
 	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Clearing enemy instances")
 	for enemy_id in enemy_instances.keys():
-		enemy_instances[enemy_id].disable_rbs.rpc()
-		await get_tree().create_timer(0.5).timeout
-		enemy_instances[enemy_id].queue_free()
+		_free_entity(enemy_instances[enemy_id])
 	enemy_instances.clear()
-	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Clearing player waiting to spawn queue")
-	player_queue.clear()
-		
+	
+	await get_tree().create_timer(2.5).timeout
+	
 	Levels.entities_removed.emit()
+
+
+func _free_entity(instance: Node) -> void:
+	# Disable the peer's RBS, and make it ready for freeing
+	instance.disable_entity.rpc()
+	# Let the in-flight RPCs drain
+	await get_tree().create_timer(2.0).timeout
+	# Queue Free the entity
+	var script_global_name: String = instance.get_script().get_global_name()
+	match script_global_name:
+		"Player":
+			Log.pr("Freeing Type (Player): " + str(instance.peer_id))
+		"":
+			Log.pr("Freeing Type (Not Set): " + str(instance.id))
+		_:
+			Log.pr("Freeing Type (" + script_global_name + "): " + str(instance.id))
+			
+	instance.queue_free()
 
 
 func spawn_player(data: Variant) -> Node:
@@ -159,3 +152,32 @@ func generate_id(length: int = 12, charset: String = "abcdefghijklmnopqrstuvwxyz
 		result += charset[idx]
 
 	return result
+
+
+func _on_timer_timeout() -> void:
+	if not is_multiplayer_authority():
+		return
+	
+	# If a player is waiting to spawn, find a spawn point
+	if not player_queue.is_empty():
+		var this_peer_id: int = player_queue[0]
+		var free_spawn_position = SpawnPoints.get_free_spawn_point_position()
+		if free_spawn_position:
+			if not player_instances.has(this_peer_id):
+				var spawn_data = {
+					"peer_id": this_peer_id,
+					"global_position": free_spawn_position,
+					"player_color": Network.seats.find(this_peer_id)
+				}
+				var player_instance:Player = player_multiplayer_spawner.spawn(spawn_data)
+				player_instances[this_peer_id] = player_instance
+				# Remove the waiting player from the queue
+				player_queue.pop_front()
+			else:
+				Log.warn("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Trying to spawn a peer_id that already has an instance.")
+		else:
+			Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "No free spawn points for player " + str(this_peer_id))
+
+	# Restart the timer
+	timer.start()
+	

@@ -123,11 +123,15 @@ func die() -> void:
 
 
 @rpc("any_peer", "call_local", "reliable")
-func disable_rbs() -> void:
+func disable_entity() -> void:
 	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Disabling RBS on enemy " + str(id))
 	rollback_synchronizer.state_properties = []
 	rollback_synchronizer.input_properties = []
 	rollback_synchronizer.process_settings()
+	
+	visible = false
+	collision_shape_2d.disabled = true
+	hitbox_collision_shape_2d.disabled = true
 	
 
 # Used when the enemy is fully dead, to clean-up, remove the object, etx.

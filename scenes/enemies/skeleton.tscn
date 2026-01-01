@@ -9,6 +9,9 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_esykl"]
 radius = 14.0
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_038oa"]
+radius = 17.0294
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vncds"]
 resource_local_to_scene = true
 shader = ExtResource("3_6ucyf")
@@ -35,9 +38,6 @@ _data = {
 &"RESET": SubResource("Animation_3mw36")
 }
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_038oa"]
-radius = 17.0294
-
 [node name="skeleton" instance=ExtResource("1_5365w")]
 collision_layer = 4
 collision_mask = 13
@@ -51,6 +51,12 @@ max_health = 6.0
 
 [node name="CollisionShape2D" parent="." index="0"]
 shape = SubResource("CircleShape2D_esykl")
+
+[node name="HitBox" parent="." index="1"]
+collision_layer = 32
+
+[node name="CollisionShape2D" parent="HitBox" index="0"]
+shape = SubResource("CircleShape2D_038oa")
 
 [node name="Sprite2D" parent="visual" index="0"]
 material = SubResource("ShaderMaterial_vncds")
@@ -94,15 +100,9 @@ offset_top = -60.0
 offset_right = 33.0
 offset_bottom = -37.0
 
-[node name="RollbackSynchronizer" parent="." index="4"]
+[node name="RollbackSynchronizer" parent="." index="5"]
 enable_prediction = true
 state_properties = Array[String]([":position", ":velocity"])
 
-[node name="TickInterpolator" parent="." index="5"]
+[node name="TickInterpolator" parent="." index="6"]
 properties = Array[String]([":position"])
-
-[node name="HitBox" parent="." index="7"]
-collision_layer = 32
-
-[node name="CollisionShape2D" parent="HitBox" index="0"]
-shape = SubResource("CircleShape2D_038oa")
