@@ -46,6 +46,8 @@ enum STATES {
 @onready var hitbox_collision_shape_2d: CollisionShape2D = $HitBox/CollisionShape2D
 @onready var audio_stream_player_2d: AudioStreamPlayer2D = $audio/AudioStreamPlayer2D
 
+@onready var phantom_camera_2d: PhantomCamera2D = $PhantomCamera2D
+
 var audio_footsteps = [
 	preload("res://assets/audio/effects/footsteps/footstep_concrete_000.ogg"),
 	preload("res://assets/audio/effects/footsteps/footstep_concrete_001.ogg"),
@@ -57,8 +59,6 @@ var audio_footsteps = [
 var health: int = 100
 var did_respawn: bool = false
 var player_color: PLAYER_COLORS
-var pcam: PhantomCamera2D
-
 
 func _ready() -> void:
 	# Connect to NetworkTime signals
@@ -80,9 +80,7 @@ func _ready() -> void:
 	
 	# Get hold of the camera so it can track the player
 	if player_input.is_multiplayer_authority():
-		pcam = get_tree().get_first_node_in_group("PhantomCamera2D")
-		#pcam.global_position = global_position
-		pcam.set_follow_target(self)
+		phantom_camera_2d.priority = 2
 
 
 func _tick(_dt:float, _tk: int):
@@ -130,13 +128,6 @@ func apply_animation() -> void:
 		STATES.WALKING:
 			animation_player.speed_scale = clampf(velocity.length() / max_speed, 0.2, 1.0)
 			animation_player.play("player_animations/player_walk" + "_" + PLAYER_COLORS.keys()[player_color].to_lower())
-			
-	#if velocity == Vector2.ZERO:
-		#animation_player.speed_scale = 1.0
-		#animation_player.play("player_animations/player_idle" + "_" + PLAYER_COLORS.keys()[player_color].to_lower())
-	#else:
-		#animation_player.speed_scale = clampf(velocity.length() / max_speed, 0.2, 1.0)
-		#animation_player.play("player_animations/player_walk" + "_" + PLAYER_COLORS.keys()[player_color].to_lower())
 
 
 func footstep_audio() -> void:
@@ -154,7 +145,6 @@ func die() -> void:
 
 		# Once cleaned up, and house-keeping performed, call dead
 		# TBD - Some house-keeping??
-		#await get_tree().create_timer(1.0).timeout
 		dead()
 	else:
 		# Turn off the rollbacksynchronizer

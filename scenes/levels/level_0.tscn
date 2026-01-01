@@ -86,3 +86,6 @@ endpoint_target_level = "res://scenes/levels/level_1.tscn"
 
 [node name="camera_start_marker" parent="." index="5"]
 position = Vector2(384, 384)
+
+[node name="PhantomCamera2D" parent="." index="6"]
+tween_on_load = false

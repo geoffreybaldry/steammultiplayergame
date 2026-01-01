@@ -1,7 +1,7 @@
 extends Node2D
 class_name Level
 
-@onready var camera_start_marker: Marker2D = $camera_start_marker
+#@onready var camera_start_marker: Marker2D = $camera_start_marker
 @onready var phantom_camera_2d: PhantomCamera2D = $PhantomCamera2D
 
 var enemy_start_markers: Array = []
@@ -21,6 +21,7 @@ func _ready() -> void:
 	
 	# Grab the camera and center it on the level's start position
 	#phantom_camera_2d.global_position = camera_start_marker.global_position # <- Not working, causing offsets with player
+	#phantom_camera_2d.set_follow_target(camera_start_marker)
 	
 	# Let the Network Server know that we have loaded the level
 	Levels.player_loaded.rpc_id(1)
