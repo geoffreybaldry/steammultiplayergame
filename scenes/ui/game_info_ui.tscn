@@ -13,13 +13,117 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_0p261")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="game_state_hbox" type="HBoxContainer" parent="."]
 layout_mode = 1
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="game_state_label" type="Label" parent="HBoxContainer"]
+[node name="game_state_label" type="Label" parent="game_state_hbox"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_l0x22")
 theme_override_font_sizes/font_size = 32
 text = "GameState : n/a"
+
+[node name="game_info_hbox" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -768.0
+offset_bottom = 256.0
+grow_horizontal = 0
+
+[node name="player_spawn_queue_vbox" type="VBoxContainer" parent="game_info_hbox"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="player_spawn_queue_label" type="Label" parent="game_info_hbox/player_spawn_queue_vbox"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_l0x22")
+theme_override_font_sizes/font_size = 32
+text = "Player
+Queue"
+
+[node name="player_spawn_queue_text" type="RichTextLabel" parent="game_info_hbox/player_spawn_queue_vbox"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_l0x22")
+theme_override_font_sizes/normal_font_size = 32
+text = "n/a"
+fit_content = true
+
+[node name="enemy_instances_vbox" type="VBoxContainer" parent="game_info_hbox"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="enemy_instances_label" type="Label" parent="game_info_hbox/enemy_instances_vbox"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_l0x22")
+theme_override_font_sizes/font_size = 32
+text = "Enemy
+Instances"
+
+[node name="enemy_instances_text" type="RichTextLabel" parent="game_info_hbox/enemy_instances_vbox"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_l0x22")
+theme_override_font_sizes/normal_font_size = 32
+text = "n/a"
+fit_content = true
+
+[node name="player_instances_vbox" type="VBoxContainer" parent="game_info_hbox"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="player_instances_label" type="Label" parent="game_info_hbox/player_instances_vbox"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_l0x22")
+theme_override_font_sizes/font_size = 32
+text = "Player
+Instances"
+
+[node name="player_instances_text" type="RichTextLabel" parent="game_info_hbox/player_instances_vbox"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_l0x22")
+theme_override_font_sizes/normal_font_size = 32
+text = "n/a"
+fit_content = true
+
+[node name="players_dict_vbox" type="VBoxContainer" parent="game_info_hbox"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="players_dict_label" type="Label" parent="game_info_hbox/players_dict_vbox"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_l0x22")
+theme_override_font_sizes/font_size = 32
+text = "Players
+Dict"
+
+[node name="players_dict_list" type="RichTextLabel" parent="game_info_hbox/players_dict_vbox"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_l0x22")
+theme_override_font_sizes/normal_font_size = 32
+text = "n/a"
+fit_content = true
+
+[node name="seated_players_vbox" type="VBoxContainer" parent="game_info_hbox"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="seated_players_label" type="Label" parent="game_info_hbox/seated_players_vbox"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_l0x22")
+theme_override_font_sizes/font_size = 32
+text = "Seated
+Players"
+
+[node name="seated_players_list" type="RichTextLabel" parent="game_info_hbox/seated_players_vbox"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_l0x22")
+theme_override_font_sizes/normal_font_size = 32
+text = "n/a"
+fit_content = true

@@ -46,7 +46,6 @@ enum STATES {
 @onready var hitbox_collision_shape_2d: CollisionShape2D = $HitBox/CollisionShape2D
 @onready var audio_stream_player_2d: AudioStreamPlayer2D = $audio/AudioStreamPlayer2D
 
-@onready var phantom_camera_2d: PhantomCamera2D = $PhantomCamera2D
 
 var audio_footsteps = [
 	preload("res://assets/audio/effects/footsteps/footstep_concrete_000.ogg"),
@@ -57,8 +56,9 @@ var audio_footsteps = [
 ]
 
 var health: int = 100
-var did_respawn: bool = false
 var player_color: PLAYER_COLORS
+
+var pcam: PhantomCamera2D
 
 func _ready() -> void:
 	# Connect to NetworkTime signals
@@ -78,9 +78,12 @@ func _ready() -> void:
 	# Activate the Rollback Synchronizer's settings - needed, otherwise the client gets rolled back 
 	rollback_synchronizer.process_settings()
 	
-	# Get hold of the camera so it can track the player
+	# If we are the player that holds the input, then also grab focus from the player phantom camera
 	if player_input.is_multiplayer_authority():
-		phantom_camera_2d.priority = 2
+		Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Getting Player Phantom Camera")
+		pcam = get_tree().get_first_node_in_group("player_phantom_camera")
+		#pcam.set_priority(2)
+		pcam.set_follow_target(self)
 
 
 func _tick(_dt:float, _tk: int):
@@ -145,6 +148,8 @@ func die() -> void:
 
 		# Once cleaned up, and house-keeping performed, call dead
 		# TBD - Some house-keeping??
+		#disable_entity()
+		#await get_tree().create_timer(2.0).timeout
 		dead()
 	else:
 		# Turn off the rollbacksynchronizer
@@ -171,5 +176,5 @@ func dead() -> void:
 	queue_free()
 	
 
-func _exit_tree() -> void:	
+func _exit_tree() -> void:
 	NetworkTime.on_tick.disconnect(_tick)

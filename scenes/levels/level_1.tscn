@@ -59,6 +59,3 @@ position = Vector2(640, 192)
 
 [node name="end_point" parent="end_points" index="0" instance=ExtResource("3_x42e6")]
 position = Vector2(576, 320)
-
-[node name="camera_start_marker" parent="." index="5"]
-position = Vector2(224, 256)

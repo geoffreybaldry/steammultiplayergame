@@ -23,12 +23,16 @@ var enemy_instances = {}			# An dictionary of the spawned enemy instances
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	if is_multiplayer_authority():
+	#if is_multiplayer_authority():
+	# Hmm, at this point the multiplayer peer is still the default OfflineMultiplayerPeer, so this is always true initially - TBD
+	if multiplayer.is_server():
+		Log.warn("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Entities Connecting to server signals")
 		Levels.all_peers_loaded.connect(_on_all_peers_loaded)
 		Levels.remove_entities.connect(_on_remove_entities)
 		Events.game_events.player_died.connect(_on_player_died)
 		Events.game_events.enemy_died.connect(_on_enemy_died)
 		Events.game_events.spawn_enemy_request.connect(_on_spawn_enemy_request)
+		Network.peer_disconnected.connect(_on_peer_disconnected)
 		
 	# Custom spawn functions
 	player_multiplayer_spawner.spawn_function = spawn_player
@@ -38,6 +42,14 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	pass
 	
+
+func _on_peer_disconnected(this_peer_id: int) -> void:
+	# Required because this signal is always connected by default - see above in ready function
+	if multiplayer.is_server():
+		Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Removing player instance for disconnected peer " + str(this_peer_id))
+		_free_entity(player_instances[this_peer_id])
+		player_instances.erase(this_peer_id)
+
 
 # This function is called when all the peers have successfully loaded the
 # level - it creates the player objects on the server peer, and allows the
@@ -174,7 +186,7 @@ func _on_timer_timeout() -> void:
 				# Remove the waiting player from the queue
 				player_queue.pop_front()
 			else:
-				Log.warn("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Trying to spawn a peer_id that already has an instance.")
+				Log.warn("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Trying to spawn a peer_id that already has an instance. Peer ID : " + str(this_peer_id))
 		else:
 			Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "No free spawn points for player " + str(this_peer_id))
 

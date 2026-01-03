@@ -35,7 +35,7 @@ linear_accel_min = -50.0
 linear_accel_max = -50.0
 color_ramp = SubResource("GradientTexture1D_ubud2")
 
-[node name="spawn_point" type="Area2D" groups=["spawn_points"]]
+[node name="spawn_point" type="Area2D"]
 collision_layer = 64
 collision_mask = 8
 script = ExtResource("1_tg1mr")
