@@ -35,8 +35,9 @@ var my_player_info = {
 # Our multiplayer peer id, 0 for not set, 1 for server, any other number for client
 var peer_id: int = 0:
 	set(value):
+		var old_peer_id: int = peer_id
 		peer_id = value
-		peer_id_changed.emit(value)
+		peer_id_changed.emit(old_peer_id, peer_id)
 	get:
 		return peer_id
 
@@ -44,17 +45,14 @@ var peer_id: int = 0:
 var seats: Array[int] = [-1, -1, -1, -1]
 
 # Our own internal signals that we might want to pass game-wide
-signal server_started()							# Emitted when this peer starts as a server
-#signal networktime_client_synced(peer_id: int)	# Emitted when a client syncs its NetFox network time with the server
-signal server_disconnected         				# Emitted if we see the host server disconnect - bad news
-signal peer_connected(peer_id: int)				# Emitted if a peer connects
-signal peer_disconnected(peer_id: int)			# Emitted if a peer disconnects so we can let the rest of the game know
-signal peer_id_changed(peer_id: int)			# Emitted when our peer_id changes
+signal server_started()											# Emitted when this peer starts as a server
+#signal networktime_client_synced(peer_id: int)					# Emitted when a client syncs its NetFox network time with the server
+signal server_disconnected         								# Emitted if we see the host server disconnect - bad news
+signal peer_connected(peer_id: int)								# Emitted if a peer connects
+signal peer_disconnected(peer_id: int)							# Emitted if a peer disconnects so we can let the rest of the game know
+signal peer_id_changed(old_peer_id: int, new_peer_id: int)			# Emitted when our peer_id changes
 
 func _ready() -> void:
-	# Start with the multiplayer peer as null, rather than default of OfflineMultiplayerPeer
-	#multiplayer.multiplayer_peer = null
-	
 	# Connect to multiplayer signals - these are the Godot High-Level API signals
 	multiplayer.peer_connected.connect(_on_peer_connected)             # When this multiplayer_peer connects to a new peer
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)       # When this multiplayer_peer is disconnected from a peer
@@ -62,6 +60,7 @@ func _ready() -> void:
 	multiplayer.connected_to_server.connect(_on_connected_to_server)   # Connected to a server
 	multiplayer.connection_failed.connect(_on_connection_failed)       # Failed to connect to a server
 	multiplayer.server_disconnected.connect(_on_server_disconnected)   # When this client disconnects from a server, or the server disappears
+
 
 	# Connect to server signal(s)
 	server_started.connect(_on_server_started)

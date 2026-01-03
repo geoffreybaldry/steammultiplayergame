@@ -23,20 +23,48 @@ var enemy_instances = {}			# An dictionary of the spawned enemy instances
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	#if is_multiplayer_authority():
-	# Hmm, at this point the multiplayer peer is still the default OfflineMultiplayerPeer, so this is always true initially - TBD
-	if multiplayer.is_server():
-		Log.warn("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Entities Connecting to server signals")
+	Network.peer_id_changed.connect(_on_peer_id_changed)
+	
+	# Custom spawn functions
+	player_multiplayer_spawner.spawn_function = spawn_player
+	enemy_multiplayer_spawner.spawn_function = spawn_enemy
+
+
+# When this peer starts as a server it must keep track of the below signals
+func _on_peer_id_changed(_old_peer_id: int, new_peer_id: int) -> void:
+	# If going from not connected state to server state, connect the server signals
+	match new_peer_id:
+		# We disconnected from networking
+		0:
+			# If we were the server, disconnect the server signals
+			if _old_peer_id == 1:
+				disconnect_game_signals()
+		# We became the server
+		1:
+			connect_game_signals()
+		# We became a client
+		_:
+			pass
+
+
+func connect_game_signals() -> void:
+		Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Entities Connecting to server signals")
 		Levels.all_peers_loaded.connect(_on_all_peers_loaded)
 		Levels.remove_entities.connect(_on_remove_entities)
 		Events.game_events.player_died.connect(_on_player_died)
 		Events.game_events.enemy_died.connect(_on_enemy_died)
 		Events.game_events.spawn_enemy_request.connect(_on_spawn_enemy_request)
 		Network.peer_disconnected.connect(_on_peer_disconnected)
-		
-	# Custom spawn functions
-	player_multiplayer_spawner.spawn_function = spawn_player
-	enemy_multiplayer_spawner.spawn_function = spawn_enemy
+
+
+func disconnect_game_signals() -> void:
+		Log.warn("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Entities Disconnecting to server signals")
+		Levels.all_peers_loaded.disconnect(_on_all_peers_loaded)
+		Levels.remove_entities.disconnect(_on_remove_entities)
+		Events.game_events.player_died.disconnect(_on_player_died)
+		Events.game_events.enemy_died.disconnect(_on_enemy_died)
+		Events.game_events.spawn_enemy_request.disconnect(_on_spawn_enemy_request)
+		Network.peer_disconnected.disconnect(_on_peer_disconnected)
 
 
 func _process(_delta: float) -> void:
@@ -44,11 +72,9 @@ func _process(_delta: float) -> void:
 	
 
 func _on_peer_disconnected(this_peer_id: int) -> void:
-	# Required because this signal is always connected by default - see above in ready function
-	if multiplayer.is_server():
-		Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Removing player instance for disconnected peer " + str(this_peer_id))
-		_free_entity(player_instances[this_peer_id])
-		player_instances.erase(this_peer_id)
+	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Removing player instance for disconnected peer " + str(this_peer_id))
+	_free_entity(player_instances[this_peer_id])
+	player_instances.erase(this_peer_id)
 
 
 # This function is called when all the peers have successfully loaded the

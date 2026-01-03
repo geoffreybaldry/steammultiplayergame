@@ -41,9 +41,9 @@ func update_game_button_state(state: String) -> void:
 			pass
 
 
-func _on_peer_id_changed(peer_id: int) -> void:
-	Log.pr("_on_peer_id_changed : " + str(peer_id))
-	match peer_id:
+func _on_peer_id_changed(old_peer_id: int, new_peer_id: int) -> void:
+	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "_on_peer_id_changed from : " + str(old_peer_id) + " to " + str(new_peer_id))
+	match new_peer_id:
 		0:
 			# We disconnected from networking
 			update_enet_button_state("LEFT-NETWORK")
