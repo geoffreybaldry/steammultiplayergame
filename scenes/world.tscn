@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cmrw5rswvfbdj"]
+[gd_scene load_steps=10 format=3 uid="uid://cmrw5rswvfbdj"]
 
 [ext_resource type="Script" uid="uid://dy34yfx3ut15n" path="res://scripts/world.gd" id="1_nnsk1"]
 [ext_resource type="PackedScene" uid="uid://dy6qu38rl2hod" path="res://scenes/ui/main_menu_ui.tscn" id="2_4wyf3"]
@@ -9,7 +9,6 @@
 [ext_resource type="PackedScene" uid="uid://bicd8f3r5out6" path="res://scenes/ui/error_message_ui.tscn" id="6_qfnet"]
 [ext_resource type="PackedScene" uid="uid://coouhq5c56mee" path="res://scenes/entities/entities.tscn" id="8_e3hyu"]
 [ext_resource type="PackedScene" uid="uid://v8p8h04hhp08" path="res://scenes/ui/game_info_ui.tscn" id="8_w7kh3"]
-[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="10_q5onr"]
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_nnsk1")
@@ -37,15 +36,5 @@ visible = false
 [node name="levels" type="Node" parent="."]
 
 [node name="entities" parent="." instance=ExtResource("8_e3hyu")]
-
-[node name="Camera2D" type="Camera2D" parent="."]
-process_callback = 0
-
-[node name="PhantomCameraHost" type="Node" parent="Camera2D"]
-process_priority = 300
-process_physics_priority = 300
-script = ExtResource("10_q5onr")
-interpolation_mode = 2
-metadata/_custom_type_script = "uid://bd046eokvcnu2"
 
 [editable path="entities"]

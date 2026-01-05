@@ -34,16 +34,13 @@ func _ready() -> void:
 func _on_peer_id_changed(_old_peer_id: int, new_peer_id: int) -> void:
 	# If going from not connected state to server state, connect the server signals
 	match new_peer_id:
-		# We disconnected from networking
-		0:
+		0:	# We disconnected from networking
 			# If we were the server, disconnect the server signals
 			if _old_peer_id == 1:
 				disconnect_game_signals()
-		# We became the server
-		1:
+		1:	# We became the server
 			connect_game_signals()
-		# We became a client
-		_:
+		_:	# We became a client
 			pass
 
 

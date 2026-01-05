@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://4rac6jponypr"]
+[gd_scene load_steps=9 format=3 uid="uid://4rac6jponypr"]
 
 [ext_resource type="Script" uid="uid://bn38b501xsyga" path="res://scripts/levels/level.gd" id="1_377w7"]
 [ext_resource type="TileSet" uid="uid://byhtlte2fr3bh" path="res://assets/tilesets/dungeon_ground.tres" id="2_bovvr"]
 [ext_resource type="TileSet" uid="uid://jr844yg7uh27" path="res://assets/tilesets/dungeon_walls.tres" id="3_b2cq8"]
 [ext_resource type="Script" uid="uid://bhexx6mj1xv3q" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_2d.gd" id="5_d4w6o"]
+[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="6_d4w6o"]
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="6_ouxo3"]
 
 [sub_resource type="Environment" id="Environment_b2cq8"]
@@ -61,3 +62,11 @@ tween_on_load = false
 dead_zone_width = 0.2
 dead_zone_height = 0.2
 metadata/_custom_type_script = "uid://bhexx6mj1xv3q"
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="PhantomCameraHost" type="Node" parent="Camera2D"]
+process_priority = 300
+process_physics_priority = 300
+script = ExtResource("6_d4w6o")
+metadata/_custom_type_script = "uid://bd046eokvcnu2"
