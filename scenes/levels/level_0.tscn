@@ -9,6 +9,8 @@
 
 [sub_resource type="Environment" id="Environment_wjk5u"]
 resource_local_to_scene = true
+background_mode = 3
+glow_enabled = true
 
 [node name="level_0" instance=ExtResource("1_sxr8l")]
 script = ExtResource("2_bw3rj")
@@ -69,17 +71,23 @@ position = Vector2(384, 704)
 position = Vector2(384, 736)
 
 [node name="enemy_start_marker6" parent="enemy_start_markers" index="5" instance=ExtResource("5_jjvta")]
-position = Vector2(778, 458)
-
-[node name="enemy_start_marker7" parent="enemy_start_markers" index="6" instance=ExtResource("5_jjvta")]
-position = Vector2(778, 490)
-
-[node name="enemy_start_marker8" parent="enemy_start_markers" index="7" instance=ExtResource("5_jjvta")]
 position = Vector2(778, 522)
 
-[node name="enemy_start_marker9" parent="enemy_start_markers" index="8" instance=ExtResource("5_jjvta")]
+[node name="enemy_start_marker7" parent="enemy_start_markers" index="6" instance=ExtResource("5_jjvta")]
 position = Vector2(778, 554)
+
+[node name="enemy_start_marker8" parent="enemy_start_markers" index="7" instance=ExtResource("5_jjvta")]
+position = Vector2(778, 586)
+
+[node name="enemy_start_marker9" parent="enemy_start_markers" index="8" instance=ExtResource("5_jjvta")]
+position = Vector2(778, 618)
 
 [node name="end_point" parent="end_points" index="0" instance=ExtResource("5_xy1qu")]
 position = Vector2(736, 352)
 endpoint_target_level = "res://scenes/levels/level_1.tscn"
+
+[node name="level_phantom_camera" parent="." index="6"]
+position = Vector2(576, 576)
+
+[node name="Camera2D" parent="." index="7"]
+position = Vector2(576, 576)

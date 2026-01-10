@@ -136,9 +136,9 @@ avoidance/layer_1="enemy"
 
 events/enabled=false
 
-[physics]
+[phantom_camera]
 
-common/physics_interpolation=true
+tips/show_jitter_tips=false
 
 [rendering]
 

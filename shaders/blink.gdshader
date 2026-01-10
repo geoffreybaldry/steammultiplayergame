@@ -8,4 +8,3 @@ void fragment() {
 
 	COLOR = vec4(color_mix, t.a); // Preserve the alpha value from the texture
 }
-

@@ -120,6 +120,18 @@ properties/0/replication_mode = 2
 properties/1/path = NodePath(".:health")
 properties/1/spawn = true
 properties/1/replication_mode = 2
+properties/2/path = NodePath(".:is_player_enabled")
+properties/2/spawn = false
+properties/2/replication_mode = 2
+properties/3/path = NodePath(".:spawn_tick")
+properties/3/spawn = false
+properties/3/replication_mode = 2
+properties/4/path = NodePath(".:spawn_position")
+properties/4/spawn = false
+properties/4/replication_mode = 2
+properties/5/path = NodePath(".:disable_tick")
+properties/5/spawn = false
+properties/5/replication_mode = 2
 
 [node name="player" type="CharacterBody2D" groups=["Players"]]
 collision_layer = 8
@@ -185,7 +197,7 @@ distance_threshold = 20.0
 [node name="RollbackSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("5_qek5x")
 root = NodePath("..")
-state_properties = Array[String]([":global_position", ":velocity", "weapon_pivot:rotation"])
+state_properties = Array[String]([":global_position", ":velocity", "weapon_pivot:rotation", ":did_spawn", ":did_disable"])
 input_properties = Array[String](["player_input:input_direction", "player_input:aim_direction", "player_input:just_die"])
 enable_input_broadcast = false
 metadata/_custom_type_script = "uid://d350u8evihs1u"

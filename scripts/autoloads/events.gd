@@ -17,6 +17,7 @@ extends Node
 
 var mplayer_events = MultiplayerEvents.new()
 var error_messages = ErrorMessages.new()
+var level_events = LevelEvents.new()
 var game_events = GameEvents.new()
 
 # Use it like Events.mplayer_events.player_joined.connect(id, name)
@@ -24,13 +25,24 @@ class MultiplayerEvents:
 	@warning_ignore("unused_signal")
 	signal player_joined(peer_id: int, player_display_name: String)
 	
-	
 class ErrorMessages:
 	@warning_ignore("unused_signal")
 	signal error_message(message: String, duration: float)
+
+class LevelEvents:
+	@warning_ignore("unused_signal")
+	signal recycle_entities
+	@warning_ignore("unused_signal")
+	signal entities_recycled
 	
 	
 class GameEvents:
+	@warning_ignore("unused_signal")
+	signal register_player_instance(peer_id: int, player_instance: Player)
+	
+	@warning_ignore("unused_signal")
+	signal deregister_player_instance(peer_id: int)
+	
 	@warning_ignore("unused_signal")
 	signal spawn_enemy_request(enemy_type: int, global_position: Vector2)
 	
@@ -40,8 +52,4 @@ class GameEvents:
 	@warning_ignore("unused_signal")
 	signal enemy_died(id: String)
 	
-	#@warning_ignore("unused_signal")
-	#signal level_ready_to_start			# Used to signal that the level is ready to start
 	
-	#@warning_ignore("unused_signal")
-	#signal level_complete				# Used to signal that the level is complete

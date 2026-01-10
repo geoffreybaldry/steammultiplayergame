@@ -1,7 +1,10 @@
 extends Node2D
 class_name Level
 
+@onready var level_phantom_camera: PhantomCamera2D = $level_phantom_camera
+
 var enemy_start_markers: Array = []
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -15,7 +18,7 @@ func _ready() -> void:
 				+ " Requesting enemy spawn of type " 
 				+ enemy_start_marker.ENEMY_TYPES.find_key(enemy_start_marker.enemy_type))
 			Events.game_events.spawn_enemy_request.emit(enemy_start_marker.enemy_type, enemy_start_marker.global_position)
-		
+	
 	# Let the Network Server know that we have loaded the level
 	Levels.player_loaded.rpc_id(1)
 

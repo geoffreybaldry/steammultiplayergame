@@ -55,14 +55,29 @@ var audio_footsteps = [
 	preload("res://assets/audio/effects/footsteps/footstep_concrete_004.ogg"),
 ]
 
+var is_player_enabled: bool = false :
+	set(value):
+		is_player_enabled = value
+		player_enabled(value)
+
 var health: int = 100
 var player_color: PLAYER_COLORS
 
 var pcam: PhantomCamera2D
 
+var spawn_tick: int
+var spawn_position: Vector2
+var did_spawn: bool
+var disable_tick: int
+var did_disable: bool
+
 func _ready() -> void:
 	# Connect to NetworkTime signals
-	NetworkTime.on_tick.connect(_tick)
+	#NetworkTime.on_tick.connect(_tick)
+	NetworkTime.after_tick_loop.connect(_after_tick_loop)
+	
+	# New players start disabled
+	player_enabled(false)
 	
 	# Take a frame for the network to synchronize, etc, and let peer_id be set.
 	await get_tree().process_frame
@@ -78,28 +93,61 @@ func _ready() -> void:
 	# Activate the Rollback Synchronizer's settings - needed, otherwise the client gets rolled back 
 	rollback_synchronizer.process_settings()
 	
-	# If we are the player that holds the input, then also grab focus from the player phantom camera
-	if player_input.is_multiplayer_authority():
-		Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Getting Player Phantom Camera")
-		pcam = get_tree().get_first_node_in_group("player_phantom_camera")
-		#pcam.set_priority(2)
-		pcam.set_follow_target(self)
+	## If we are the player that holds the input, then also grab focus from the player phantom camera
+	#if player_input.is_multiplayer_authority():
+		#pcam = get_tree().get_first_node_in_group("player_phantom_camera")
+		#pcam.set_follow_target(self)
+		
+	# Register ourselves as a game entity on the server
+	if is_multiplayer_authority():
+		Events.game_events.register_player_instance.emit(peer_id, self)
 
 
-func _tick(_dt:float, _tk: int):
-	# Check health
-	if health <= 0:
-		Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Player died")
-
+# Things that don't need to be involved in rollback go in _process
+func _process(_delta: float) -> void:
+	if not is_player_enabled:
+		return
+		
 	apply_animation()
 
 
+func _tick(_dt:float, _tk: int):
+	pass
 
-func _rollback_tick(_delta, _tk, _is_fresh) -> void:
+
+func _after_tick_loop():
+	if did_spawn or did_disable:
+		tick_interpolator.teleport()
+
+
+# Processes that must be re-simulated during rollback
+func _rollback_tick(_delta, tick, _is_fresh) -> void:
+	if tick == spawn_tick:
+		global_position = spawn_position
+		did_spawn = true
+		is_player_enabled = true
+		if player_input.is_multiplayer_authority():
+			pcam = get_tree().get_first_node_in_group("player_phantom_camera")
+			#pcam.global_position = global_position
+			pcam.set_follow_target(self)
+			pcam.priority = 2
+			pcam.global_position = global_position
+	else:
+		did_spawn = false
+	
+	if tick == disable_tick:
+		#global_position = spawn_position
+		did_disable = true
+		is_player_enabled = false
+	else:
+		did_disable = false
+	
+	if not is_player_enabled:
+		return
+	
 	if player_input.just_die:
 		Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Noticed die signal in player's rollback tick")
 		die()
-	
 	
 	# Calculate movement from velocity
 	velocity = player_input.input_direction * max_speed
@@ -122,6 +170,20 @@ func _rollback_tick(_delta, _tk, _is_fresh) -> void:
 	weapon_pivot.look_at(position + player_input.aim_direction)
 
 
+# Function that "turns on or off" the player
+func player_enabled(value: bool) -> void:
+	#Log.warn("[" + str(multiplayer.get_unique_id()) + "]" + " " + "player_enabled() : " + str(peer_id) + " " + str(value))
+	if value:
+		#collision_shape_2d.set_deferred("disabled", false)
+		hitbox_collision_shape_2d.set_deferred("disabled", false)
+		visible = true
+	else:
+		#collision_shape_2d.set_deferred("disabled", true)
+		hitbox_collision_shape_2d.set_deferred("disabled", true)
+		visible = false
+	
+
+
 # Play the appropriate animation based on the player's velocity
 func apply_animation() -> void:
 	match current_state:
@@ -142,38 +204,35 @@ func footstep_audio() -> void:
 func die() -> void:
 	# Only the authority (Server) can decide if a player died
 	if is_multiplayer_authority():
-		current_state = STATES.DYING
-
+		#current_state = STATES.DYING
 		Events.game_events.player_died.emit(peer_id)
-
-		# Once cleaned up, and house-keeping performed, call dead
-		# TBD - Some house-keeping??
-		#disable_entity()
-		#await get_tree().create_timer(2.0).timeout
-		dead()
-	else:
-		# Turn off the rollbacksynchronizer
-		rollback_synchronizer.process_mode = Node.PROCESS_MODE_DISABLED
-
-
-@rpc("any_peer", "call_local", "reliable")
-func disable_entity() -> void:
-	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Disabling RBS on player id " + str(peer_id))
-	# Disabling RBS and allowing in-flight RPCs to drain stops debug errors on the server
-	rollback_synchronizer.state_properties = []
-	rollback_synchronizer.input_properties = []
-	rollback_synchronizer.process_settings()
-	
-	visible = false
-	collision_shape_2d.disabled = true
-	hitbox_collision_shape_2d.disabled = true
-
-
-func dead() -> void:
-	if not is_multiplayer_authority():
-		return
 		
-	queue_free()
+	if player_input.is_multiplayer_authority():
+		pcam.priority = 0
+
+
+
+
+
+
+#@rpc("any_peer", "call_local", "reliable")
+#func disable_entity() -> void:
+	#Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Disabling RBS on player id " + str(peer_id))
+	## Disabling RBS and allowing in-flight RPCs to drain stops debug errors on the server
+	#rollback_synchronizer.state_properties = []
+	#rollback_synchronizer.input_properties = []
+	#rollback_synchronizer.process_settings()
+	#
+	#visible = false
+	#collision_shape_2d.disabled = true
+	#hitbox_collision_shape_2d.disabled = true
+
+
+#func dead() -> void:
+	#if not is_multiplayer_authority():
+		#return
+		#
+	#queue_free()
 	
 
 func _exit_tree() -> void:

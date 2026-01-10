@@ -2,15 +2,16 @@ extends Node
 
 ## This Autoload is in charge of loading and switching between scenes.
 ## The scenes it switches between are always added or removed as children of the 
-## main scene, called World.
+## main scene, called World, which persists throughout the game.
 
 signal scene_loading_progress_updated(progress_percent: int)
 signal scene_loaded(scene_filepath: String)
 signal scene_unloaded
 signal all_peers_loaded					# Emitted when all peers have loaded the chosen level
 signal level_complete
-signal remove_entities
-signal entities_removed					# Emitted when all level entities are freed
+
+#signal recycle_entities
+#signal entities_recycled
 
 var scene_filepath: String = ""			# e.g. "res://scenes/levels/test_level.tscn"
 var current_scene_name: String = ""
@@ -41,7 +42,7 @@ func _ready() -> void:
 	
 	if is_multiplayer_authority():
 		level_complete.connect(_on_level_complete)
-		entities_removed.connect(_on_entities_removed)
+		Events.level_events.entities_recycled.connect(_on_entities_recycled)
 
 
 # This monitors the progress of any background scene loading taking place
@@ -71,7 +72,7 @@ func _process(_delta: float) -> void:
 # Go to the next scene, indicated by the next_scene_idx variable
 @rpc("call_local", "reliable")
 func goto_next_scene() -> void:
-	# If we are on the last scene, go back to the start, temporarily.
+	# If we are on the last scene, go back to the start (temporarily).
 	if next_scene_idx == scenes.size():
 		next_scene_idx = 0
 		
@@ -160,7 +161,7 @@ func return_to_main_menu() -> void:
 	GameState.change_game_state(GameState.GAME_STATES.SCENE_UNLOADING)
 	
 	# Pause for a short time, so even if the load takes 0.01sec, the loading screen is visible
-	await get_tree().create_timer(1.5).timeout
+	await get_tree().create_timer(0.75).timeout
 	
 	# Tell the current level to unload all its entities
 	# TBD
@@ -196,8 +197,11 @@ func level_ready_to_start() -> void:
 func _on_level_complete(target_scene_filepath: String) -> void:
 	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Level Complete signal received, target next level : " + target_scene_filepath)
 	
-	remove_entities.emit()
+	Events.level_events.recycle_entities.emit()
 	
 
-func _on_entities_removed() -> void:
+#func _on_entities_removed() -> void:
+	#goto_next_scene.rpc()
+	
+func _on_entities_recycled() -> void:
 	goto_next_scene.rpc()
