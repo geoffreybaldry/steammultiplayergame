@@ -126,7 +126,6 @@ func _after_tick_loop():
 # Processes that must be re-simulated during rollback
 func _rollback_tick(_delta, tick, _is_fresh) -> void:
 	if tick == spawn_tick:
-		Events.error_messages.error_message.emit("Noticed spawn tick " + str(tick), 5)
 		global_position = spawn_position
 		did_spawn = true
 		is_player_enabled = true

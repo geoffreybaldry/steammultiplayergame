@@ -24,7 +24,6 @@ var just_die_buf: bool = false
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	NetworkTime.before_tick_loop.connect(_gather)
-	#NetworkTime.after_tick.connect(func(_dt, _t): _gather_always())
 	NetworkTime.after_tick.connect(_gather_always)
 
 
@@ -54,11 +53,12 @@ func _gather():
 	# Average the buffered input
 	if sample_count > 0:
 		input_direction = input_direction_buf / sample_count
-		aim_direction = aim_direction_buf / sample_count
+		# Leave aim_direction alone if we took no new input for it
+		if aim_direction_buf / sample_count != Vector2.ZERO:
+			aim_direction = aim_direction_buf / sample_count
 	else:
 		input_direction = Vector2.ZERO
-		aim_direction = Vector2.ZERO
-		
+
 	# Reset input buffer
 	input_direction_buf = Vector2.ZERO
 	aim_direction_buf = Vector2.ZERO

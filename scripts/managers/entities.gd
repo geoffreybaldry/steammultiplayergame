@@ -20,8 +20,7 @@ var player_queue: Array[int] = []	# A list of player ids waiting to enter the le
 var player_instances = {}			# A dictionary of the spawned player instances
 var enemy_instances = {}			# An dictionary of the spawned enemy instances
 
-
-# A Fresh approach to entities/actors
+var client_player_instances_spawned: int = 0
 
 func _ready() -> void:
 	Levels.all_peers_loaded.connect(_on_all_peers_loaded)
@@ -32,6 +31,7 @@ func _ready() -> void:
 	
 	# Custom spawn function(s)
 	player_multiplayer_spawner.spawn_function = spawn_player_instance_function
+
 
 func _process(_delta: float) -> void:
 	if not player_queue.is_empty():
@@ -46,21 +46,24 @@ func _process(_delta: float) -> void:
 		else:
 			Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "No free spawn points for peer id " + str(peer_id))
 
+
 func _on_all_peers_loaded():
 	# Create any enemies required
 	# TBD
-	
-	# Create any player instances required
-	for peer_id: int in Network.players.keys():
-		if not player_instances.has(peer_id):
-			spawn_player_instance(peer_id)
 
-	# Chill to let the player instances spawn on clients
-	await get_tree().create_timer(1.0).timeout
+	if player_instances.size() == Network.players.size():
+		add_player_instances_to_spawn_queue()
+	else:
+		# Create any player instances required
+		for peer_id: int in Network.players.keys():
+			if not player_instances.has(peer_id):
+				spawn_player_instance(peer_id)
 
-	# Add the player instances to the waiting-to-spawn queue
+
+func add_player_instances_to_spawn_queue() -> void:
 	for peer_id: int in player_instances.keys():
 		player_queue.append(peer_id)
+
 
 func spawn_player_instance(this_peer_id: int) -> void:
 	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "spawn_player_instance() : " + str(this_peer_id))
@@ -70,6 +73,7 @@ func spawn_player_instance(this_peer_id: int) -> void:
 		"player_color": Network.seats.find(this_peer_id)
 	}
 	player_multiplayer_spawner.spawn(spawn_data)
+
 
 func spawn_player_instance_function(data: Variant) -> Node:
 	var this_peer_id = data["peer_id"]
@@ -86,14 +90,15 @@ func spawn_player_instance_function(data: Variant) -> Node:
 
 
 func _on_register_player_instance(this_peer_id: int, this_player_instance: Player) -> void:
-	#if not multiplayer.is_server():
-		#return
-		
 	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Registering player instance for peer id " + str(this_peer_id)) 
 	if not player_instances.has(this_peer_id):
 		player_instances[this_peer_id] = this_player_instance
+		if player_instances.size() == Network.players.size():
+			# Let the server know that all required player instances are spawned
+			all_player_instances_spawned.rpc_id(1)
 	else:
 		Log.warn("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Trying to register a player instance for peer id " + str(this_peer_id) + " when one alreay exists")
+
 
 func _on_player_died(this_peer_id: int) -> void:
 	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "_on_player_died() for peer id " + str(this_peer_id))
@@ -101,12 +106,14 @@ func _on_player_died(this_peer_id: int) -> void:
 	player_instances[this_peer_id].is_player_enabled = false
 	player_queue.append(this_peer_id)
 
+
 func _on_deregister_player_instance(this_peer_id: int) -> void:
 	if not multiplayer.is_server():
 		return
 		
 	if player_instances.has(this_peer_id):
 		pass # TBD
+
 
 func _on_recycle_entities() -> void:
 	recycle_player_instances()
@@ -120,8 +127,14 @@ func recycle_player_instances() -> void:
 		#player_instances[peer_id].spawn_position = Vector2(0, Network.seats.find(peer_id) * 32) # Never spawn on top
 
 
-
-
+@rpc("any_peer", "call_local", "reliable")
+func all_player_instances_spawned() -> void:
+	if multiplayer.is_server():
+		Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "all_player_instances_spawned on peer " + str(multiplayer.get_remote_sender_id()))
+		client_player_instances_spawned += 1
+		if client_player_instances_spawned == Network.players.size():
+			Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "All the clients have spawned all their players.")
+			add_player_instances_to_spawn_queue()
 
 
 
