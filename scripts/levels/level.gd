@@ -1,7 +1,7 @@
 extends Node2D
 class_name Level
 
-@onready var level_phantom_camera: PhantomCamera2D = $level_phantom_camera
+#@onready var level_phantom_camera: PhantomCamera2D = $level_phantom_camera
 
 var enemy_start_markers: Array = []
 

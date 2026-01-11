@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://4rac6jponypr"]
+[gd_scene load_steps=9 format=3 uid="uid://4rac6jponypr"]
 
 [ext_resource type="Script" uid="uid://bn38b501xsyga" path="res://scripts/levels/level.gd" id="1_377w7"]
 [ext_resource type="TileSet" uid="uid://byhtlte2fr3bh" path="res://assets/tilesets/dungeon_ground.tres" id="2_bovvr"]
@@ -16,12 +16,6 @@ glow_enabled = true
 script = ExtResource("6_ouxo3")
 duration = 0.5
 transition = 1
-ease = 2
-
-[sub_resource type="Resource" id="Resource_d4w6o"]
-script = ExtResource("6_ouxo3")
-duration = 1.0
-transition = 0
 ease = 2
 
 [node name="level" type="Node2D"]
@@ -66,18 +60,11 @@ top_level = true
 script = ExtResource("5_d4w6o")
 follow_mode = 5
 tween_resource = SubResource("Resource_urvlt")
-tween_on_load = false
+follow_damping = true
 follow_damping_value = Vector2(0.2, 0.2)
-dead_zone_width = 0.5
-dead_zone_height = 0.5
+dead_zone_width = 0.2
+dead_zone_height = 0.2
 show_viewfinder_in_play = true
-metadata/_custom_type_script = "uid://bhexx6mj1xv3q"
-
-[node name="level_phantom_camera" type="Node2D" parent="." groups=["level_phantom_camera"]]
-script = ExtResource("5_d4w6o")
-priority = 1
-tween_resource = SubResource("Resource_d4w6o")
-tween_on_load = false
 metadata/_custom_type_script = "uid://bhexx6mj1xv3q"
 
 [node name="Camera2D" type="Camera2D" parent="."]

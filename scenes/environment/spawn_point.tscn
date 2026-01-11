@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://r5fv0gwhe8aj"]
+[gd_scene load_steps=11 format=3 uid="uid://r5fv0gwhe8aj"]
 
 [ext_resource type="Script" uid="uid://dp6s40l0kiirw" path="res://scripts/environment/spawn_point.gd" id="1_tg1mr"]
 [ext_resource type="Texture2D" uid="uid://bmow0814215rg" path="res://assets/sprite/environment/spawn_pad_large.png" id="2_tg1mr"]
 [ext_resource type="Texture2D" uid="uid://mxe8btbclpt4" path="res://assets/sprite/environment/4x4_pixel.png" id="3_vgdas"]
+[ext_resource type="FontFile" uid="uid://c1l47aekqn13v" path="res://assets/fonts/m3x6.ttf" id="4_bydq1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jdb1a"]
 size = Vector2(32, 32)
@@ -62,9 +63,19 @@ height = 50.0
 
 [node name="GPUParticles2D" type="GPUParticles2D" parent="."]
 position = Vector2(16, 16)
+emitting = false
 amount_ratio = 0.5
 texture = ExtResource("3_vgdas")
 process_material = SubResource("ParticleProcessMaterial_ubud2")
+
+[node name="resident_players_label" type="Label" parent="."]
+offset_left = 4.0
+offset_top = -29.0
+offset_right = 28.0
+offset_bottom = -3.0
+theme_override_fonts/font = ExtResource("4_bydq1")
+theme_override_font_sizes/font_size = 32
+text = "n/a"
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_body_exited"]

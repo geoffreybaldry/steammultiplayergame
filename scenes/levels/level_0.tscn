@@ -55,6 +55,15 @@ tile_map_data = PackedByteArray("AAAIAAgAAAABAAcAAAAIAAkAAAAAAAQAAAAIAAoAAAAAAAQ
 [node name="spawn_point" parent="spawn_points" index="0" instance=ExtResource("3_osc7o")]
 position = Vector2(320, 416)
 
+[node name="spawn_point2" parent="spawn_points" index="1" instance=ExtResource("3_osc7o")]
+position = Vector2(416, 320)
+
+[node name="spawn_point3" parent="spawn_points" index="2" instance=ExtResource("3_osc7o")]
+position = Vector2(320, 320)
+
+[node name="spawn_point4" parent="spawn_points" index="3" instance=ExtResource("3_osc7o")]
+position = Vector2(416, 416)
+
 [node name="enemy_start_marker" parent="enemy_start_markers" index="0" instance=ExtResource("5_jjvta")]
 position = Vector2(384, 576)
 
@@ -85,9 +94,3 @@ position = Vector2(778, 618)
 [node name="end_point" parent="end_points" index="0" instance=ExtResource("5_xy1qu")]
 position = Vector2(736, 352)
 endpoint_target_level = "res://scenes/levels/level_1.tscn"
-
-[node name="level_phantom_camera" parent="." index="6"]
-position = Vector2(576, 576)
-
-[node name="Camera2D" parent="." index="7"]
-position = Vector2(576, 576)

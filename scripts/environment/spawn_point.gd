@@ -3,6 +3,7 @@ class_name SpawnPoint
 
 @onready var timer: Timer = $Timer
 @onready var gpu_particles_2d: GPUParticles2D = $GPUParticles2D
+@onready var resident_players_label: Label = $resident_players_label
 
 var id: String = ""
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
@@ -16,6 +17,10 @@ func _ready() -> void:
 		id = generate_id()
 		SpawnPoints.register(self, id)
 
+	gpu_particles_2d.emitting = true
+
+func _process(_delta: float) -> void:
+	resident_players_label.text = str(occupying_players.size())
 
 func select() -> void:
 	just_selected = true

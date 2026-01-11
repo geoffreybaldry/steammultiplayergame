@@ -94,13 +94,12 @@ func _ready() -> void:
 	rollback_synchronizer.process_settings()
 	
 	## If we are the player that holds the input, then also grab focus from the player phantom camera
-	#if player_input.is_multiplayer_authority():
-		#pcam = get_tree().get_first_node_in_group("player_phantom_camera")
-		#pcam.set_follow_target(self)
+	if player_input.is_multiplayer_authority():
+		grab_pcam()
 		
-	# Register ourselves as a game entity on the server
-	if is_multiplayer_authority():
-		Events.game_events.register_player_instance.emit(peer_id, self)
+	# Register ourselves as a game entity
+	#if is_multiplayer_authority():
+	Events.game_events.register_player_instance.emit(peer_id, self)
 
 
 # Things that don't need to be involved in rollback go in _process
@@ -116,31 +115,32 @@ func _tick(_dt:float, _tk: int):
 
 
 func _after_tick_loop():
-	if did_spawn or did_disable:
+	if did_spawn:
+		Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Spawned peer id " + str(peer_id))
+		tick_interpolator.teleport()
+	elif did_disable:
+		Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Disabled peer id " + str(peer_id))
 		tick_interpolator.teleport()
 
 
 # Processes that must be re-simulated during rollback
 func _rollback_tick(_delta, tick, _is_fresh) -> void:
 	if tick == spawn_tick:
+		Events.error_messages.error_message.emit("Noticed spawn tick " + str(tick), 5)
 		global_position = spawn_position
 		did_spawn = true
 		is_player_enabled = true
 		if player_input.is_multiplayer_authority():
-			pcam = get_tree().get_first_node_in_group("player_phantom_camera")
-			#pcam.global_position = global_position
-			pcam.set_follow_target(self)
-			pcam.priority = 2
-			pcam.global_position = global_position
+			grab_pcam()
 	else:
 		did_spawn = false
-	
-	if tick == disable_tick:
+	#
+	#if tick == disable_tick:
 		#global_position = spawn_position
-		did_disable = true
-		is_player_enabled = false
-	else:
-		did_disable = false
+		#did_disable = true
+		#is_player_enabled = false
+	#else:
+		#did_disable = false
 	
 	if not is_player_enabled:
 		return
@@ -174,11 +174,11 @@ func _rollback_tick(_delta, tick, _is_fresh) -> void:
 func player_enabled(value: bool) -> void:
 	#Log.warn("[" + str(multiplayer.get_unique_id()) + "]" + " " + "player_enabled() : " + str(peer_id) + " " + str(value))
 	if value:
-		#collision_shape_2d.set_deferred("disabled", false)
+		collision_shape_2d.set_deferred("disabled", false)
 		hitbox_collision_shape_2d.set_deferred("disabled", false)
 		visible = true
 	else:
-		#collision_shape_2d.set_deferred("disabled", true)
+		collision_shape_2d.set_deferred("disabled", true)
 		hitbox_collision_shape_2d.set_deferred("disabled", true)
 		visible = false
 	
@@ -206,10 +206,11 @@ func die() -> void:
 	if is_multiplayer_authority():
 		#current_state = STATES.DYING
 		Events.game_events.player_died.emit(peer_id)
-		
-	if player_input.is_multiplayer_authority():
-		pcam.priority = 0
 
+
+func grab_pcam() -> void:
+	pcam = get_tree().get_first_node_in_group("player_phantom_camera")
+	pcam.set_follow_target(self)
 
 
 

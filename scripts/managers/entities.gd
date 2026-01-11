@@ -31,7 +31,7 @@ func _ready() -> void:
 	Events.game_events.player_died.connect(_on_player_died)
 	
 	# Custom spawn function(s)
-	player_multiplayer_spawner.spawn_function = spawn_player
+	player_multiplayer_spawner.spawn_function = spawn_player_instance_function
 
 func _process(_delta: float) -> void:
 	if not player_queue.is_empty():
@@ -46,61 +46,55 @@ func _process(_delta: float) -> void:
 		else:
 			Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "No free spawn points for peer id " + str(peer_id))
 
-
-func _on_recycle_entities() -> void:
-	recycle_player_instances()
-	
-	Events.level_events.entities_recycled.emit()
-	
-
-func recycle_player_instances() -> void:
-	for peer_id in player_instances.keys():
-		player_instances[peer_id].disable_tick = NetworkTime.tick
-		#player_instances[peer_id].spawn_position = Vector2(0, Network.seats.find(peer_id) * 32) # Never spawn on top
-
-
 func _on_all_peers_loaded():
-	spawn_players()
-	#spawn_enemies
+	# Create any enemies required
+	# TBD
 	
-	# Chill
+	# Create any player instances required
+	for peer_id: int in Network.players.keys():
+		if not player_instances.has(peer_id):
+			spawn_player_instance(peer_id)
+
+	# Chill to let the player instances spawn on clients
 	await get_tree().create_timer(1.0).timeout
-	
-	# Add the instances to the waiting-to-appear queue
+
+	# Add the player instances to the waiting-to-spawn queue
 	for peer_id: int in player_instances.keys():
 		player_queue.append(peer_id)
 
-func spawn_players() -> void:
-	for peer_id:int in Network.players.keys():
-		if not player_instances.has(peer_id):
-			Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Spawning player for peer id : " + str(peer_id))
-			var spawn_data = {
-				"peer_id": peer_id,
-				"global_position": Vector2(0, Network.seats.find(peer_id) * 32) # Never spawn on top
-			}
-			player_multiplayer_spawner.spawn(spawn_data)
+func spawn_player_instance(this_peer_id: int) -> void:
+	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "spawn_player_instance() : " + str(this_peer_id))
+	var spawn_data = {
+		"peer_id": this_peer_id,
+		"global_position": Vector2(0, Network.seats.find(this_peer_id) * 32), # Never spawn on top
+		"player_color": Network.seats.find(this_peer_id)
+	}
+	player_multiplayer_spawner.spawn(spawn_data)
 
-func spawn_player(data: Variant) -> Node:
+func spawn_player_instance_function(data: Variant) -> Node:
 	var this_peer_id = data["peer_id"]
 	var this_global_position = data["global_position"]
+	var this_player_color = data["player_color"]
 	var player_instance = player_scene.instantiate()
 	player_instance.peer_id = this_peer_id
 	player_instance.name = str(this_peer_id) 
 	player_instance.global_position = this_global_position
+	player_instance.player_color = this_player_color
 	
 	# Godot automatically adds the node to the scene tree
 	return player_instance
 
+
 func _on_register_player_instance(this_peer_id: int, this_player_instance: Player) -> void:
-	if not multiplayer.is_server():
-		return
+	#if not multiplayer.is_server():
+		#return
 		
 	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Registering player instance for peer id " + str(this_peer_id)) 
 	if not player_instances.has(this_peer_id):
 		player_instances[this_peer_id] = this_player_instance
 	else:
 		Log.warn("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Trying to register a player instance for peer id " + str(this_peer_id) + " when one alreay exists")
-	
+
 func _on_player_died(this_peer_id: int) -> void:
 	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "_on_player_died() for peer id " + str(this_peer_id))
 	
@@ -114,7 +108,16 @@ func _on_deregister_player_instance(this_peer_id: int) -> void:
 	if player_instances.has(this_peer_id):
 		pass # TBD
 
+func _on_recycle_entities() -> void:
+	recycle_player_instances()
+	
+	Events.level_events.entities_recycled.emit()
+	
 
+func recycle_player_instances() -> void:
+	for peer_id in player_instances.keys():
+		player_instances[peer_id].disable_tick = NetworkTime.tick
+		#player_instances[peer_id].spawn_position = Vector2(0, Network.seats.find(peer_id) * 32) # Never spawn on top
 
 
 
