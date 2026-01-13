@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://v8p8h04hhp08"]
+[gd_scene load_steps=4 format=3 uid="uid://v8p8h04hhp08"]
 
 [ext_resource type="Script" uid="uid://c5s3ny1cim87j" path="res://scripts/ui/game_info_ui.gd" id="1_0p261"]
 [ext_resource type="FontFile" uid="uid://c1l47aekqn13v" path="res://assets/fonts/m3x6.ttf" id="2_l0x22"]
+[ext_resource type="Script" uid="uid://bp2qkavww2po5" path="res://scripts/ui/time_display_label.gd" id="3_yrqeu"]
 
 [node name="game_info_ui" type="Control"]
 layout_mode = 3
@@ -127,3 +128,27 @@ theme_override_fonts/normal_font = ExtResource("2_l0x22")
 theme_override_font_sizes/normal_font_size = 32
 text = "n/a"
 fit_content = true
+
+[node name="system_stats_hbox" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -40.0
+offset_right = 40.0
+grow_vertical = 0
+
+[node name="latency_stats_vbox" type="VBoxContainer" parent="system_stats_hbox"]
+layout_mode = 2
+
+[node name="latency_stats_label" type="Label" parent="system_stats_hbox/latency_stats_vbox"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_l0x22")
+theme_override_font_sizes/font_size = 32
+text = "System Stats"
+
+[node name="time_display_label" type="Label" parent="system_stats_hbox/latency_stats_vbox"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_l0x22")
+theme_override_font_sizes/font_size = 32
+script = ExtResource("3_yrqeu")

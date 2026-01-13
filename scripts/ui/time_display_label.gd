@@ -1,0 +1,32 @@
+extends Label
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	text = "Remote RTT: %.2fms +/- %.2fms" % [NetworkTimeSynchronizer.rtt * 1000., NetworkTimeSynchronizer.rtt_jitter * 1000.]
+	text += "\nFPS: %s" % [Engine.get_frames_per_second()]
+	
+	var has_connection = multiplayer.has_multiplayer_peer() \
+		and multiplayer.multiplayer_peer.get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTED
+
+	if has_connection and not multiplayer.is_server():
+		# Grab latency to server and display
+		var enet = get_tree().get_multiplayer().multiplayer_peer as ENetMultiplayerPeer
+		if enet == null or enet.get_peer(1) == null:
+			return
+
+		var server = enet.get_peer(1)
+		if server == null:
+			return
+
+		var last_rtt = server.get_statistic(ENetPacketPeer.PEER_LAST_ROUND_TRIP_TIME)
+		var last_variance = server.get_statistic(ENetPacketPeer.PEER_LAST_ROUND_TRIP_TIME_VARIANCE)
+		var mean_rtt = server.get_statistic(ENetPacketPeer.PEER_ROUND_TRIP_TIME)
+		var mean_variance = server.get_statistic(ENetPacketPeer.PEER_ROUND_TRIP_TIME_VARIANCE)
+
+		text += "\nLast RTT: %s +/- %s\nMean RTT: %s +/- %s" % [last_rtt, last_variance, mean_rtt, mean_variance]
