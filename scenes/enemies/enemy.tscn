@@ -74,6 +74,7 @@ debug_enabled = true
 [node name="RollbackSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("2_fcftc")
 root = NodePath("..")
+enable_input_broadcast = false
 metadata/_custom_type_script = "uid://d350u8evihs1u"
 
 [node name="TickInterpolator" type="Node" parent="." node_paths=PackedStringArray("root")]
@@ -83,5 +84,9 @@ metadata/_custom_type_script = "uid://dour8fehaaugp"
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_fcftc")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 2.0
+autostart = true
 
 [connection signal="navigation_finished" from="navigation/NavigationAgent2D" to="." method="_on_navigation_agent_2d_navigation_finished"]

@@ -119,14 +119,6 @@ func _before_tick_loop():
 func _tick(_dt:float, _tk: int):
 	pass
 
-# Processes that happen at the end of a tick loop
-func _after_tick_loop():
-	healthbar.value = (health / max_health) * 100
-	
-	if did_spawn:
-		Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Spawned peer id " + str(peer_id))
-		tick_interpolator.teleport()
-
 
 func check_spawn(tick) -> void:
 	if tick == spawn_tick:
@@ -137,18 +129,6 @@ func check_spawn(tick) -> void:
 			grab_pcam()
 	else:
 		did_spawn = false
-
-
-func damage(value: int, tick: int) -> void:
-	damage_value = value
-	damage_tick = tick
-
-
-func check_damage(tick: int) -> void:
-	if damage_tick == tick and damage_value:
-		health -= damage_value
-		damage_value = 0
-		damage_tick = -1
 
 
 # Processes that are re-simulated during rollback
@@ -186,6 +166,15 @@ func _rollback_tick(_delta: float, tick: int, _is_fresh: bool) -> void:
 	if health <= 0:
 		health = max_health
 		die()
+
+
+# Processes that happen at the end of a tick loop
+func _after_tick_loop():
+	healthbar.value = (health / max_health) * 100
+	
+	if did_spawn:
+		Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Spawned peer id " + str(peer_id))
+		tick_interpolator.teleport()
 
 
 # Function that "turns on or off" the player
@@ -261,4 +250,17 @@ func _exit_tree() -> void:
 
 
 func _on_timer_timeout() -> void:
+	if not is_multiplayer_authority():
+		return
+		
 	damage(1, NetworkTime.tick)
+
+func damage(value: int, tick: int) -> void:
+	damage_value = value
+	damage_tick = tick
+
+func check_damage(tick: int) -> void:
+	if damage_tick == tick and damage_value:
+		health -= damage_value
+		damage_value = 0
+		damage_tick = -1

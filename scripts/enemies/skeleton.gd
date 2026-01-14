@@ -25,7 +25,9 @@ func _tick(_dt:float, _tk: int):
 
 
 func _rollback_tick(_delta, _tk, _is_fresh: bool):
-	super(_delta, _tk, _is_fresh)
+	#super(_delta, _tk, _is_fresh)
+	
+	check_damage(_tk)		# Check if we need to apply damage to the enemy's health
 	
 	if current_state == STATES.DYING:
 		return
@@ -108,8 +110,8 @@ func find_nearby_player() -> Node2D:
 	return closest_player
 	
 
-func damage(value:float, tick: int) -> void:
-	super(value, tick)
+#func damage(value:int, tick: int) -> void:
+	#super(value, tick)
 	
 	
 # Used to perform "push back" on an enemy
@@ -137,3 +139,35 @@ func disable_entity() -> void:
 # Used when the enemy is fully dead, to clean-up, remove the object, etx.
 func dead() -> void:
 	super()
+
+
+# Used to reduce the health of the enemy
+func damage(value:int, tick: int) -> void:
+	# Update health, which is server authoratitive
+	if is_multiplayer_authority():
+		damage_value = value
+		damage_tick = tick
+			
+		# Blink the enemy
+		var tween = get_tree().create_tween()
+		tween.tween_method(set_shader_blink_intensity, 1.0, 0.0, 0.25)
+		
+		# Play impact/pain sounds
+		audio_stream_player_2d.play()
+		
+		if health <= 0:
+			die()
+		
+func check_damage(tick: int) -> void:
+	#if damage_tick == tick and damage_value:
+	if damage_value:
+		health -= damage_value
+		damage_value = 0
+		damage_tick = -1
+
+
+func _on_timer_timeout() -> void:
+	pass
+	#if not is_multiplayer_authority():
+		#return
+	#damage(1, NetworkTime.tick)
