@@ -7,7 +7,7 @@ func _ready() -> void:
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	text = "Remote RTT: %.2fms +/- %.2fms" % [NetworkTimeSynchronizer.rtt * 1000., NetworkTimeSynchronizer.rtt_jitter * 1000.]
 	text += "\nFPS: %s" % [Engine.get_frames_per_second()]
 	

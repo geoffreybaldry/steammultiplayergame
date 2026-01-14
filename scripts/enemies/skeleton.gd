@@ -108,8 +108,8 @@ func find_nearby_player() -> Node2D:
 	return closest_player
 	
 
-func damage(value:float) -> void:
-	super(value)
+func damage(value:float, tick: int) -> void:
+	super(value, tick)
 	
 	
 # Used to perform "push back" on an enemy

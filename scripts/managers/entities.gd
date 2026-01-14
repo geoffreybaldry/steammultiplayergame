@@ -1,24 +1,33 @@
 extends Node
 
-@onready var player_multiplayer_spawner: MultiplayerSpawner = $spawned_players/player_multiplayer_spawner
-@onready var enemy_multiplayer_spawner: MultiplayerSpawner = $spawned_enemies/enemy_multiplayer_spawner
-@onready var timer: Timer = $Timer
-
-var player_scene = preload("res://scenes/player/player.tscn")
+const MAX_PROJECTILES = 50
 
 enum ENEMY_TYPES {
 	SKELETON,
 }
 
+#enum PROJECTILE_TYPES {
+	#BULLET,
+#}
+
+@onready var player_multiplayer_spawner: MultiplayerSpawner = $spawned_players/player_multiplayer_spawner
+@onready var enemy_multiplayer_spawner: MultiplayerSpawner = $spawned_enemies/enemy_multiplayer_spawner
+@onready var timer: Timer = $Timer
+
+var player_scene = preload("res://scenes/player/player.tscn")
+#var projectile_bullet_scenes = {
+	#PROJECTILE_TYPES.BULLET: preload("res://scenes/projectiles/bullet.tscn")
+#}
 var enemy_scenes = {
 	ENEMY_TYPES.SKELETON: preload("res://scenes/enemies/skeleton.tscn"),
 }
 
-#var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
+var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
 var player_queue: Array[int] = []	# A list of player ids waiting to enter the level
 var player_instances = {}			# A dictionary of the spawned player instances
 var enemy_instances = {}			# An dictionary of the spawned enemy instances
+#var projectile_instances = {}
 
 var client_player_instances_spawned: int = 0
 
@@ -31,6 +40,14 @@ func _ready() -> void:
 	
 	# Custom spawn function(s)
 	player_multiplayer_spawner.spawn_function = spawn_player_instance_function
+	
+	## Pre-create some projectiles so we always have some "handy" avoids rollback issues with "liveness"
+	#spawn_projectiles()
+
+#func spawn_projectiles():
+	#for i: int in range(MAX_PROJECTILES):
+		#var projectile_bullet_instance = projectile_bullet_scenes[PROJECTILE_TYPES.BULLET].instantiate()
+		#projectile_instances[generate_id()] = projectile_bullet_instance
 
 
 func _process(_delta: float) -> void:
@@ -299,15 +316,15 @@ func all_player_instances_spawned() -> void:
 	#return enemy_instance
 	#
 	#
-#func generate_id(length: int = 12, charset: String = "abcdefghijklmnopqrstuvwxyz0123456789") -> String:
-	#var result = ""
-#
-	## Generate a random ID
-	#for i in range(length):
-		#var idx = _rng.randi_range(0, charset.length() - 1)
-		#result += charset[idx]
-#
-	#return result
+func generate_id(length: int = 12, charset: String = "abcdefghijklmnopqrstuvwxyz0123456789") -> String:
+	var result = ""
+
+	# Generate a random ID
+	for i in range(length):
+		var idx = _rng.randi_range(0, charset.length() - 1)
+		result += charset[idx]
+
+	return result
 #
 #
 #func _on_timer_timeout() -> void:

@@ -102,7 +102,7 @@ offset_bottom = -37.0
 
 [node name="RollbackSynchronizer" parent="." index="5"]
 enable_prediction = true
-state_properties = Array[String]([":position", ":velocity"])
+state_properties = Array[String]([":position", ":velocity", ":health"])
 
 [node name="TickInterpolator" parent="." index="6"]
 properties = Array[String]([":position"])

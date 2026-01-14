@@ -61,22 +61,16 @@ var is_player_enabled: bool = false :
 		is_player_enabled = value
 		player_enabled(value)
 
-
 var player_color: PLAYER_COLORS
-
 var pcam: PhantomCamera2D
-
 var spawn_tick: int
-var spawn_position: Vector2 : 
-	set(value):
-		spawn_position = value
-		if player_input.is_multiplayer_authority():
-			if spawn_position != Vector2.ZERO:
-				Events.error_messages.error_message.emit("Spawn Position set to " + str(spawn_position), 5)
-		
+var spawn_position: Vector2
 var did_spawn: bool
 var disable_tick: int
 var did_disable: bool
+
+var damage_value: int = 0
+var damage_tick: int = -1
 
 func _ready() -> void:
 	# Connect to NetworkTime signals
@@ -145,19 +139,22 @@ func check_spawn(tick) -> void:
 		did_spawn = false
 
 
-var damage_value: int = 0
-
-func damage(value: int) -> void:
+func damage(value: int, tick: int) -> void:
 	damage_value = value
+	damage_tick = tick
+
+
+func check_damage(tick: int) -> void:
+	if damage_tick == tick and damage_value:
+		health -= damage_value
+		damage_value = 0
+		damage_tick = -1
+
 
 # Processes that are re-simulated during rollback
 func _rollback_tick(_delta: float, tick: int, _is_fresh: bool) -> void:
-	if damage_value:
-		health -= damage_value
-		damage_value = 0
-	
-	# Check if the player needs to spawn
-	check_spawn(tick)
+	check_spawn(tick) 		# Check if the player needs to spawn
+	check_damage(tick)		# Check if we need to apply damage to the player's health
 	
 	if not is_player_enabled:
 		return
@@ -202,7 +199,6 @@ func player_enabled(value: bool) -> void:
 		collision_shape_2d.set_deferred("disabled", true)
 		hitbox_collision_shape_2d.set_deferred("disabled", true)
 		visible = false
-	
 
 
 # Play the appropriate animation based on the player's velocity
@@ -265,4 +261,4 @@ func _exit_tree() -> void:
 
 
 func _on_timer_timeout() -> void:
-	damage(1)
+	damage(1, NetworkTime.tick)
