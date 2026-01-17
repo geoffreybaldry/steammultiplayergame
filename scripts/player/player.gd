@@ -133,6 +133,8 @@ func check_spawn(tick) -> void:
 
 # Processes that are re-simulated during rollback
 func _rollback_tick(_delta: float, tick: int, _is_fresh: bool) -> void:
+	#if player_input.is_multiplayer_authority() and damage_tick > 0:
+		#Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Damage tick : " + str(damage_tick))
 	check_spawn(tick) 		# Check if the player needs to spawn
 	check_damage(tick)		# Check if we need to apply damage to the player's health
 	

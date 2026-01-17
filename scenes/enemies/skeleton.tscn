@@ -100,10 +100,14 @@ offset_top = -60.0
 offset_right = 33.0
 offset_bottom = -37.0
 
+[node name="health_label" parent="visual" index="7"]
+offset_left = -7.0
+offset_top = -67.0
+offset_right = 33.0
+offset_bottom = -44.0
+
 [node name="RollbackSynchronizer" parent="." index="5"]
-state_properties = Array[String]([":position", ":velocity", ":health"])
+state_properties = Array[String]([":position", ":velocity", ":health", ":damage_tick"])
 
 [node name="TickInterpolator" parent="." index="6"]
 properties = Array[String]([":position"])
-
-[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

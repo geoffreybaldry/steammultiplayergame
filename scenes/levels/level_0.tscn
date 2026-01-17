@@ -97,4 +97,4 @@ position = Vector2(736, 352)
 endpoint_target_level = "res://scenes/levels/level_1.tscn"
 
 [node name="skeleton" parent="." index="7" instance=ExtResource("7_3mnpy")]
-position = Vector2(384, 512)
+position = Vector2(384, 576)

@@ -24,6 +24,7 @@ class_name Enemy
 @onready var velocity_label: Label = $visual/velocity_label
 @onready var shove_vector_label: Label = $visual/shove_vector_label
 @onready var ready_position_label: Label = $visual/ready_position_label
+@onready var health_label: Label = $visual/health_label
 
 enum STATES {
 	IDLE,
@@ -43,9 +44,6 @@ var audio = {
 	"impactMetal_002" = preload("res://assets/audio/effects/sci-fi/impactMetal_002.ogg")
 }
 
-var damage_value: int = 0
-var damage_tick: int = -1
-
 
 func _ready() -> void:
 	NetworkTime.before_tick_loop.connect(_before_tick_loop)
@@ -56,10 +54,6 @@ func _ready() -> void:
 	set_multiplayer_authority(1)
 	
 	health = max_health
-	
-	# React to changes in synchronized values
-	#multiplayer_synchronizer.synchronized.connect(_on_multiplayer_synchronizer_synchronized)
-	#multiplayer_synchronizer.delta_synchronized.connect(_on_multiplayer_synchronizer_synchronized)
 	
 	navigation_agent_2d.velocity_computed.connect(Callable(_on_velocity_computed))
 
@@ -76,17 +70,12 @@ func _tick(_dt:float, _tk: int):
 	pass
 
 
-func _rollback_tick(_delta, tick, _is_fresh: bool):
+func _rollback_tick(_delta, _tk, _is_fresh: bool):
 	pass
 	
 
 func _after_tick_loop() -> void:
 	healthbar.value = (health / max_health) * 100
-
-
-#func _on_multiplayer_synchronizer_synchronized() -> void:
-	#pass
-	#healthbar.value = (health / max_health) * 100
 
 
 func set_movement_target(movement_target: Vector2):
@@ -118,10 +107,8 @@ func die() -> void:
 # Used when the enemy is fully dead, to clean-up, remove the object, etc.
 func dead() -> void:
 	# Disconnect signals
-	#multiplayer_synchronizer.synchronized.disconnect(_on_multiplayer_synchronizer_synchronized)
-	#multiplayer_synchronizer.delta_synchronized.disconnect(_on_multiplayer_synchronizer_synchronized)
-	NetworkTime.on_tick.disconnect(_tick)
-	navigation_agent_2d.velocity_computed.disconnect(Callable(_on_velocity_computed))
+	#NetworkTime.on_tick.disconnect(_tick)
+	#navigation_agent_2d.velocity_computed.disconnect(Callable(_on_velocity_computed))
 	
 	if is_multiplayer_authority():
 		Events.game_events.enemy_died.emit(id)

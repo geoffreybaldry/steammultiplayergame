@@ -1,6 +1,8 @@
 extends Enemy
 class_name Skeleton
 
+var damage_value: int = 0
+var damage_tick: int = -1
 
 func _ready() -> void:
 	super()
@@ -11,8 +13,13 @@ func _process(delta: float) -> void:
 	state_label.text = str(STATES.keys()[current_state])
 	velocity_label.text = str(velocity)
 	shove_vector_label.text = str(shove_vector)
+	health_label.text = str(health)
 	
 
+func _before_tick_loop():
+	pass
+	
+	
 func _tick(_dt:float, _tk: int):
 	super(_dt, _tk)
 	if current_state == STATES.DYING:
@@ -25,10 +32,8 @@ func _tick(_dt:float, _tk: int):
 
 
 func _rollback_tick(_delta, _tk, _is_fresh: bool):
-	#super(_delta, _tk, _is_fresh)
-	
-	check_damage(_tk)		# Check if we need to apply damage to the enemy's health
-	
+	super(_delta, _tk, _is_fresh)
+
 	if current_state == STATES.DYING:
 		return
 		
@@ -60,6 +65,15 @@ func _rollback_tick(_delta, _tk, _is_fresh: bool):
 			else:
 				_on_velocity_computed(velocity)
 
+
+func _after_tick_loop() -> void:
+	super()
+	if current_state == STATES.DYING:
+		return
+		
+	if health <= 0:
+		die()
+	
 
 func _on_velocity_computed(safe_velocity: Vector2):
 	super(safe_velocity)
@@ -136,38 +150,12 @@ func disable_entity() -> void:
 	hitbox_collision_shape_2d.disabled = true
 	
 
-# Used when the enemy is fully dead, to clean-up, remove the object, etx.
+# Used when the enemy is fully dead, to clean-up, remove the object, etc.
 func dead() -> void:
 	super()
 
 
 # Used to reduce the health of the enemy
+#func damage(value:int, tick: int) -> void:
 func damage(value:int, tick: int) -> void:
-	# Update health, which is server authoratitive
-	if is_multiplayer_authority():
-		damage_value = value
-		damage_tick = tick
-			
-		# Blink the enemy
-		var tween = get_tree().create_tween()
-		tween.tween_method(set_shader_blink_intensity, 1.0, 0.0, 0.25)
-		
-		# Play impact/pain sounds
-		audio_stream_player_2d.play()
-		
-		if health <= 0:
-			die()
-		
-func check_damage(tick: int) -> void:
-	#if damage_tick == tick and damage_value:
-	if damage_value:
-		health -= damage_value
-		damage_value = 0
-		damage_tick = -1
-
-
-func _on_timer_timeout() -> void:
-	pass
-	#if not is_multiplayer_authority():
-		#return
-	#damage(1, NetworkTime.tick)
+	health -= value

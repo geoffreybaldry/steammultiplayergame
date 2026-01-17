@@ -58,6 +58,12 @@ offset_bottom = 23.0
 theme_override_fonts/font = ExtResource("3_jt03m")
 text = "n/a"
 
+[node name="health_label" type="Label" parent="visual"]
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_fonts/font = ExtResource("3_jt03m")
+text = "n/a"
+
 [node name="audio" type="Node2D" parent="."]
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="audio"]
@@ -84,9 +90,5 @@ metadata/_custom_type_script = "uid://dour8fehaaugp"
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_fcftc")
-
-[node name="Timer" type="Timer" parent="."]
-wait_time = 2.0
-autostart = true
 
 [connection signal="navigation_finished" from="navigation/NavigationAgent2D" to="." method="_on_navigation_agent_2d_navigation_finished"]

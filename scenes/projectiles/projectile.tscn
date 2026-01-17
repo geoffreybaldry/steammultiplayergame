@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://be4llp00irwma"]
+[gd_scene load_steps=4 format=3 uid="uid://be4llp00irwma"]
 
 [ext_resource type="Script" uid="uid://dyu3biicnlily" path="res://scripts/projectiles/projectile.gd" id="1_dtkph"]
+[ext_resource type="Script" uid="uid://d350u8evihs1u" path="res://addons/netfox/rollback/rollback-synchronizer.gd" id="2_l3el7"]
 [ext_resource type="Script" uid="uid://dour8fehaaugp" path="res://addons/netfox/tick-interpolator.gd" id="2_wndne"]
 
 [node name="projectile" type="Area2D"]
@@ -29,10 +30,14 @@ collision_mask = 0
 
 [node name="projectile_hurtbox_collision_shape_2d" type="CollisionShape2D" parent="HurtBox"]
 
+[node name="RollbackSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
+script = ExtResource("2_l3el7")
+root = NodePath("..")
+metadata/_custom_type_script = "uid://d350u8evihs1u"
+
 [node name="TickInterpolator" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("2_wndne")
 root = NodePath("..")
-properties = Array[String]([":global_transform"])
 metadata/_custom_type_script = "uid://dour8fehaaugp"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
