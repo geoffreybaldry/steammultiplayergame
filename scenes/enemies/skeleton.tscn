@@ -83,18 +83,21 @@ offset_right = 33.0
 offset_bottom = -14.0
 
 [node name="velocity_label" parent="visual" index="4"]
+visible = false
 offset_left = -7.0
 offset_top = -45.0
 offset_right = 33.0
 offset_bottom = -22.0
 
 [node name="shove_vector_label" parent="visual" index="5"]
+visible = false
 offset_left = -7.0
 offset_top = -53.0
 offset_right = 33.0
 offset_bottom = -30.0
 
 [node name="ready_position_label" parent="visual" index="6"]
+visible = false
 offset_left = -7.0
 offset_top = -60.0
 offset_right = 33.0
@@ -107,7 +110,7 @@ offset_right = 33.0
 offset_bottom = -44.0
 
 [node name="RollbackSynchronizer" parent="." index="5"]
-state_properties = Array[String]([":position", ":velocity", ":health", ":damage_tick"])
+state_properties = Array[String]([":position", ":velocity", ":health"])
 
 [node name="TickInterpolator" parent="." index="6"]
 properties = Array[String]([":position"])

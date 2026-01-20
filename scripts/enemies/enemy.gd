@@ -61,6 +61,7 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	apply_animation()
 
+
 # Processes that happen before the tick loop
 func _before_tick_loop():
 	pass

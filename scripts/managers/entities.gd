@@ -1,23 +1,15 @@
 extends Node
 
-const MAX_PROJECTILES = 50
-
 enum ENEMY_TYPES {
 	SKELETON,
 }
-
-#enum PROJECTILE_TYPES {
-	#BULLET,
-#}
 
 @onready var player_multiplayer_spawner: MultiplayerSpawner = $spawned_players/player_multiplayer_spawner
 @onready var enemy_multiplayer_spawner: MultiplayerSpawner = $spawned_enemies/enemy_multiplayer_spawner
 @onready var timer: Timer = $Timer
 
 var player_scene = preload("res://scenes/player/player.tscn")
-#var projectile_bullet_scenes = {
-	#PROJECTILE_TYPES.BULLET: preload("res://scenes/projectiles/bullet.tscn")
-#}
+
 var enemy_scenes = {
 	ENEMY_TYPES.SKELETON: preload("res://scenes/enemies/skeleton.tscn"),
 }
@@ -27,27 +19,21 @@ var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var player_queue: Array[int] = []	# A list of player ids waiting to enter the level
 var player_instances = {}			# A dictionary of the spawned player instances
 var enemy_instances = {}			# An dictionary of the spawned enemy instances
-#var projectile_instances = {}
 
 var client_player_instances_spawned: int = 0
 
 func _ready() -> void:
 	Levels.all_peers_loaded.connect(_on_all_peers_loaded)
-	Events.level_events.recycle_entities.connect(_on_recycle_entities)
 	Events.game_events.register_player_instance.connect(_on_register_player_instance)
 	Events.game_events.deregister_player_instance.connect(_on_deregister_player_instance)
 	Events.game_events.player_died.connect(_on_player_died)
 	
+	Events.game_events.spawn_enemy_request.connect(_on_spawn_enemy_request)
+	
 	# Custom spawn function(s)
 	player_multiplayer_spawner.spawn_function = spawn_player_instance_function
+	enemy_multiplayer_spawner.spawn_function = spawn_enemy_instance_function
 	
-	## Pre-create some projectiles so we always have some "handy" avoids rollback issues with "liveness"
-	#spawn_projectiles()
-
-#func spawn_projectiles():
-	#for i: int in range(MAX_PROJECTILES):
-		#var projectile_bullet_instance = projectile_bullet_scenes[PROJECTILE_TYPES.BULLET].instantiate()
-		#projectile_instances[generate_id()] = projectile_bullet_instance
 
 
 func _process(_delta: float) -> void:
@@ -68,10 +54,11 @@ func _on_all_peers_loaded():
 	# Create any enemies required
 	# TBD
 
+	# If we already have all the player instances we need, just put them in the level
 	if player_instances.size() == Network.players.size():
 		add_player_instances_to_spawn_queue()
 	else:
-		# Create any player instances required
+		# Otherwise, create any player instances required
 		for peer_id: int in Network.players.keys():
 			if not player_instances.has(peer_id):
 				spawn_player_instance(peer_id)
@@ -106,6 +93,36 @@ func spawn_player_instance_function(data: Variant) -> Node:
 	return player_instance
 
 
+func _on_spawn_enemy_request(this_enemy_type: int, this_global_position: Vector2) -> void:
+	var spawn_data = {
+		"enemy_type": this_enemy_type,
+		"global_position": this_global_position,
+		"id": generate_id(),
+	}
+	var enemy_instance: Enemy = enemy_multiplayer_spawner.spawn(spawn_data)
+	enemy_instances[enemy_instance.id] = enemy_instance
+	
+
+func spawn_enemy_instance_function(data: Variant) -> Node:
+	var this_enemy_type = data["enemy_type"]
+	var this_global_position = data["global_position"]
+	var this_id = data["id"]
+	
+	var enemy_instance: Node
+	match this_enemy_type:
+		ENEMY_TYPES.SKELETON:
+			enemy_instance = enemy_scenes[ENEMY_TYPES.SKELETON].instantiate()
+		_:
+			Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Trying to instantiate Unknown enemy type " + str(this_enemy_type))
+	
+	enemy_instance.id = this_id
+	enemy_instance.name = this_id
+	enemy_instance.global_position = this_global_position
+	
+	# Godot automatically adds the node to the scene tree
+	return enemy_instance
+	
+
 func _on_register_player_instance(this_peer_id: int, this_player_instance: Player) -> void:
 	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Registering player instance for peer id " + str(this_peer_id)) 
 	if not player_instances.has(this_peer_id):
@@ -132,16 +149,16 @@ func _on_deregister_player_instance(this_peer_id: int) -> void:
 		pass # TBD
 
 
-func _on_recycle_entities() -> void:
-	recycle_player_instances()
-	
-	Events.level_events.entities_recycled.emit()
-	
-
-func recycle_player_instances() -> void:
-	for peer_id in player_instances.keys():
-		player_instances[peer_id].disable_tick = NetworkTime.tick
-		#player_instances[peer_id].spawn_position = Vector2(0, Network.seats.find(peer_id) * 32) # Never spawn on top
+#func _on_recycle_entities() -> void:
+	#recycle_player_instances()
+	#
+	#Events.level_events.entities_recycled.emit()
+	#
+#
+#func recycle_player_instances() -> void:
+	#for peer_id in player_instances.keys():
+		#player_instances[peer_id].disable_tick = NetworkTime.tick
+		##player_instances[peer_id].spawn_position = Vector2(0, Network.seats.find(peer_id) * 32) # Never spawn on top
 
 
 @rpc("any_peer", "call_local", "reliable")
@@ -152,6 +169,9 @@ func all_player_instances_spawned() -> void:
 		if client_player_instances_spawned == Network.players.size():
 			Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "All the clients have spawned all their players.")
 			add_player_instances_to_spawn_queue()
+
+
+
 
 
 

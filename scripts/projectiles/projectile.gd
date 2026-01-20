@@ -37,8 +37,6 @@ func _after_tick_loop():
 	
 
 func disable_projectile() -> void:
-	#Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Disabling projectile")
-	#Events.error_messages.error_message.emit("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Disabling projectile", 3)
 	projectile_collision_shape_2d.set_deferred("disabled", true)
 	projectile_hurtbox_collision_shape_2d.set_deferred("disabled", true)
 	visible = false
@@ -48,6 +46,7 @@ func disable_projectile() -> void:
 	rollback_synchronizer.input_properties = []
 	rollback_synchronizer.process_settings()
 	
+	# Give some time for the projectile to fully disable
 	freeing_timer.start()
 	
 
@@ -62,6 +61,7 @@ func remove_projectile() -> void:
 func _on_freeing_timer_timeout() -> void:
 	remove_projectile()
 
-# Used to remove a projectile that has been simply alive for too long
+# Used to remove a projectile that has been simply alive for too long (orphaned?)
 func _on_long_running_timer_timeout() -> void:
-	pass # Replace with function body.
+	#pass # Replace with function body.
+	disable_projectile()

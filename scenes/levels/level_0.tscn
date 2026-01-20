@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=4 uid="uid://3v7xbxqt3mjb"]
+[gd_scene load_steps=8 format=4 uid="uid://3v7xbxqt3mjb"]
 
 [ext_resource type="PackedScene" uid="uid://4rac6jponypr" path="res://scenes/levels/level.tscn" id="1_sxr8l"]
 [ext_resource type="Script" uid="uid://dt1ey5fa3f854" path="res://scripts/levels/level_0.gd" id="2_bw3rj"]
@@ -6,7 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://bywvs1gck0ktg" path="res://scenes/environment/lights/point_light_small_no_flicker.tscn" id="3_wjk5u"]
 [ext_resource type="PackedScene" uid="uid://bvlypyiu0isbl" path="res://scenes/environment/enemy_start_marker.tscn" id="5_jjvta"]
 [ext_resource type="PackedScene" uid="uid://b8xii0uwxjsda" path="res://scenes/environment/end_point.tscn" id="5_xy1qu"]
-[ext_resource type="PackedScene" uid="uid://c7njnx2d0nquw" path="res://scenes/enemies/skeleton.tscn" id="7_3mnpy"]
 
 [sub_resource type="Environment" id="Environment_wjk5u"]
 resource_local_to_scene = true
@@ -95,6 +94,3 @@ position = Vector2(778, 618)
 [node name="end_point" parent="end_points" index="0" instance=ExtResource("5_xy1qu")]
 position = Vector2(736, 352)
 endpoint_target_level = "res://scenes/levels/level_1.tscn"
-
-[node name="skeleton" parent="." index="7" instance=ExtResource("7_3mnpy")]
-position = Vector2(384, 576)

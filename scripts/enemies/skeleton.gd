@@ -1,8 +1,6 @@
 extends Enemy
 class_name Skeleton
 
-var damage_value: int = 0
-var damage_tick: int = -1
 
 func _ready() -> void:
 	super()
@@ -123,10 +121,6 @@ func find_nearby_player() -> Node2D:
 
 	return closest_player
 	
-
-#func damage(value:int, tick: int) -> void:
-	#super(value, tick)
-	
 	
 # Used to perform "push back" on an enemy
 func shove(direction: Vector2, force: float) -> void:
@@ -156,6 +150,13 @@ func dead() -> void:
 
 
 # Used to reduce the health of the enemy
-#func damage(value:int, tick: int) -> void:
-func damage(value:int, tick: int) -> void:
+func damage(value:int) -> void:
+	Events.error_messages.error_message.emit("Damage!!!", 2)
 	health -= value
+	
+	# Blink the enemy
+	var tween = get_tree().create_tween()
+	tween.tween_method(set_shader_blink_intensity, 1.0, 0.0, 0.25)
+	
+	# Play impact/pain sounds
+	audio_stream_player_2d.play()
