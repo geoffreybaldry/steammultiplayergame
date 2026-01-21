@@ -1,3 +1,4 @@
+@tool
 extends CharacterBody2D
 class_name Enemy
 
@@ -8,13 +9,14 @@ class_name Enemy
 @export var min_sensor_radius: float = 10.0
 @export var max_health: float
 
+@export var state_machine: RewindableStateMachine
+
 @onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
 @onready var hitbox_collision_shape_2d: CollisionShape2D = $HitBox/CollisionShape2D
 
 @onready var navigation_agent_2d: NavigationAgent2D = $navigation/NavigationAgent2D
 @onready var rollback_synchronizer: RollbackSynchronizer = $RollbackSynchronizer
 @onready var tick_interpolator: TickInterpolator = $TickInterpolator
-@onready var multiplayer_synchronizer: MultiplayerSynchronizer = $MultiplayerSynchronizer
 
 @onready var sprite_2d: Sprite2D = $visual/Sprite2D
 @onready var animation_player: AnimationPlayer = $visual/AnimationPlayer
@@ -28,14 +30,14 @@ class_name Enemy
 
 enum STATES {
 	IDLE,
-	SEARCHIG,
+	SEARCHING,
 	CHASING,
 	ATTACKING,
 	DYING,
 }
 
 var id: String
-var current_state = STATES.IDLE		# Synchronized
+#var state = STATES.IDLE				# Synchronized
 var health: float					# Synchronized
 var apply_shove: bool = false
 var shove_vector: Vector2
@@ -43,6 +45,19 @@ var shove_vector: Vector2
 var audio = {
 	"impactMetal_002" = preload("res://assets/audio/effects/sci-fi/impactMetal_002.ogg")
 }
+
+func _get_interpolated_properties():
+	# Specify a list of properties
+	return ["position"]
+
+
+func _get_rollback_state_properties() -> Array:
+	return [
+		"position",
+		#"velocity",
+		"health",
+		["RewindableStateMachine", "state"],
+	]
 
 
 func _ready() -> void:
@@ -55,11 +70,13 @@ func _ready() -> void:
 	
 	health = max_health
 	
-	navigation_agent_2d.velocity_computed.connect(Callable(_on_velocity_computed))
-
+	# Set starting state
+	state_machine.state = &"IDLE"
+	
 
 func _process(_delta: float) -> void:
-	apply_animation()
+	pass
+	#apply_animation()
 
 
 # Processes that happen before the tick loop
@@ -82,9 +99,8 @@ func _after_tick_loop() -> void:
 func set_movement_target(movement_target: Vector2):
 	navigation_agent_2d.set_target_position(movement_target)
 
-
-func apply_animation() -> void:
-	pass
+#func apply_animation() -> void:
+	##pass
 	
 
 # Used to perform "push back" on an enemy
@@ -102,7 +118,7 @@ func set_shader_blink_intensity(new_value: float) -> void:
 func die() -> void:
 	if is_multiplayer_authority():
 		Log.pr("State is DYING")
-		current_state = STATES.DYING
+		#state = STATES.DYING
 
 
 # Used when the enemy is fully dead, to clean-up, remove the object, etc.
@@ -120,4 +136,5 @@ func _on_velocity_computed(_safe_velocity: Vector2):
 
 
 func _on_navigation_agent_2d_navigation_finished() -> void:
-	current_state = STATES.IDLE
+	pass
+	#state = STATES.IDLE

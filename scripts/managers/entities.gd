@@ -11,7 +11,7 @@ enum ENEMY_TYPES {
 var player_scene = preload("res://scenes/player/player.tscn")
 
 var enemy_scenes = {
-	ENEMY_TYPES.SKELETON: preload("res://scenes/enemies/skeleton.tscn"),
+	ENEMY_TYPES.SKELETON: preload("res://scenes/actors/enemies/skeleton/skeleton.tscn"),
 }
 
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
@@ -99,7 +99,7 @@ func _on_spawn_enemy_request(this_enemy_type: int, this_global_position: Vector2
 		"global_position": this_global_position,
 		"id": generate_id(),
 	}
-	var enemy_instance: Enemy = enemy_multiplayer_spawner.spawn(spawn_data)
+	var enemy_instance = enemy_multiplayer_spawner.spawn(spawn_data)
 	enemy_instances[enemy_instance.id] = enemy_instance
 	
 

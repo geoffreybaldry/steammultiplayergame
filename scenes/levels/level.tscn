@@ -72,4 +72,5 @@ metadata/_custom_type_script = "uid://bhexx6mj1xv3q"
 process_priority = 300
 process_physics_priority = 300
 script = ExtResource("6_d4w6o")
+interpolation_mode = 1
 metadata/_custom_type_script = "uid://bd046eokvcnu2"

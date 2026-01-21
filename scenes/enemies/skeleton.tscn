@@ -38,7 +38,7 @@ _data = {
 &"RESET": SubResource("Animation_3mw36")
 }
 
-[node name="skeleton" instance=ExtResource("1_5365w")]
+[node name="skeleton" node_paths=PackedStringArray("state_machine") instance=ExtResource("1_5365w")]
 collision_layer = 4
 collision_mask = 13
 script = ExtResource("2_esykl")
@@ -48,6 +48,7 @@ deceleration = 200.0
 sensor_radius = 120.0
 min_sensor_radius = 20.0
 max_health = 6.0
+state_machine = NodePath("RewindableStateMachine")
 
 [node name="CollisionShape2D" parent="." index="0"]
 shape = SubResource("CircleShape2D_esykl")
@@ -81,6 +82,7 @@ offset_left = -7.0
 offset_top = -37.0
 offset_right = 33.0
 offset_bottom = -14.0
+text = "IDLE"
 
 [node name="velocity_label" parent="visual" index="4"]
 visible = false
@@ -88,6 +90,7 @@ offset_left = -7.0
 offset_top = -45.0
 offset_right = 33.0
 offset_bottom = -22.0
+text = "(0.0, 0.0)"
 
 [node name="shove_vector_label" parent="visual" index="5"]
 visible = false
@@ -95,6 +98,7 @@ offset_left = -7.0
 offset_top = -53.0
 offset_right = 33.0
 offset_bottom = -30.0
+text = "(0.0, 0.0)"
 
 [node name="ready_position_label" parent="visual" index="6"]
 visible = false
@@ -102,15 +106,19 @@ offset_left = -7.0
 offset_top = -60.0
 offset_right = 33.0
 offset_bottom = -37.0
+text = "(0.0, 0.0)"
 
 [node name="health_label" parent="visual" index="7"]
 offset_left = -7.0
 offset_top = -67.0
 offset_right = 33.0
 offset_bottom = -44.0
+text = "0.0"
 
-[node name="RollbackSynchronizer" parent="." index="5"]
-state_properties = Array[String]([":position", ":velocity", ":health"])
+[node name="IDLE" parent="RewindableStateMachine" index="0" node_paths=PackedStringArray("character_body_2d", "animation_player")]
+character_body_2d = NodePath("../..")
+animation_player = NodePath("../../visual/AnimationPlayer")
 
-[node name="TickInterpolator" parent="." index="6"]
-properties = Array[String]([":position"])
+[node name="CHASING" parent="RewindableStateMachine" index="1" node_paths=PackedStringArray("character_body_2d", "animation_player")]
+character_body_2d = NodePath("../..")
+animation_player = NodePath("../../visual/AnimationPlayer")

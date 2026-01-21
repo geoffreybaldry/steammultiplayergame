@@ -1,14 +1,26 @@
+@tool
 extends Enemy
 class_name Skeleton
+
+func _get_interpolated_properties():
+	# Specify a list of properties
+	return super()
+
+
+func _get_rollback_state_properties() -> Array:
+	return super()
 
 
 func _ready() -> void:
 	super()
 	ready_position_label.text = str(global_position)
-
+	
+	navigation_agent_2d.velocity_computed.connect(Callable(_on_velocity_computed))
+	
+	
 func _process(delta: float) -> void:
 	super(delta)
-	state_label.text = str(STATES.keys()[current_state])
+	#state_label.text = str(STATES.keys()[state])
 	velocity_label.text = str(velocity)
 	shove_vector_label.text = str(shove_vector)
 	health_label.text = str(health)
@@ -20,54 +32,54 @@ func _before_tick_loop():
 	
 func _tick(_dt:float, _tk: int):
 	super(_dt, _tk)
-	if current_state == STATES.DYING:
-		return
-	
-	var nearby_player:= find_nearby_player()
-	if nearby_player:
-		navigation_agent_2d.set_target_position(nearby_player.global_position)
-		current_state = STATES.CHASING
+	#if state == STATES.DYING:
+		#return
+	#
+	#var nearby_player:= find_nearby_player()
+	#if nearby_player:
+		#navigation_agent_2d.set_target_position(nearby_player.global_position)
+		#state = STATES.CHASING
 
 
 func _rollback_tick(_delta, _tk, _is_fresh: bool):
 	super(_delta, _tk, _is_fresh)
 
-	if current_state == STATES.DYING:
-		return
-		
-	# Do not query when the map has never synchronized and is empty.
-	if NavigationServer2D.map_get_iteration_id(navigation_agent_2d.get_navigation_map()) == 0:
-		return
-		
-	# Apply different movement logic if being shoved Vs chasing, etc
-	if apply_shove:
-		# Shove navigation logic
-		velocity = shove_vector
-		_on_velocity_computed(velocity)
-		shove_vector = shove_vector.move_toward(Vector2.ZERO, deceleration * _delta)
-		if shove_vector.length() < 10:
-			shove_vector = Vector2.ZERO
-			apply_shove = false
-	else:
-		if current_state == STATES.IDLE:
-			velocity = velocity.move_toward(Vector2.ZERO, deceleration * _delta)
-			_on_velocity_computed(velocity)
-		else:
-			# Path navigation logic
-			var next_path_position: Vector2 = navigation_agent_2d.get_next_path_position()
-			var target_vector: Vector2 = global_position.direction_to(next_path_position).normalized() * max_speed
-			velocity = velocity.move_toward(target_vector, acceleration * _delta) 
-			
-			if navigation_agent_2d.avoidance_enabled:
-				navigation_agent_2d.set_velocity(velocity)
-			else:
-				_on_velocity_computed(velocity)
+	#if state == STATES.DYING:
+		#return
+		#
+	## Do not query when the map has never synchronized and is empty.
+	#if NavigationServer2D.map_get_iteration_id(navigation_agent_2d.get_navigation_map()) == 0:
+		#return
+		#
+	## Apply different movement logic if being shoved Vs chasing, etc
+	#if apply_shove:
+		## Shove navigation logic
+		#velocity = shove_vector
+		#_on_velocity_computed(velocity)
+		#shove_vector = shove_vector.move_toward(Vector2.ZERO, deceleration * _delta)
+		#if shove_vector.length() < 10:
+			#shove_vector = Vector2.ZERO
+			#apply_shove = false
+	#else:
+		#if state == STATES.IDLE:
+			#velocity = velocity.move_toward(Vector2.ZERO, deceleration * _delta)
+			#_on_velocity_computed(velocity)
+		#else:
+			## Path navigation logic
+			#var next_path_position: Vector2 = navigation_agent_2d.get_next_path_position()
+			#var target_vector: Vector2 = global_position.direction_to(next_path_position).normalized() * max_speed
+			#velocity = velocity.move_toward(target_vector, acceleration * _delta) 
+			#
+			#if navigation_agent_2d.avoidance_enabled:
+				#navigation_agent_2d.set_velocity(velocity)
+			#else:
+				#_on_velocity_computed(velocity)
 
 
 func _after_tick_loop() -> void:
 	super()
-	if current_state == STATES.DYING:
-		return
+	#if state == STATES.DYING:
+		#return
 		
 	if health <= 0:
 		die()
@@ -84,15 +96,15 @@ func _on_velocity_computed(safe_velocity: Vector2):
 	velocity /= NetworkTime.physics_factor
 
 
-func apply_animation() -> void:
-	super()
-	match current_state:
-		STATES.DYING:
-			animation_player.play("skeleton_animations/skeleton_die")
-		STATES.IDLE:
-			animation_player.play("skeleton_animations/skeleton_idle")
-		STATES.CHASING:
-			animation_player.play("skeleton_animations/skeleton_walk")
+#func apply_animation() -> void:
+	#super()
+	#match state:
+		#STATES.DYING:
+			#animation_player.play("skeleton_animations/skeleton_die")
+		#STATES.IDLE:
+			#animation_player.play("skeleton_animations/skeleton_idle")
+		#STATES.CHASING:
+			#animation_player.play("skeleton_animations/skeleton_walk")
 			
 
 func find_nearby_player() -> Node2D:

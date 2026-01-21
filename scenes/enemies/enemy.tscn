@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://6f2otn0dh6q5"]
+[gd_scene load_steps=10 format=3 uid="uid://6f2otn0dh6q5"]
 
 [ext_resource type="Script" uid="uid://dbkx7cp4n41sx" path="res://scripts/enemies/enemy.gd" id="1_38ino"]
 [ext_resource type="Script" uid="uid://d350u8evihs1u" path="res://addons/netfox/rollback/rollback-synchronizer.gd" id="2_fcftc"]
@@ -6,11 +6,9 @@
 [ext_resource type="FontFile" uid="uid://c1l47aekqn13v" path="res://assets/fonts/m3x6.ttf" id="3_jt03m"]
 [ext_resource type="Script" uid="uid://dour8fehaaugp" path="res://addons/netfox/tick-interpolator.gd" id="3_lu5c6"]
 [ext_resource type="AudioStream" uid="uid://6xxklhojohtt" path="res://assets/audio/effects/sci-fi/impactMetal_002.ogg" id="3_nb6gf"]
-
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_fcftc"]
-properties/0/path = NodePath(".:current_state")
-properties/0/spawn = true
-properties/0/replication_mode = 2
+[ext_resource type="Script" uid="uid://byrgwv2o7hstx" path="res://addons/netfox.extras/state-machine/rewindable-state-machine.gd" id="7_jt03m"]
+[ext_resource type="Script" uid="uid://cepmssjtnk5xv" path="res://scripts/enemies/statemachines/skeleton/idle.gd" id="8_qch6t"]
+[ext_resource type="Script" uid="uid://b6jgnh4cnma3q" path="res://scripts/enemies/statemachines/skeleton/chasing.gd" id="9_qch6t"]
 
 [node name="enemy" type="CharacterBody2D"]
 collision_layer = 0
@@ -80,15 +78,26 @@ debug_enabled = true
 [node name="RollbackSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("2_fcftc")
 root = NodePath("..")
+state_properties = Array[String]([":position", ":health", "RewindableStateMachine:state"])
 enable_input_broadcast = false
 metadata/_custom_type_script = "uid://d350u8evihs1u"
 
 [node name="TickInterpolator" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("3_lu5c6")
 root = NodePath("..")
+properties = Array[String]([":position"])
 metadata/_custom_type_script = "uid://dour8fehaaugp"
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_fcftc")
+[node name="RewindableStateMachine" type="Node" parent="."]
+script = ExtResource("7_jt03m")
+metadata/_custom_type_script = "uid://byrgwv2o7hstx"
+
+[node name="IDLE" type="Node" parent="RewindableStateMachine"]
+script = ExtResource("8_qch6t")
+metadata/_custom_type_script = "uid://usyufdtn83hc"
+
+[node name="CHASING" type="Node" parent="RewindableStateMachine"]
+script = ExtResource("9_qch6t")
+metadata/_custom_type_script = "uid://usyufdtn83hc"
 
 [connection signal="navigation_finished" from="navigation/NavigationAgent2D" to="." method="_on_navigation_agent_2d_navigation_finished"]
