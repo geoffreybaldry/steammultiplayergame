@@ -7,6 +7,7 @@ class_name Skeleton
 @export var deceleration: float = 200.0
 @export var sensor_radius: float = 120.0
 @export var min_sensor_radius: float = 20.0
+@export var attack_range:float = 25.0
 @export var max_health: float = 6.0
 
 @export var state_machine: RewindableStateMachine

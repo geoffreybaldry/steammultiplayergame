@@ -25,6 +25,10 @@ func tick(_delta, _tk, _is_fresh):
 	# Try to find a nearby player
 	var nearby_player: Node2D = character_body_2d.find_nearby_player()
 	if nearby_player:
+		# Attack, if they are within range
+		if nearby_player.global_position.distance_to(character_body_2d.global_position) <= character_body_2d.attack_range:
+			state_machine.transition(&"ATTACK")
+		
 		character_body_2d.navigation_agent_2d.set_target_position(nearby_player.global_position)
 		state_machine.transition(&"CHASE")
 

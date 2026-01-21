@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://bmlhwftb5qas1"]
+[gd_scene load_steps=18 format=3 uid="uid://bmlhwftb5qas1"]
 
 [ext_resource type="Script" uid="uid://dgbaeabass3dy" path="res://scripts/actors/enemies/skeleton/skeleton.gd" id="1_k5xu1"]
 [ext_resource type="Texture2D" uid="uid://bdgxxhuu2mpn8" path="res://assets/sprite/actors/enemies/skeleton/skeleton.png" id="2_ajadi"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://byrgwv2o7hstx" path="res://addons/netfox.extras/state-machine/rewindable-state-machine.gd" id="5_4vvw8"]
 [ext_resource type="Script" uid="uid://c21kfbic5p050" path="res://scripts/actors/enemies/skeleton/statemachine/idle.gd" id="6_gsx3i"]
 [ext_resource type="Script" uid="uid://kcr5vhn6ovlb" path="res://scripts/actors/enemies/skeleton/statemachine/chase.gd" id="7_4vvw8"]
+[ext_resource type="Script" uid="uid://bhbif8ou5lwk8" path="res://scripts/actors/enemies/skeleton/statemachine/attack.gd" id="10_htkro"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ajadi"]
 radius = 16.0
@@ -94,6 +95,7 @@ _data = {
 collision_layer = 4
 collision_mask = 13
 script = ExtResource("1_k5xu1")
+attack_range = 50.0
 state_machine = NodePath("RewindableStateMachine")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -179,4 +181,10 @@ script = ExtResource("7_4vvw8")
 character_body_2d = NodePath("../..")
 animation_player = NodePath("../../visual/AnimationPlayer")
 navigation_agent_2d = NodePath("../../NavigationAgent2D")
+metadata/_custom_type_script = "uid://usyufdtn83hc"
+
+[node name="ATTACK" type="Node" parent="RewindableStateMachine" node_paths=PackedStringArray("character_body_2d", "animation_player")]
+script = ExtResource("10_htkro")
+character_body_2d = NodePath("../..")
+animation_player = NodePath("../../visual/AnimationPlayer")
 metadata/_custom_type_script = "uid://usyufdtn83hc"
