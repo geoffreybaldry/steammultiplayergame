@@ -9,12 +9,16 @@ class_name Skeleton
 @export var min_sensor_radius: float = 20.0
 @export var attack_range:float = 25.0
 @export var max_health: float = 6.0
+@export var attack_cooldown_ticks: int = 30 # 1 second
 
 @export var state_machine: RewindableStateMachine
 
 # Collisions
 @onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
+@onready var hit_box: Area2D = $HitBox
 @onready var hitbox_collision_shape_2d: CollisionShape2D = $HitBox/CollisionShape2D
+@onready var hurt_box: Area2D = $HurtBox
+@onready var hurtbox_collision_shape_2d: CollisionShape2D = $HurtBox/CollisionShape2D
 
 # Visual
 @onready var sprite_2d: Sprite2D = $visual/Sprite2D
@@ -30,7 +34,16 @@ class_name Skeleton
 @onready var navigation_agent_2d: NavigationAgent2D = $NavigationAgent2D
 
 var id: String
-var health: float
+var health: float : 
+	set(value) :
+		var old_value = health
+		health = value
+		if old_value != value:
+			Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "health : " + str(health))
+		
+var shove_vector: Vector2
+var is_dying: bool = false
+var last_attack_tick: int
 
 
 var audio = {
@@ -70,7 +83,7 @@ func _process(_delta: float) -> void:
 		return
 		
 	health_label.text = str(health)
-	state_label.text = state_machine.state
+	#state_label.text = state_machine.state
 	
 
 # Processes that happen before the tick loop
@@ -83,14 +96,23 @@ func _tick(_dt:float, _tk: int):
 
 
 func _rollback_tick(_delta, _tk, _is_fresh: bool):
-	pass
+	# Handle the "shoving" centrally here, as it applies to all states
+	#pass
+	if shove_vector:
+		# Shove navigation logic
+		velocity = shove_vector
+		_on_velocity_computed(velocity)
+		# Diminish the shove vector over time
+		shove_vector = shove_vector.move_toward(Vector2.ZERO, deceleration * _delta)
+		if shove_vector.length() < 5:
+			shove_vector = Vector2.ZERO
 	
 
 func _after_tick_loop() -> void:
 	healthbar.value = (health / max_health) * 100
 	
 	if health <= 0:
-		die()
+		is_dying = true
 	
 
 func find_nearby_player() -> Node2D:
@@ -137,7 +159,23 @@ func _on_velocity_computed(safe_velocity: Vector2):
 	move_and_slide()
 	velocity /= NetworkTime.physics_factor
 
+# Used to reduce the health of the enemy
+func damage(value:int) -> void:
+	Events.error_messages.error_message.emit("Damage!!!", 2)
+	health -= value
+	
+	# Blink the enemy
+	var tween = get_tree().create_tween()
+	tween.tween_method(set_shader_blink_intensity, 1.0, 0.0, 0.25)
+	
+	# Play impact/pain sounds
+	audio_stream_player_2d.play()
 
+# Used to perform "push back" on an enemy
+func shove(direction: Vector2, force: float) -> void:
+	shove_vector = direction * force
+	
+	
 # Used to play out death sequence, sounds, etc.
 func die() -> void:
 	pass

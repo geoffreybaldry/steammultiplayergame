@@ -15,7 +15,7 @@ size = Vector2(36, 16)
 [node name="bullet" instance=ExtResource("1_k5ji7")]
 collision_mask = 1
 script = ExtResource("1_48g2p")
-speed = 400
+speed = 300
 damage = 1
 shove_force = 50.0
 
@@ -39,7 +39,6 @@ collision_mask = 32
 shape = SubResource("RectangleShape2D_jobuq")
 
 [node name="RollbackSynchronizer" parent="." index="6"]
-enable_prediction = true
 state_properties = Array[String]([":position", ":is_disabled"])
 
 [node name="TickInterpolator" parent="." index="7"]

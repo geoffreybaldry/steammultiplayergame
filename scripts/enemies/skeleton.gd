@@ -1,6 +1,6 @@
 @tool
 extends Enemy
-class_name Skeleton
+class_name Skeleton_old
 
 func _get_interpolated_properties():
 	# Specify a list of properties

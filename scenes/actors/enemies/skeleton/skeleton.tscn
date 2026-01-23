@@ -1,6 +1,7 @@
-[gd_scene load_steps=18 format=3 uid="uid://bmlhwftb5qas1"]
+[gd_scene load_steps=23 format=3 uid="uid://bmlhwftb5qas1"]
 
 [ext_resource type="Script" uid="uid://dgbaeabass3dy" path="res://scripts/actors/enemies/skeleton/skeleton.gd" id="1_k5xu1"]
+[ext_resource type="Shader" uid="uid://dvfjf0rl65ehj" path="res://shaders/blink.gdshader" id="2_ahxvp"]
 [ext_resource type="Texture2D" uid="uid://bdgxxhuu2mpn8" path="res://assets/sprite/actors/enemies/skeleton/skeleton.png" id="2_ajadi"]
 [ext_resource type="PackedScene" uid="uid://tu8uiu8q5bpe" path="res://scenes/ui/actors/healthbar.tscn" id="2_q5xls"]
 [ext_resource type="FontFile" uid="uid://c1l47aekqn13v" path="res://assets/fonts/m3x6.ttf" id="3_4vvw8"]
@@ -8,8 +9,10 @@
 [ext_resource type="Script" uid="uid://dour8fehaaugp" path="res://addons/netfox/tick-interpolator.gd" id="4_gsx3i"]
 [ext_resource type="Script" uid="uid://byrgwv2o7hstx" path="res://addons/netfox.extras/state-machine/rewindable-state-machine.gd" id="5_4vvw8"]
 [ext_resource type="Script" uid="uid://c21kfbic5p050" path="res://scripts/actors/enemies/skeleton/statemachine/idle.gd" id="6_gsx3i"]
+[ext_resource type="AudioStream" uid="uid://6xxklhojohtt" path="res://assets/audio/effects/sci-fi/impactMetal_002.ogg" id="6_lokys"]
 [ext_resource type="Script" uid="uid://kcr5vhn6ovlb" path="res://scripts/actors/enemies/skeleton/statemachine/chase.gd" id="7_4vvw8"]
 [ext_resource type="Script" uid="uid://bhbif8ou5lwk8" path="res://scripts/actors/enemies/skeleton/statemachine/attack.gd" id="10_htkro"]
+[ext_resource type="Script" uid="uid://bu3laamvy457f" path="res://scripts/actors/enemies/skeleton/statemachine/die.gd" id="13_0l1ge"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ajadi"]
 radius = 16.0
@@ -18,6 +21,14 @@ height = 36.0
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_htkro"]
 radius = 20.0
 height = 44.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_0l1ge"]
+radius = 32.0624
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lokys"]
+shader = ExtResource("2_ahxvp")
+shader_parameter/blink_color = Color(1, 0, 0, 1)
+shader_parameter/blink_intensity = 0.0
 
 [sub_resource type="Animation" id="Animation_htkro"]
 length = 0.001
@@ -110,9 +121,17 @@ collision_mask = 0
 position = Vector2(-2, 0)
 shape = SubResource("CapsuleShape2D_htkro")
 
+[node name="HurtBox" type="Area2D" parent="."]
+collision_layer = 256
+collision_mask = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox"]
+shape = SubResource("CircleShape2D_0l1ge")
+
 [node name="visual" type="Node2D" parent="."]
 
 [node name="Sprite2D" type="Sprite2D" parent="visual"]
+material = SubResource("ShaderMaterial_lokys")
 texture = ExtResource("2_ajadi")
 hframes = 6
 
@@ -147,6 +166,7 @@ theme_override_font_sizes/font_size = 32
 text = "health"
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("6_lokys")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 path_postprocessing = 1
@@ -185,6 +205,12 @@ metadata/_custom_type_script = "uid://usyufdtn83hc"
 
 [node name="ATTACK" type="Node" parent="RewindableStateMachine" node_paths=PackedStringArray("character_body_2d", "animation_player")]
 script = ExtResource("10_htkro")
+character_body_2d = NodePath("../..")
+animation_player = NodePath("../../visual/AnimationPlayer")
+metadata/_custom_type_script = "uid://usyufdtn83hc"
+
+[node name="DIE" type="Node" parent="RewindableStateMachine" node_paths=PackedStringArray("character_body_2d", "animation_player")]
+script = ExtResource("13_0l1ge")
 character_body_2d = NodePath("../..")
 animation_player = NodePath("../../visual/AnimationPlayer")
 metadata/_custom_type_script = "uid://usyufdtn83hc"

@@ -19,6 +19,9 @@ func _process(_delta: float) -> void:
 func tick(_delta, _tk, _is_fresh):
 	#Log.pr("CHASE tick on tick : " + str(_tk))
 	
+	if character_body_2d.is_dying:
+		state_machine.transition(&"DIE")
+	
 	# Update the location of nearby player if there is one
 	var nearby_player: Node2D = character_body_2d.find_nearby_player()
 	if nearby_player:
@@ -58,6 +61,7 @@ func can_enter(_previous_state):
 
 # Called before displaying the state.
 func display_enter(_previous_state, _tk):
+	character_body_2d.state_label.text = "CHASE"
 	animation_player.play("skeleton_walk")
 
 # Called before displaying a different state.

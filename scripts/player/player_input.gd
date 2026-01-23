@@ -53,7 +53,8 @@ func _gather():
 	# Average the buffered input
 	if sample_count > 0:
 		input_direction = input_direction_buf / sample_count
-		# Leave aim_direction alone if we took no new input for it
+		# Leave aim_direction alone if we took no new input for it, otherwise
+		# it'll snap back to Vector2.ZERO
 		if aim_direction_buf / sample_count != Vector2.ZERO:
 			aim_direction = aim_direction_buf / sample_count
 	else:

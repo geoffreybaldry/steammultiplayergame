@@ -9,15 +9,11 @@ func _ready() -> void:
 func _tick(delta, _t) -> void:
 	super(delta, _t)
 	
-	
+var is_disabled: bool = false
+
 func _rollback_tick(_delta, _tk, _is_fresh: bool):
-	super(_delta, _tk, _is_fresh)
-	
-	if is_disabled:
-		return
-	
 	position += transform.x * speed * _delta
-	#Events.error_messages.error_message.emit("Doing something on rollback tick " + str(_tk), 2)
+	
 	# Check if our hurtbox collided with any hitboxes
 	var collisions = hurt_box.get_overlapping_areas()
 	if collisions:
@@ -25,17 +21,15 @@ func _rollback_tick(_delta, _tk, _is_fresh: bool):
 		for collider in collisions:
 			var actor = collider.get_parent()
 			if actor.has_method("damage"):
-				#Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Sending some damage on rollback tick " + str(_tk))
+				Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Sending some damage on tick " + str(NetworkTime.tick) + " and rollback tick " + str(_tk))
 				actor.damage(1.0)
 				is_disabled = true
-				# If the actor is shovable, then shove them too
-				#if actor.has_method("shove"):
-					#actor.shove(Vector2(1,0).rotated(rotation), shove_force)
-				
-				NetworkRollback.mutate(actor)
+				if actor.has_method("shove"): # If the actor is shovable, then shove them too
+					actor.shove(Vector2(1,0).rotated(rotation), shove_force)
+				#NetworkRollback.mutate(actor)
+				#NetworkRollback.mutate(self)
 	else:
 		is_disabled = false
-
 
 func _after_tick_loop():
 	if is_disabled:

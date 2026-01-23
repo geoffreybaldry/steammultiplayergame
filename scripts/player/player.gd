@@ -69,8 +69,8 @@ var did_spawn: bool
 var disable_tick: int
 var did_disable: bool
 
-var damage_value: int = 0
-var damage_tick: int = -1
+#var damage_value: int = 0
+#var damage_tick: int = -1
 
 func _ready() -> void:
 	# Connect to NetworkTime signals
@@ -136,7 +136,7 @@ func _rollback_tick(_delta: float, tick: int, _is_fresh: bool) -> void:
 	#if player_input.is_multiplayer_authority() and damage_tick > 0:
 		#Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Damage tick : " + str(damage_tick))
 	check_spawn(tick) 		# Check if the player needs to spawn
-	check_damage(tick)		# Check if we need to apply damage to the player's health
+	#check_damage(tick)		# Check if we need to apply damage to the player's health
 	
 	if not is_player_enabled:
 		return
@@ -251,18 +251,16 @@ func _exit_tree() -> void:
 	NetworkTime.on_tick.disconnect(_tick)
 
 
-func _on_timer_timeout() -> void:
-	if not is_multiplayer_authority():
-		return
-		
-	damage(1, NetworkTime.tick)
+func damage(value: int) -> void:
+	health -= 1
+	
 
-func damage(value: int, tick: int) -> void:
-	damage_value = value
-	damage_tick = tick
-
-func check_damage(tick: int) -> void:
-	if damage_tick == tick and damage_value:
-		health -= damage_value
-		damage_value = 0
-		damage_tick = -1
+#func damage(value: int, tick: int) -> void:
+	#damage_value = value
+	#damage_tick = tick
+#
+#func check_damage(tick: int) -> void:
+	#if damage_tick == tick and damage_value:
+		#health -= damage_value
+		#damage_value = 0
+		#damage_tick = -1

@@ -44,6 +44,7 @@ func _spawn() -> Node2D:
 	projectile_bullet_instance.global_position = weapon_pivot.get_node("Marker2D").global_position
 	projectile_bullet_instance.rotation = weapon_pivot.rotation
 	projectile_bullet_instance.fired_by = get_parent().peer_id
+	projectile_bullet_instance.fired_tick = NetworkTime.tick
 	#get_tree().root.add_child(projectile_bullet_instance, true) # <- Doing the add_child here removes the glitch
 	
 	return projectile_bullet_instance

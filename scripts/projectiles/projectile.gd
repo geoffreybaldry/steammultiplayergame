@@ -15,14 +15,15 @@ class_name Projectile
 @onready var hurt_box: Area2D = $HurtBox
 
 var fired_by: int
-var is_disabled: bool = false
+var fired_tick: int
+
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	NetworkTime.after_tick_loop.connect(_after_tick_loop)
 	audio_stream_player_2d.play()
-	
+
 
 func _tick(_delta, _t) -> void:
 	pass

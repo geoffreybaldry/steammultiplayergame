@@ -26,14 +26,14 @@ Network="*res://scripts/autoloads/network.gd"
 SaveLoad="*res://scripts/autoloads/save_load.gd"
 SpawnPoints="*res://scripts/autoloads/spawn_points.gd"
 Levels="*res://scripts/autoloads/levels.gd"
+PhantomCameraManager="*res://addons/phantom_camera/scripts/managers/phantom_camera_manager.gd"
 WindowTiler="*res://addons/netfox.extras/window-tiler.gd"
 NetworkSimulator="*res://addons/netfox.extras/network-simulator.gd"
 NetworkTime="*res://addons/netfox/network-time.gd"
 NetworkTimeSynchronizer="*res://addons/netfox/network-time-synchronizer.gd"
 NetworkRollback="*res://addons/netfox/rollback/network-rollback.gd"
+NetworkEvents="res://addons/netfox/network-events.gd"
 NetworkPerformance="*res://addons/netfox/network-performance.gd"
-NetworkEvents="*res://addons/netfox/network-events.gd"
-PhantomCameraManager="*res://addons/phantom_camera/scripts/managers/phantom_camera_manager.gd"
 
 [debug]
 
@@ -130,11 +130,8 @@ die={
 2d_physics/layer_6="enemy_hitbox"
 2d_physics/layer_7="spawn_point"
 2d_physics/layer_8="end_point"
+2d_physics/layer_9="enemy_hurtbox"
 avoidance/layer_1="enemy"
-
-[netfox]
-
-events/enabled=false
 
 [phantom_camera]
 
