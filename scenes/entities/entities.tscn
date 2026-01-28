@@ -8,13 +8,13 @@ script = ExtResource("1_i6nll")
 [node name="spawned_players" type="Node" parent="."]
 
 [node name="player_multiplayer_spawner" type="MultiplayerSpawner" parent="spawned_players"]
-_spawnable_scenes = PackedStringArray("uid://cdg0vfkaa0w3v")
+_spawnable_scenes = PackedStringArray("res://scenes/player/player.tscn")
 spawn_path = NodePath("..")
 
 [node name="spawned_enemies" type="Node" parent="."]
 
 [node name="enemy_multiplayer_spawner" type="MultiplayerSpawner" parent="spawned_enemies"]
-_spawnable_scenes = PackedStringArray("uid://c7njnx2d0nquw")
+_spawnable_scenes = PackedStringArray("res://scenes/enemies/skeleton.tscn")
 spawn_path = NodePath("..")
 
 [node name="Timer" type="Timer" parent="."]

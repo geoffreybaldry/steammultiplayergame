@@ -10,7 +10,7 @@ class_name Player
 ## The player object has a RollbackSynchronizer, which allows certain 'state'
 ## to be lag-compensated, such as position.
 ## It also has a MultiplayerSynchronizer to allow some of the server's state
-## variables to br synchronized to the client, such as peer_id, etc.
+## variables to br synchronized to the client.
 
 enum PLAYER_COLORS {
 	YELLOW,
@@ -19,18 +19,10 @@ enum PLAYER_COLORS {
 	RED,
 }
 
-enum STATES {
-	IDLE,
-	WALKING,
-	DYING,
-}
-
-@export var current_state = STATES.IDLE
 @export var max_health: float = 5
-@export var health: float = max_health
-@export var max_speed = 120.0
-@export var acceleration = 300.0
-@export var deceleration = 300.0
+@export var max_speed = 300.0
+@export var acceleration = 30.0
+@export var deceleration = 30.0
 
 # We gather the player input from this separate script, which can be independently synchronized to the server
 @onready var player_input: PlayerInput = $player_input
@@ -38,6 +30,7 @@ enum STATES {
 # This peer_id gets synchronized by a MultiplayerSynchronizer, only on change
 @export var peer_id: int = -1
 
+@onready var state_machine: RewindableStateMachine = $RewindableStateMachine
 @onready var rollback_synchronizer: RollbackSynchronizer = $RollbackSynchronizer
 @onready var tick_interpolator: TickInterpolator = $TickInterpolator
 @onready var multiplayer_synchronizer: MultiplayerSynchronizer = $MultiplayerSynchronizer
@@ -47,35 +40,25 @@ enum STATES {
 @onready var hitbox_collision_shape_2d: CollisionShape2D = $HitBox/CollisionShape2D
 @onready var audio_stream_player_2d: AudioStreamPlayer2D = $audio/AudioStreamPlayer2D
 @onready var healthbar: TextureProgressBar = $visual/healthbar
-
-var audio_footsteps = [
-	preload("res://assets/audio/effects/footsteps/footstep_concrete_000.ogg"),
-	preload("res://assets/audio/effects/footsteps/footstep_concrete_001.ogg"),
-	preload("res://assets/audio/effects/footsteps/footstep_concrete_002.ogg"),
-	preload("res://assets/audio/effects/footsteps/footstep_concrete_003.ogg"),
-	preload("res://assets/audio/effects/footsteps/footstep_concrete_004.ogg"),
-]
+@onready var state_label: Label = $visual/state_label
 
 var is_player_enabled: bool = false :
 	set(value):
 		is_player_enabled = value
 		player_enabled(value)
 
+var health: float = max_health
 var player_color: PLAYER_COLORS
 var pcam: PhantomCamera2D
 var spawn_tick: int
 var spawn_position: Vector2
 var did_spawn: bool
-var disable_tick: int
-var did_disable: bool
+var is_dying: bool = false
+var shove_vector: Vector2
 
-#var damage_value: int = 0
-#var damage_tick: int = -1
 
 func _ready() -> void:
 	# Connect to NetworkTime signals
-	NetworkTime.before_tick_loop.connect(_before_tick_loop)
-	NetworkTime.on_tick.connect(_tick)
 	NetworkTime.after_tick_loop.connect(_after_tick_loop)
 	
 	# New players start disabled
@@ -98,26 +81,12 @@ func _ready() -> void:
 	# If we are the player that holds the input, then also grab focus from the player phantom camera
 	if player_input.is_multiplayer_authority():
 		grab_pcam()
-		
-	# Register ourselves as a game entity
+	
+	# Set starting state
+	state_machine.state = &"IDLE"
+	
+	# Register ourselves as a player game entity
 	Events.game_events.register_player_instance.emit(peer_id, self)
-
-
-# Things that don't need to be involved in rollback go in _process
-func _process(_delta: float) -> void:
-	if not is_player_enabled:
-		return
-		
-	apply_animation()
-
-
-# Processes that happen before the tick loop
-func _before_tick_loop():
-	pass
-
-# Processes that happen once per tick, and are not re-simulated
-func _tick(_dt:float, _tk: int):
-	pass
 
 
 func check_spawn(tick) -> void:
@@ -133,42 +102,31 @@ func check_spawn(tick) -> void:
 
 # Processes that are re-simulated during rollback
 func _rollback_tick(_delta: float, tick: int, _is_fresh: bool) -> void:
-	#if player_input.is_multiplayer_authority() and damage_tick > 0:
-		#Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Damage tick : " + str(damage_tick))
 	check_spawn(tick) 		# Check if the player needs to spawn
-	#check_damage(tick)		# Check if we need to apply damage to the player's health
 	
 	if not is_player_enabled:
 		return
 	
 	if player_input.just_die:
-		die()
-	
-	# Calculate movement from velocity
-	velocity = player_input.input_direction * max_speed
-	
-	# Limit the maximum velocity of the actor
-	velocity = velocity.limit_length(max_speed)
-	
-	# Set player's state based on velocity, etc.
-	if velocity.length() > 0:
-		current_state = STATES.WALKING
-	else:
-		current_state = STATES.IDLE
-	
-	# Apply the velocity - move_and_slide assumes physics delta,
-	# multiplying velocity by NetworkTime.physics_factor compensates for it
-	velocity *= NetworkTime.physics_factor
-	move_and_slide()
-	velocity /= NetworkTime.physics_factor
-	
+		is_dying = true
+
+	# Handle the "shoving" centrally here, as it applies to all states
+	if shove_vector:
+		# Shove navigation logic
+		velocity = shove_vector
+		update_velocity(velocity)
+		# Diminish the shove vector over time
+		shove_vector = shove_vector.move_toward(Vector2.ZERO, deceleration)
+		if shove_vector.length() < 5:
+			shove_vector = Vector2.ZERO
+			
 	# Aim weapon
 	weapon_pivot.look_at(position + player_input.aim_direction)
-	
+
+	# Check health condition
 	if health <= 0:
 		health = max_health
-		die()
-
+		is_dying = true
 
 # Processes that happen at the end of a tick loop
 func _after_tick_loop():
@@ -177,6 +135,14 @@ func _after_tick_loop():
 	if did_spawn:
 		Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Spawned peer id " + str(peer_id))
 		tick_interpolator.teleport()
+
+
+func update_velocity(safe_velocity: Vector2) -> void:
+	velocity = safe_velocity
+	velocity = velocity.limit_length(max_speed)
+	velocity *= NetworkTime.physics_factor
+	move_and_slide()	# move_and_slide assumes physics delta
+	velocity /= NetworkTime.physics_factor
 
 
 # Function that "turns on or off" the player
@@ -192,38 +158,9 @@ func player_enabled(value: bool) -> void:
 		visible = false
 
 
-# Play the appropriate animation based on the player's velocity
-func apply_animation() -> void:
-	animation_player.speed_scale = 1.0 # Default
-	
-	match current_state:
-		STATES.IDLE:
-			animation_player.play("player_animations/player_idle" + "_" + PLAYER_COLORS.keys()[player_color].to_lower())
-		STATES.WALKING:
-			animation_player.speed_scale = clampf(velocity.length() / max_speed, 0.2, 1.0)
-			animation_player.play("player_animations/player_walk" + "_" + PLAYER_COLORS.keys()[player_color].to_lower())
-		STATES.DYING:
-			animation_player.play("player_animations/player_die" + "_" + PLAYER_COLORS.keys()[player_color].to_lower())
-
-
-func footstep_audio() -> void:
-	audio_stream_player_2d.stream = audio_footsteps.pick_random()
-	audio_stream_player_2d.pitch_scale = randf_range(0.8, 1.2)
-	audio_stream_player_2d.play()
-
-
-func die() -> void:
-	# Only the authority (Server) can decide if a player died
-	if is_multiplayer_authority():
-		current_state = STATES.DYING
-		Events.game_events.player_died.emit(peer_id)
-
-
 func grab_pcam() -> void:
 	pcam = get_tree().get_first_node_in_group("player_phantom_camera")
 	pcam.set_follow_target(self)
-
-
 
 
 
@@ -240,27 +177,15 @@ func grab_pcam() -> void:
 	#hitbox_collision_shape_2d.disabled = true
 
 
-#func dead() -> void:
-	#if not is_multiplayer_authority():
-		#return
-		#
-	#queue_free()
-	
+func damage(value: int) -> void:
+	health -= value
+
+
+# Used to perform "push back" on the player
+func shove(direction: Vector2, force: float) -> void:
+	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Got shoved")
+	shove_vector = direction * force
+
 
 func _exit_tree() -> void:
-	NetworkTime.on_tick.disconnect(_tick)
-
-
-func damage(value: int) -> void:
-	health -= 1
-	
-
-#func damage(value: int, tick: int) -> void:
-	#damage_value = value
-	#damage_tick = tick
-#
-#func check_damage(tick: int) -> void:
-	#if damage_tick == tick and damage_value:
-		#health -= damage_value
-		#damage_value = 0
-		#damage_tick = -1
+	NetworkTime.after_tick_loop.disconnect(_after_tick_loop)

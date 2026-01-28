@@ -3,13 +3,10 @@ extends CharacterBody2D
 class_name Skeleton
 
 @export var max_speed: float = 40.0
-@export var acceleration: float = 100.0
-@export var deceleration: float = 200.0
-@export var sensor_radius: float = 120.0
-@export var min_sensor_radius: float = 20.0
-@export var attack_range:float = 25.0
+@export var acceleration: float = 30.0
+@export var deceleration: float = 30.0
 @export var max_health: float = 6.0
-@export var attack_cooldown_ticks: int = 30 # 1 second
+@export var attack_range: float = 25.0
 
 @export var state_machine: RewindableStateMachine
 
@@ -19,11 +16,12 @@ class_name Skeleton
 @onready var hitbox_collision_shape_2d: CollisionShape2D = $HitBox/CollisionShape2D
 @onready var hurt_box: Area2D = $HurtBox
 @onready var hurtbox_collision_shape_2d: CollisionShape2D = $HurtBox/CollisionShape2D
+@onready var player_detector: Area2D = $PlayerDetector
+@onready var player_detector_collision_shape_2d: CollisionShape2D = $PlayerDetector/CollisionShape2D
 
 # Visual
 @onready var sprite_2d: Sprite2D = $visual/Sprite2D
 @onready var healthbar: TextureProgressBar = $visual/healthbar
-@onready var animation_player: AnimationPlayer = $visual/AnimationPlayer
 @onready var state_label: Label = $visual/VBoxContainer/state_label
 @onready var health_label: Label = $visual/VBoxContainer/health_label
 
@@ -32,6 +30,7 @@ class_name Skeleton
 
 # Nav
 @onready var navigation_agent_2d: NavigationAgent2D = $NavigationAgent2D
+@onready var ray_cast_2d: RayCast2D = $RayCast2D
 
 var id: String
 var health: float : 
@@ -43,7 +42,7 @@ var health: float :
 		
 var shove_vector: Vector2
 var is_dying: bool = false
-var last_attack_tick: int
+
 
 
 var audio = {
@@ -63,7 +62,6 @@ func _get_rollback_state_properties() -> Array:
 	]
 
 func _ready() -> void:
-	NetworkTime.before_tick_loop.connect(_before_tick_loop)
 	NetworkTime.on_tick.connect(_tick)
 	NetworkTime.after_tick_loop.connect(_after_tick_loop)
 	
@@ -78,18 +76,6 @@ func _ready() -> void:
 	# Set starting state
 	state_machine.state = &"IDLE"
 	
-func _process(_delta: float) -> void:
-	if Engine.is_editor_hint():
-		return
-		
-	health_label.text = str(health)
-	#state_label.text = state_machine.state
-	
-
-# Processes that happen before the tick loop
-func _before_tick_loop():
-	pass
-	
 	
 func _tick(_dt:float, _tk: int):
 	pass
@@ -97,18 +83,17 @@ func _tick(_dt:float, _tk: int):
 
 func _rollback_tick(_delta, _tk, _is_fresh: bool):
 	# Handle the "shoving" centrally here, as it applies to all states
-	#pass
 	if shove_vector:
-		# Shove navigation logic
-		velocity = shove_vector
+		velocity = shove_vector # Shoving over-rides any existing velocity
 		_on_velocity_computed(velocity)
 		# Diminish the shove vector over time
-		shove_vector = shove_vector.move_toward(Vector2.ZERO, deceleration * _delta)
+		shove_vector = shove_vector.move_toward(Vector2.ZERO, deceleration)
 		if shove_vector.length() < 5:
 			shove_vector = Vector2.ZERO
 	
 
 func _after_tick_loop() -> void:
+	health_label.text = str(health)
 	healthbar.value = (health / max_health) * 100
 	
 	if health <= 0:
@@ -116,30 +101,29 @@ func _after_tick_loop() -> void:
 	
 
 func find_nearby_player() -> Node2D:
-	# Escape check in case this node is being freed from the scene tree
-	if not is_inside_tree():
-		return
-	
-	var players := get_tree().get_nodes_in_group(&"Players")
-	if players.is_empty():
-		return null
-		
-	var sensor_radius_squared := pow(sensor_radius, 2.0)
-	var min_radius_squared := pow(min_sensor_radius, 2.0)
-
 	var closest_player: Node2D = null
-	var closest_distance := INF
+	var closest_distance = INF
+	var players = player_detector.get_overlapping_bodies()
+	
 	for player in players:
-		var distance := global_position.distance_squared_to(player.global_position)
-
-		if distance >= sensor_radius_squared or distance <= min_radius_squared:
-			continue
-
-		if distance < closest_distance:
-			closest_distance = distance
-			closest_player = player
-
+		# Check if the player is in sight by casting a ray at them; discard if not
+		if is_in_sight(player):
+			var distance_to_player = global_position.distance_to(player.global_position)
+			if distance_to_player < closest_distance:
+				closest_distance = distance_to_player
+				closest_player = player
+	
 	return closest_player
+
+
+# Cast a ray at the player to check if we can see them
+func is_in_sight(player: Node2D) -> bool:
+	ray_cast_2d.target_position = player.global_position - position
+	var collider = ray_cast_2d.get_collider()
+	if collider and collider.is_in_group("Players"):
+		return true
+		
+	return false
 
 
 func set_movement_target(movement_target: Vector2):
@@ -154,8 +138,8 @@ func set_shader_blink_intensity(new_value: float) -> void:
 func _on_velocity_computed(safe_velocity: Vector2):
 	velocity = safe_velocity
 	velocity = velocity.limit_length(max_speed)
-	
 	velocity *= NetworkTime.physics_factor
+	# move_and_slide assumes physics delta
 	move_and_slide()
 	velocity /= NetworkTime.physics_factor
 
@@ -189,7 +173,3 @@ func dead() -> void:
 	
 	if is_multiplayer_authority():
 		Events.game_events.enemy_died.emit(id)
-
-#func _on_navigation_agent_2d_navigation_finished() -> void:
-	#Log.pr("Nav finished")
-	#pass # Replace with function body.

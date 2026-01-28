@@ -28,14 +28,13 @@ func tick(_delta, _tk, _is_fresh):
 		# Attack, if they are within range
 		if nearby_player.global_position.distance_to(character_body_2d.global_position) <= character_body_2d.attack_range:
 			state_machine.transition(&"ATTACK")
-			
-		character_body_2d.navigation_agent_2d.set_target_position(nearby_player.global_position)
+		else:
+			character_body_2d.navigation_agent_2d.set_target_position(nearby_player.global_position)
 	
 	# If we entered the CHASE state we must have a target position to move towards
-	# Path navigation logic
 	var next_path_position: Vector2 = navigation_agent_2d.get_next_path_position()
 	var target_vector: Vector2 = character_body_2d.global_position.direction_to(next_path_position).normalized() * character_body_2d.max_speed
-	character_body_2d.velocity = character_body_2d.velocity.move_toward(target_vector, character_body_2d.acceleration * _delta) 
+	character_body_2d.velocity = character_body_2d.velocity.move_toward(target_vector, character_body_2d.acceleration) 
 	
 	if navigation_agent_2d.avoidance_enabled:
 		navigation_agent_2d.set_velocity(character_body_2d.velocity)

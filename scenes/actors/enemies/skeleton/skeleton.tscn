@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://bmlhwftb5qas1"]
+[gd_scene load_steps=24 format=3 uid="uid://bmlhwftb5qas1"]
 
 [ext_resource type="Script" uid="uid://dgbaeabass3dy" path="res://scripts/actors/enemies/skeleton/skeleton.gd" id="1_k5xu1"]
 [ext_resource type="Shader" uid="uid://dvfjf0rl65ehj" path="res://shaders/blink.gdshader" id="2_ahxvp"]
@@ -23,7 +23,10 @@ radius = 20.0
 height = 44.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_0l1ge"]
-radius = 32.0624
+radius = 26.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ytsm5"]
+radius = 128.062
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lokys"]
 shader = ExtResource("2_ahxvp")
@@ -106,7 +109,9 @@ _data = {
 collision_layer = 4
 collision_mask = 13
 script = ExtResource("1_k5xu1")
-attack_range = 50.0
+acceleration = 3.0
+deceleration = 3.0
+attack_range = 35.0
 state_machine = NodePath("RewindableStateMachine")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -127,6 +132,13 @@ collision_mask = 16
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox"]
 shape = SubResource("CircleShape2D_0l1ge")
+
+[node name="PlayerDetector" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetector"]
+shape = SubResource("CircleShape2D_ytsm5")
 
 [node name="visual" type="Node2D" parent="."]
 
@@ -174,6 +186,9 @@ simplify_path = true
 debug_enabled = true
 debug_path_custom_color = Color(1, 0, 0, 1)
 
+[node name="RayCast2D" type="RayCast2D" parent="."]
+collision_mask = 9
+
 [node name="RollbackSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("3_pxf5o")
 root = NodePath("..")
@@ -207,6 +222,7 @@ metadata/_custom_type_script = "uid://usyufdtn83hc"
 script = ExtResource("10_htkro")
 character_body_2d = NodePath("../..")
 animation_player = NodePath("../../visual/AnimationPlayer")
+shove_force = 150.0
 metadata/_custom_type_script = "uid://usyufdtn83hc"
 
 [node name="DIE" type="Node" parent="RewindableStateMachine" node_paths=PackedStringArray("character_body_2d", "animation_player")]

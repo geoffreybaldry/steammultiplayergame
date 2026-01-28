@@ -32,7 +32,7 @@ NetworkSimulator="*res://addons/netfox.extras/network-simulator.gd"
 NetworkTime="*res://addons/netfox/network-time.gd"
 NetworkTimeSynchronizer="*res://addons/netfox/network-time-synchronizer.gd"
 NetworkRollback="*res://addons/netfox/rollback/network-rollback.gd"
-NetworkEvents="res://addons/netfox/network-events.gd"
+NetworkEvents="*res://addons/netfox/network-events.gd"
 NetworkPerformance="*res://addons/netfox/network-performance.gd"
 
 [debug]
@@ -131,7 +131,12 @@ die={
 2d_physics/layer_7="spawn_point"
 2d_physics/layer_8="end_point"
 2d_physics/layer_9="enemy_hurtbox"
+2d_physics/layer_10="enemy_player_detector"
 avoidance/layer_1="enemy"
+
+[netfox]
+
+events/enabled=false
 
 [phantom_camera]
 

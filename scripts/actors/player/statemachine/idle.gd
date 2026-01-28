@@ -2,6 +2,7 @@
 extends RewindableState
 
 @export var character_body_2d: CharacterBody2D
+@export var player_input: PlayerInput
 @export var animation_player: AnimationPlayer
 
 # Called when the node enters the scene tree for the first time.
@@ -16,31 +17,21 @@ func _process(_delta: float) -> void:
 
 # Called for every rollback tick the state is active.
 func tick(_delta, _tk, _is_fresh):
-	#Log.pr("IDLE tick on tick : " + str(_tk))
-	
 	if character_body_2d.is_dying:
 		state_machine.transition(&"DIE")
 	
 	# If we went idle, decelerate from whatever velocity we were doing
 	character_body_2d.velocity = character_body_2d.velocity.move_toward(Vector2.ZERO, character_body_2d.deceleration)
-	character_body_2d._on_velocity_computed(character_body_2d.velocity)
-	
-	# Try to find a nearby player
-	var nearby_player: Node2D = character_body_2d.find_nearby_player()
-	if nearby_player:
-		# Attack, if they are within range
-		if nearby_player.global_position.distance_to(character_body_2d.global_position) <= character_body_2d.attack_range:
-			state_machine.transition(&"ATTACK")
-		else:
-			character_body_2d.navigation_agent_2d.set_target_position(nearby_player.global_position)
-			state_machine.transition(&"CHASE")
+	character_body_2d.update_velocity(character_body_2d.velocity)
+
+	if player_input.input_direction != Vector2.ZERO:
+		state_machine.transition(&"WALK")
 
 
 # Called when entering the state.
 func enter(_previous_state, _tk):
 	Log.pr("IDLE state entered on tick : " + str(_tk))
 	
-
 # Called when exiting the state.
 func exit(_next_state, _tk):
 	Log.pr("IDLE state exited on tick : " + str(_tk))
@@ -52,7 +43,8 @@ func can_enter(_previous_state):
 # Called before displaying the state.
 func display_enter(_previous_state, _tk):
 	character_body_2d.state_label.text = "IDLE"
-	animation_player.play("skeleton_idle")
+	animation_player.speed_scale = 1.0 # Default
+	animation_player.play("player_animations/player_idle" + "_" + character_body_2d.PLAYER_COLORS.keys()[character_body_2d.player_color].to_lower())
 
 # Called before displaying a different state.
 func display_exit(_next_state, _tk):

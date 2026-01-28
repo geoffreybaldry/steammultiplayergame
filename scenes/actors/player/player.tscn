@@ -1,20 +1,25 @@
-[gd_scene load_steps=20 format=3 uid="uid://cdg0vfkaa0w3v"]
+[gd_scene load_steps=23 format=3 uid="uid://cdg0vfkaa0w3v"]
 
-[ext_resource type="Script" uid="uid://g1v38iwbwey" path="res://scripts/player/player.gd" id="1_8afob"]
+[ext_resource type="Script" uid="uid://g1v38iwbwey" path="res://scripts/actors/player/player.gd" id="1_4iwnj"]
 [ext_resource type="Texture2D" uid="uid://cr63fvns0bj6v" path="res://assets/sprite/players.png" id="2_5gtgg"]
-[ext_resource type="Script" uid="uid://dlhab88x572jk" path="res://scripts/player/player_input.gd" id="3_gmlin"]
+[ext_resource type="Script" uid="uid://dlhab88x572jk" path="res://scripts/actors/player/player_input.gd" id="3_gmlin"]
 [ext_resource type="PackedScene" uid="uid://tu8uiu8q5bpe" path="res://scenes/ui/actors/healthbar.tscn" id="4_5gtgg"]
 [ext_resource type="AnimationLibrary" uid="uid://n1n580g3sb2p" path="res://animations/player/player_animations.res" id="4_h17s1"]
+[ext_resource type="FontFile" uid="uid://c1l47aekqn13v" path="res://assets/fonts/m3x6.ttf" id="5_gx1jg"]
 [ext_resource type="Script" uid="uid://d350u8evihs1u" path="res://addons/netfox/rollback/rollback-synchronizer.gd" id="5_qek5x"]
 [ext_resource type="Texture2D" uid="uid://b43bod4d31r2y" path="res://assets/sprite/weapon_pointer.png" id="6_h17s1"]
 [ext_resource type="Script" uid="uid://dour8fehaaugp" path="res://addons/netfox/tick-interpolator.gd" id="6_qek5x"]
 [ext_resource type="PackedScene" uid="uid://cmbfgg8vtwhrg" path="res://scenes/weapons/player_weapon.tscn" id="7_5gtgg"]
+[ext_resource type="Script" uid="uid://byrgwv2o7hstx" path="res://addons/netfox.extras/state-machine/rewindable-state-machine.gd" id="10_h17s1"]
+[ext_resource type="Script" uid="uid://foodc0gq77b7" path="res://scripts/actors/player/statemachine/idle.gd" id="11_fm80t"]
+[ext_resource type="Script" uid="uid://eus800in48ug" path="res://scripts/actors/player/statemachine/walk.gd" id="12_gx1jg"]
+[ext_resource type="Script" uid="uid://cruahmsyjf8q" path="res://scripts/actors/player/statemachine/die.gd" id="14_ugbui"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8afob"]
 radius = 12.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_qek5x"]
-radius = 3.0
+radius = 18.1108
 
 [sub_resource type="Animation" id="Animation_p47bc"]
 length = 0.001
@@ -105,15 +110,6 @@ _data = {
 &"walk": SubResource("Animation_75vfm")
 }
 
-[sub_resource type="Gradient" id="Gradient_tg1mr"]
-offsets = PackedFloat32Array(0.215569, 0.756487)
-colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 0)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_qek5x"]
-gradient = SubResource("Gradient_tg1mr")
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_5gtgg"]
 properties/0/path = NodePath(".:is_player_enabled")
 properties/0/spawn = false
@@ -121,21 +117,14 @@ properties/0/replication_mode = 2
 properties/1/path = NodePath(".:spawn_tick")
 properties/1/spawn = false
 properties/1/replication_mode = 2
-properties/2/path = NodePath(".:disable_tick")
+properties/2/path = NodePath(".:spawn_position")
 properties/2/spawn = false
 properties/2/replication_mode = 2
-properties/3/path = NodePath(".:spawn_position")
-properties/3/spawn = false
-properties/3/replication_mode = 2
-properties/4/path = NodePath(".:current_state")
-properties/4/spawn = false
-properties/4/replication_mode = 2
 
 [node name="player" type="CharacterBody2D" groups=["Players"]]
 collision_layer = 8
 collision_mask = 13
-script = ExtResource("1_8afob")
-max_speed = 240.0
+script = ExtResource("1_4iwnj")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_8afob")
@@ -164,18 +153,21 @@ libraries = {
 }
 autoplay = "player_animations/player_idle_yellow"
 
-[node name="PointLight2D" type="PointLight2D" parent="visual"]
-visible = false
-scale = Vector2(2, 2)
-energy = 2.0
-shadow_enabled = true
-texture = SubResource("GradientTexture2D_qek5x")
-
 [node name="healthbar" parent="visual" instance=ExtResource("4_5gtgg")]
 offset_left = -16.0
 offset_top = -24.0
 offset_right = 16.0
 offset_bottom = -20.0
+
+[node name="state_label" type="Label" parent="visual"]
+offset_left = -25.0
+offset_top = -51.0
+offset_right = 25.0
+offset_bottom = -25.0
+theme_override_fonts/font = ExtResource("5_gx1jg")
+theme_override_font_sizes/font_size = 32
+text = "n/a"
+horizontal_alignment = 1
 
 [node name="audio" type="Node2D" parent="."]
 
@@ -201,7 +193,7 @@ distance_threshold = 20.0
 [node name="RollbackSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("5_qek5x")
 root = NodePath("..")
-state_properties = Array[String]([":global_position", ":velocity", "weapon_pivot:rotation", ":did_spawn", ":did_disable", ":health"])
+state_properties = Array[String]([":global_position", ":health", "weapon_pivot:rotation", "RewindableStateMachine:state", ":did_spawn", ":is_dying"])
 input_properties = Array[String](["player_input:input_direction", "player_input:aim_direction", "player_input:just_die"])
 enable_input_broadcast = false
 metadata/_custom_type_script = "uid://d350u8evihs1u"
@@ -215,6 +207,27 @@ metadata/_custom_type_script = "uid://dour8fehaaugp"
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_5gtgg")
 
-[node name="Timer" type="Timer" parent="."]
-wait_time = 2.0
-autostart = true
+[node name="RewindableStateMachine" type="Node" parent="."]
+script = ExtResource("10_h17s1")
+metadata/_custom_type_script = "uid://byrgwv2o7hstx"
+
+[node name="IDLE" type="Node" parent="RewindableStateMachine" node_paths=PackedStringArray("character_body_2d", "player_input", "animation_player")]
+script = ExtResource("11_fm80t")
+character_body_2d = NodePath("../..")
+player_input = NodePath("../../player_input")
+animation_player = NodePath("../../visual/AnimationPlayer")
+metadata/_custom_type_script = "uid://usyufdtn83hc"
+
+[node name="WALK" type="Node" parent="RewindableStateMachine" node_paths=PackedStringArray("character_body_2d", "player_input", "animation_player", "audio_stream_player_2d")]
+script = ExtResource("12_gx1jg")
+character_body_2d = NodePath("../..")
+player_input = NodePath("../../player_input")
+animation_player = NodePath("../../visual/AnimationPlayer")
+audio_stream_player_2d = NodePath("../../audio/AudioStreamPlayer2D")
+metadata/_custom_type_script = "uid://usyufdtn83hc"
+
+[node name="DIE" type="Node" parent="RewindableStateMachine" node_paths=PackedStringArray("character_body_2d", "animation_player")]
+script = ExtResource("14_ugbui")
+character_body_2d = NodePath("../..")
+animation_player = NodePath("../../visual/AnimationPlayer")
+metadata/_custom_type_script = "uid://usyufdtn83hc"
