@@ -122,10 +122,11 @@ properties/2/path = NodePath(".:spawn_position")
 properties/2/spawn = false
 properties/2/replication_mode = 2
 
-[node name="player" type="CharacterBody2D" groups=["Players"]]
+[node name="player" type="CharacterBody2D" node_paths=PackedStringArray("state_machine") groups=["Players"]]
 collision_layer = 8
 collision_mask = 13
 script = ExtResource("1_4iwnj")
+state_machine = NodePath("RewindableStateMachine")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_8afob")
@@ -160,11 +161,28 @@ offset_top = -24.0
 offset_right = 16.0
 offset_bottom = -20.0
 
-[node name="state_label" type="Label" parent="visual"]
-offset_left = -25.0
-offset_top = -51.0
-offset_right = 25.0
-offset_bottom = -25.0
+[node name="info_vbox" type="VBoxContainer" parent="visual"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -87.0
+offset_right = 20.0
+offset_bottom = -31.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="state_label" type="Label" parent="visual/info_vbox"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_gx1jg")
+theme_override_font_sizes/font_size = 32
+text = "n/a"
+horizontal_alignment = 1
+
+[node name="velocity_label" type="Label" parent="visual/info_vbox"]
+layout_mode = 2
 theme_override_fonts/font = ExtResource("5_gx1jg")
 theme_override_font_sizes/font_size = 32
 text = "n/a"
@@ -194,7 +212,7 @@ distance_threshold = 20.0
 [node name="RollbackSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("5_qek5x")
 root = NodePath("..")
-state_properties = Array[String]([":global_position", ":health", "weapon_pivot:rotation", "RewindableStateMachine:state", ":is_dying"])
+state_properties = Array[String]([":position", ":health", "weapon_pivot:rotation", "RewindableStateMachine:state", ":is_dying", ":velocity"])
 input_properties = Array[String](["player_input:input_direction", "player_input:aim_direction", "player_input:just_die"])
 enable_input_broadcast = false
 metadata/_custom_type_script = "uid://d350u8evihs1u"

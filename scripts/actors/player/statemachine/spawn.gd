@@ -22,11 +22,12 @@ func tick(_delta, _tk, _is_fresh):
 
 # Called when entering the state.
 func enter(_previous_state, _tk):
-	Log.pr("SPAWN state entered on tick : " + str(_tk))
+	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "IDLE state (enter) on tick : " + str(_tk))
 
 # Called when exiting the state.
 func exit(_next_state, _tk):
-	Log.pr("SPAWN state exited on tick : " + str(_tk))
+	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "IDLE state (exit) on tick : " + str(_tk))
+	
 
 # Called before entering the state. The state is only entered if this method returns true.
 func can_enter(_previous_state):
@@ -34,12 +35,14 @@ func can_enter(_previous_state):
 
 # Called before displaying the state.
 func display_enter(_previous_state, _tk):
+	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "SPAWN state (display_enter) on tick : " + str(_tk))
 	character_body_2d.state_label.text = "SPAWN"
 	animation_player.speed_scale = 1.0 # Default
 	animation_player.play("player_animations/player_idle" + "_" + character_body_2d.PLAYER_COLORS.keys()[character_body_2d.player_color].to_lower())
 
 # Called before displaying a different state.
 func display_exit(_next_state, _tk):
+	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "SPAWN state (display_exit) on tick : " + str(_tk))
 	tick_interpolator.teleport()
 
 

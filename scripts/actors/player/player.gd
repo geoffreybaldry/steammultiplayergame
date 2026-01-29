@@ -24,15 +24,15 @@ enum PLAYER_COLORS {
 @export var acceleration = 30.0
 @export var deceleration = 30.0
 
+@export var state_machine: RewindableStateMachine
+
 # We gather the player input from this separate script, which can be independently synchronized to the server
 @onready var player_input: PlayerInput = $player_input
 
 # This peer_id gets synchronized by a MultiplayerSynchronizer, only on change
 @export var peer_id: int = -1
 
-@onready var state_machine: RewindableStateMachine = $RewindableStateMachine
 @onready var rollback_synchronizer: RollbackSynchronizer = $RollbackSynchronizer
-#@onready var tick_interpolator: TickInterpolator = $TickInterpolator
 @onready var multiplayer_synchronizer: MultiplayerSynchronizer = $MultiplayerSynchronizer
 @onready var animation_player: AnimationPlayer = $visual/AnimationPlayer
 @onready var weapon_pivot: Node2D = $weapon_pivot
@@ -40,7 +40,8 @@ enum PLAYER_COLORS {
 @onready var hitbox_collision_shape_2d: CollisionShape2D = $HitBox/CollisionShape2D
 @onready var audio_stream_player_2d: AudioStreamPlayer2D = $audio/AudioStreamPlayer2D
 @onready var healthbar: TextureProgressBar = $visual/healthbar
-@onready var state_label: Label = $visual/state_label
+@onready var state_label: Label = $visual/info_vbox/state_label
+@onready var velocity_label: Label = $visual/info_vbox/velocity_label
 
 var is_player_enabled: bool = false :
 	set(value):
@@ -52,7 +53,6 @@ var player_color: PLAYER_COLORS
 var pcam: PhantomCamera2D
 var spawn_tick: int
 var spawn_position: Vector2
-#var did_spawn: bool
 var is_dying: bool = false
 var shove_vector: Vector2
 
@@ -88,6 +88,9 @@ func _ready() -> void:
 	# Register ourselves as a player game entity
 	Events.game_events.register_player_instance.emit(peer_id, self)
 
+
+func _process(_delta: float) -> void:
+	velocity_label.text = str(velocity)
 
 # Processes that are re-simulated during rollback
 func _rollback_tick(_delta: float, _tk: int, _is_fresh: bool) -> void:	
