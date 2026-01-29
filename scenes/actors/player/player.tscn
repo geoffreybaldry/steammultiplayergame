@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://cdg0vfkaa0w3v"]
+[gd_scene load_steps=24 format=3 uid="uid://cdg0vfkaa0w3v"]
 
 [ext_resource type="Script" uid="uid://g1v38iwbwey" path="res://scripts/actors/player/player.gd" id="1_4iwnj"]
 [ext_resource type="Texture2D" uid="uid://cr63fvns0bj6v" path="res://assets/sprite/players.png" id="2_5gtgg"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://cmbfgg8vtwhrg" path="res://scenes/weapons/player_weapon.tscn" id="7_5gtgg"]
 [ext_resource type="Script" uid="uid://byrgwv2o7hstx" path="res://addons/netfox.extras/state-machine/rewindable-state-machine.gd" id="10_h17s1"]
 [ext_resource type="Script" uid="uid://foodc0gq77b7" path="res://scripts/actors/player/statemachine/idle.gd" id="11_fm80t"]
+[ext_resource type="Script" uid="uid://v5pv4ypn1oc7" path="res://scripts/actors/player/statemachine/spawn.gd" id="12_068wj"]
 [ext_resource type="Script" uid="uid://eus800in48ug" path="res://scripts/actors/player/statemachine/walk.gd" id="12_gx1jg"]
 [ext_resource type="Script" uid="uid://cruahmsyjf8q" path="res://scripts/actors/player/statemachine/die.gd" id="14_ugbui"]
 
@@ -193,7 +194,7 @@ distance_threshold = 20.0
 [node name="RollbackSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("5_qek5x")
 root = NodePath("..")
-state_properties = Array[String]([":global_position", ":health", "weapon_pivot:rotation", "RewindableStateMachine:state", ":did_spawn", ":is_dying"])
+state_properties = Array[String]([":global_position", ":health", "weapon_pivot:rotation", "RewindableStateMachine:state", ":is_dying"])
 input_properties = Array[String](["player_input:input_direction", "player_input:aim_direction", "player_input:just_die"])
 enable_input_broadcast = false
 metadata/_custom_type_script = "uid://d350u8evihs1u"
@@ -210,6 +211,14 @@ replication_config = SubResource("SceneReplicationConfig_5gtgg")
 [node name="RewindableStateMachine" type="Node" parent="."]
 script = ExtResource("10_h17s1")
 metadata/_custom_type_script = "uid://byrgwv2o7hstx"
+
+[node name="SPAWN" type="Node" parent="RewindableStateMachine" node_paths=PackedStringArray("character_body_2d", "player_input", "animation_player", "tick_interpolator")]
+script = ExtResource("12_068wj")
+character_body_2d = NodePath("../..")
+player_input = NodePath("../../player_input")
+animation_player = NodePath("../../visual/AnimationPlayer")
+tick_interpolator = NodePath("../../TickInterpolator")
+metadata/_custom_type_script = "uid://usyufdtn83hc"
 
 [node name="IDLE" type="Node" parent="RewindableStateMachine" node_paths=PackedStringArray("character_body_2d", "player_input", "animation_player")]
 script = ExtResource("11_fm80t")

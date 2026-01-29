@@ -141,6 +141,9 @@ grow_vertical = 0
 [node name="latency_stats_vbox" type="VBoxContainer" parent="system_stats_hbox"]
 layout_mode = 2
 
+[node name="tick_label" type="Label" parent="system_stats_hbox/latency_stats_vbox"]
+layout_mode = 2
+
 [node name="latency_stats_label" type="Label" parent="system_stats_hbox/latency_stats_vbox"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_l0x22")

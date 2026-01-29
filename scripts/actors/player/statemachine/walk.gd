@@ -38,6 +38,8 @@ func tick(_delta, _tk, _is_fresh):
 	if player_input.input_direction == Vector2.ZERO:
 		state_machine.transition(&"IDLE")
 
+	animation_player.speed_scale = clampf(character_body_2d.velocity.length() / character_body_2d.max_speed, 0.2, 1.0)
+	animation_player.play("player_animations/player_walk" + "_" + character_body_2d.PLAYER_COLORS.keys()[character_body_2d.player_color].to_lower())
 
 # Called when entering the state.
 func enter(_previous_state, _tk):
@@ -57,8 +59,6 @@ func can_enter(_previous_state):
 # Called before displaying the state.
 func display_enter(_previous_state, _tk):
 	character_body_2d.state_label.text = "WALK"
-	animation_player.speed_scale = clampf(character_body_2d.velocity.length() / character_body_2d.max_speed, 0.2, 1.0)
-	animation_player.play("player_animations/player_walk" + "_" + character_body_2d.PLAYER_COLORS.keys()[character_body_2d.player_color].to_lower())
 
 
 # Called before displaying a different state.

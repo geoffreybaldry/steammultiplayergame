@@ -32,7 +32,7 @@ enum PLAYER_COLORS {
 
 @onready var state_machine: RewindableStateMachine = $RewindableStateMachine
 @onready var rollback_synchronizer: RollbackSynchronizer = $RollbackSynchronizer
-@onready var tick_interpolator: TickInterpolator = $TickInterpolator
+#@onready var tick_interpolator: TickInterpolator = $TickInterpolator
 @onready var multiplayer_synchronizer: MultiplayerSynchronizer = $MultiplayerSynchronizer
 @onready var animation_player: AnimationPlayer = $visual/AnimationPlayer
 @onready var weapon_pivot: Node2D = $weapon_pivot
@@ -52,7 +52,7 @@ var player_color: PLAYER_COLORS
 var pcam: PhantomCamera2D
 var spawn_tick: int
 var spawn_position: Vector2
-var did_spawn: bool
+#var did_spawn: bool
 var is_dying: bool = false
 var shove_vector: Vector2
 
@@ -83,27 +83,14 @@ func _ready() -> void:
 		grab_pcam()
 	
 	# Set starting state
-	state_machine.state = &"IDLE"
+	state_machine.state = &"SPAWN"
 	
 	# Register ourselves as a player game entity
 	Events.game_events.register_player_instance.emit(peer_id, self)
 
 
-func check_spawn(tick) -> void:
-	if tick == spawn_tick:
-		global_position = spawn_position
-		did_spawn = true
-		is_player_enabled = true
-		if player_input.is_multiplayer_authority():
-			grab_pcam()
-	else:
-		did_spawn = false
-
-
 # Processes that are re-simulated during rollback
-func _rollback_tick(_delta: float, tick: int, _is_fresh: bool) -> void:
-	check_spawn(tick) 		# Check if the player needs to spawn
-	
+func _rollback_tick(_delta: float, _tk: int, _is_fresh: bool) -> void:	
 	if not is_player_enabled:
 		return
 	
@@ -125,16 +112,11 @@ func _rollback_tick(_delta: float, tick: int, _is_fresh: bool) -> void:
 
 	# Check health condition
 	if health <= 0:
-		health = max_health
 		is_dying = true
 
 # Processes that happen at the end of a tick loop
 func _after_tick_loop():
 	healthbar.value = (health / max_health) * 100
-	
-	if did_spawn:
-		Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Spawned peer id " + str(peer_id))
-		tick_interpolator.teleport()
 
 
 func update_velocity(safe_velocity: Vector2) -> void:

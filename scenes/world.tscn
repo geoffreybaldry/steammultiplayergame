@@ -37,10 +37,4 @@ visible = false
 
 [node name="entities" parent="." instance=ExtResource("8_e3hyu")]
 
-[node name="player_multiplayer_spawner" parent="entities/spawned_players" index="0"]
-_spawnable_scenes = PackedStringArray("res://scenes/player/player.tscn")
-
-[node name="enemy_multiplayer_spawner" parent="entities/spawned_enemies" index="0"]
-_spawnable_scenes = PackedStringArray("res://scenes/enemies/skeleton.tscn")
-
 [editable path="entities"]

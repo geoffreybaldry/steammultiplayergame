@@ -42,7 +42,7 @@ func _process(_delta: float) -> void:
 		var spawn_point_position = SpawnPoints.get_free_spawn_point_position()
 		if spawn_point_position:
 			Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Placing peer id " + str(peer_id) + " at position " + str(spawn_point_position))
-			player_instances[peer_id].spawn_tick = NetworkTime.tick
+			player_instances[peer_id].spawn_tick = NetworkTime.tick + 30
 			player_instances[peer_id].spawn_position = spawn_point_position
 			player_queue.pop_front()
 		else:

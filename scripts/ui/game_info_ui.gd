@@ -6,7 +6,7 @@ extends Control
 @onready var seated_players_list: RichTextLabel = $game_info_hbox/seated_players_vbox/seated_players_list
 @onready var players_dict_list: RichTextLabel = $game_info_hbox/players_dict_vbox/players_dict_list
 @onready var player_spawn_queue_text: RichTextLabel = $game_info_hbox/player_spawn_queue_vbox/player_spawn_queue_text
-
+@onready var tick_label: Label = $system_stats_hbox/latency_stats_vbox/tick_label
 
 var entities: Node
 
@@ -19,11 +19,15 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	game_state_label.text = "GameState: : " + GameState.GAME_STATES.keys()[GameState.current_game_state]
 	
+	update_tick_label()
 	update_seated_players()
 	update_players_dict_list()
 	update_player_instances_list()
 	update_enemy_instances_list()
 	update_player_spawn_queue_list()
+
+func update_tick_label() -> void:
+	tick_label.text = "Tick : " + str(NetworkTime.tick)
 
 
 func update_player_spawn_queue_list() -> void:

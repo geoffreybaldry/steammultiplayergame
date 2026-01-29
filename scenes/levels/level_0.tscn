@@ -67,6 +67,12 @@ position = Vector2(416, 416)
 [node name="enemy_start_marker" parent="enemy_start_markers" index="0" instance=ExtResource("5_jjvta")]
 position = Vector2(384, 576)
 
+[node name="enemy_start_marker2" parent="enemy_start_markers" index="1" instance=ExtResource("5_jjvta")]
+position = Vector2(384, 608)
+
+[node name="enemy_start_marker3" parent="enemy_start_markers" index="2" instance=ExtResource("5_jjvta")]
+position = Vector2(384, 640)
+
 [node name="end_point" parent="end_points" index="0" instance=ExtResource("5_xy1qu")]
 position = Vector2(736, 352)
 endpoint_target_level = "res://scenes/levels/level_1.tscn"

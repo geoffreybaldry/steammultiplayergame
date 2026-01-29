@@ -2,10 +2,9 @@
 extends RewindableState
 
 @export var character_body_2d: CharacterBody2D
+@export var player_input: PlayerInput
 @export var animation_player: AnimationPlayer
-
-var restart_tick: int = -1
-var restart_cooldown_ticks: int = 60 # 2 seconds at 30TPS
+@export var tick_interpolator: TickInterpolator
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -19,24 +18,15 @@ func _process(_delta: float) -> void:
 
 # Called for every rollback tick the state is active.
 func tick(_delta, _tk, _is_fresh):
-	character_body_2d.is_dying = false
-	
-	# Check if it's time to restart
-	if restart_tick != -1 and _tk >= restart_tick:
-		restart_tick = -1
-		if is_multiplayer_authority():
-			Events.game_events.player_died.emit(character_body_2d.peer_id)
-		state_machine.transition(&"SPAWN")
+	check_spawn(_tk) 		# Check if the player needs to spawn
 
 # Called when entering the state.
 func enter(_previous_state, _tk):
-	Log.pr("DIE state entered on tick : " + str(_tk))
-	restart_tick = _tk + restart_cooldown_ticks
-	
-	
+	Log.pr("SPAWN state entered on tick : " + str(_tk))
+
 # Called when exiting the state.
 func exit(_next_state, _tk):
-	Log.pr("DIE state exited on tick : " + str(_tk))
+	Log.pr("SPAWN state exited on tick : " + str(_tk))
 
 # Called before entering the state. The state is only entered if this method returns true.
 func can_enter(_previous_state):
@@ -44,10 +34,24 @@ func can_enter(_previous_state):
 
 # Called before displaying the state.
 func display_enter(_previous_state, _tk):
-	character_body_2d.state_label.text = "DIE"
+	character_body_2d.state_label.text = "SPAWN"
 	animation_player.speed_scale = 1.0 # Default
-	animation_player.play("player_animations/player_die" + "_" + character_body_2d.PLAYER_COLORS.keys()[character_body_2d.player_color].to_lower())
-	
+	animation_player.play("player_animations/player_idle" + "_" + character_body_2d.PLAYER_COLORS.keys()[character_body_2d.player_color].to_lower())
+
 # Called before displaying a different state.
 func display_exit(_next_state, _tk):
-	pass
+	tick_interpolator.teleport()
+
+
+func check_spawn(_tk) -> void:
+	if _tk == character_body_2d.spawn_tick:
+		character_body_2d.global_position = character_body_2d.spawn_position
+		#character_body_2d.did_spawn = true
+		character_body_2d.health = character_body_2d.max_health
+		character_body_2d.is_player_enabled = true
+		if player_input.is_multiplayer_authority():
+			character_body_2d.grab_pcam()
+		state_machine.transition(&"IDLE")
+	else:
+		pass
+		#character_body_2d.did_spawn = false
