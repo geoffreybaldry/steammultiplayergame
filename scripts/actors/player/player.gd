@@ -1,3 +1,4 @@
+@tool
 extends CharacterBody2D
 class_name Player
 ## The player script - It handles the movement of the player, and applies
@@ -41,7 +42,7 @@ enum PLAYER_COLORS {
 @onready var audio_stream_player_2d: AudioStreamPlayer2D = $audio/AudioStreamPlayer2D
 @onready var healthbar: TextureProgressBar = $visual/healthbar
 @onready var state_label: Label = $visual/info_vbox/state_label
-@onready var velocity_label: Label = $visual/info_vbox/velocity_label
+@onready var sprite_2d: Sprite2D = $visual/Sprite2D
 
 var is_player_enabled: bool = false :
 	set(value):
@@ -57,7 +58,35 @@ var is_dying: bool = false
 var shove_vector: Vector2
 
 
+func _get_interpolated_properties():
+	return [
+		"position",
+		["weapon_pivot", "rotation"],
+	]
+	
+func _get_rollback_state_properties() -> Array:
+	return [
+		"position",
+		"health",
+		["weapon_pivot", "rotation"],
+		["RewindableStateMachine", "state"],
+		"is_dying",
+		"velocity",
+	]
+	
+func _get_rollback_input_properties() -> Array:
+	# Specify a list of properties
+	return [
+		["player_input", "input_direction"], 
+		["player_input", "aim_direction"], 
+		["player_input", "just_die"], 
+	]
+	
+
 func _ready() -> void:
+	if Engine.is_editor_hint():
+		return
+		
 	# Connect to NetworkTime signals
 	NetworkTime.after_tick_loop.connect(_after_tick_loop)
 	
@@ -90,7 +119,9 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	velocity_label.text = str(velocity)
+	if state_machine.state == "WALK":
+		animation_player.speed_scale = clampf(velocity.length() / max_speed, 0.2, 1.0)
+
 
 # Processes that are re-simulated during rollback
 func _rollback_tick(_delta: float, _tk: int, _is_fresh: bool) -> void:	
@@ -165,6 +196,9 @@ func grab_pcam() -> void:
 func damage(value: int) -> void:
 	health -= value
 
+	# Blink the player
+	var tween = get_tree().create_tween()
+	tween.tween_method(set_shader_blink_intensity, 1.0, 0.0, 0.25)
 
 # Used to perform "push back" on the player
 func shove(direction: Vector2, force: float) -> void:
@@ -172,5 +206,10 @@ func shove(direction: Vector2, force: float) -> void:
 	shove_vector = direction * force
 
 
-func _exit_tree() -> void:
-	NetworkTime.after_tick_loop.disconnect(_after_tick_loop)
+# Used to make the player blink when hit
+func set_shader_blink_intensity(new_value: float) -> void:
+	sprite_2d.material.set_shader_parameter("blink_intensity", new_value)
+
+
+#func _exit_tree() -> void:
+	#NetworkTime.after_tick_loop.disconnect(_after_tick_loop)

@@ -1,9 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://cmbfgg8vtwhrg"]
+[gd_scene load_steps=4 format=3 uid="uid://cmbfgg8vtwhrg"]
 
 [ext_resource type="Script" uid="uid://t5n0dfhb2c8t" path="res://scripts/weapons/player_weapon.gd" id="1_nqevj"]
-[ext_resource type="PackedScene" uid="uid://dut7ss1ful8un" path="res://scenes/projectiles/bullet.tscn" id="2_0nx0v"]
+[ext_resource type="PackedScene" uid="uid://dbad5bqn1uoy3" path="res://scenes/projectiles/firebolt/firebolt.tscn" id="2_jwdyn"]
+[ext_resource type="AudioStream" uid="uid://cm0qps5muchqr" path="res://assets/audio/effects/weapon/mixkit-short-laser-gun-shot-1670.wav" id="3_jwdyn"]
 
 [node name="player_weapon" type="Node2D"]
 script = ExtResource("1_nqevj")
-projectile_scene = ExtResource("2_0nx0v")
+projectile_scene = ExtResource("2_jwdyn")
 distance_threshold = 5.0
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_jwdyn")

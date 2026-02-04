@@ -38,21 +38,20 @@ var health: float :
 		var old_value = health
 		health = value
 		if old_value != value:
-			Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "health : " + str(health))
+			#Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "health : " + str(health))
+			# Blink the enemy
+			blink_material()
+			
 		
 var shove_vector: Vector2
 var is_dying: bool = false
-
-
 
 var audio = {
 	"impactMetal_002" = preload("res://assets/audio/effects/sci-fi/impactMetal_002.ogg")
 }
 
-
 func _get_interpolated_properties():
 	return ["position"]
-
 
 func _get_rollback_state_properties() -> Array:
 	return [
@@ -62,6 +61,9 @@ func _get_rollback_state_properties() -> Array:
 	]
 
 func _ready() -> void:
+	if Engine.is_editor_hint():
+		return
+		
 	NetworkTime.on_tick.connect(_tick)
 	NetworkTime.after_tick_loop.connect(_after_tick_loop)
 	
@@ -145,15 +147,18 @@ func _on_velocity_computed(safe_velocity: Vector2):
 
 # Used to reduce the health of the enemy
 func damage(value:int) -> void:
-	Events.error_messages.error_message.emit("Damage!!!", 2)
+	#Events.error_messages.error_message.emit("Damage!!!", 2)
 	health -= value
-	
-	# Blink the enemy
-	var tween = get_tree().create_tween()
-	tween.tween_method(set_shader_blink_intensity, 1.0, 0.0, 0.25)
-	
+
 	# Play impact/pain sounds
 	audio_stream_player_2d.play()
+
+
+# Blink the enemy
+func blink_material() -> void:
+	var tween = get_tree().create_tween()
+	tween.tween_method(set_shader_blink_intensity, 1.0, 0.0, 0.25)
+
 
 # Used to perform "push back" on an enemy
 func shove(direction: Vector2, force: float) -> void:

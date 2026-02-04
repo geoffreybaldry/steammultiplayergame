@@ -16,13 +16,15 @@ class_name Projectile
 
 var fired_by: int
 var fired_tick: int
+var is_disabled: bool = false
+#var did_hit: bool = false
 
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	NetworkTime.after_tick_loop.connect(_after_tick_loop)
-	audio_stream_player_2d.play()
+	#audio_stream_player_2d.play()
 
 
 func _tick(_delta, _t) -> void:

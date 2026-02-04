@@ -30,6 +30,7 @@ func tick(_delta, _tk, _is_fresh):
 
 # Called when entering the state.
 func enter(_previous_state, _tk):
+	# Set when the player should re-start as a time a few ticks in the future
 	restart_tick = _tk + restart_cooldown_ticks
 	
 	
@@ -43,11 +44,12 @@ func can_enter(_previous_state):
 
 # Called before displaying the state.
 func display_enter(_previous_state, _tk):
-	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "DIE state entered on tick : " + str(_tk))
+	#Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "DIE state entered on tick : " + str(_tk))
 	character_body_2d.state_label.text = "DIE"
 	animation_player.speed_scale = 1.0 # Default
 	animation_player.play("player_animations/player_die" + "_" + character_body_2d.PLAYER_COLORS.keys()[character_body_2d.player_color].to_lower())
 	
 # Called before displaying a different state.
 func display_exit(_next_state, _tk):
-	Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "DIE state exited on tick : " + str(_tk))
+	pass
+	#Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "DIE state exited on tick : " + str(_tk))

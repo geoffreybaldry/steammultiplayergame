@@ -29,6 +29,7 @@ radius = 26.0
 radius = 128.062
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lokys"]
+resource_local_to_scene = true
 shader = ExtResource("2_ahxvp")
 shader_parameter/blink_color = Color(1, 0, 0, 1)
 shader_parameter/blink_intensity = 0.0
@@ -185,6 +186,7 @@ path_postprocessing = 1
 simplify_path = true
 debug_enabled = true
 debug_path_custom_color = Color(1, 0, 0, 1)
+debug_path_custom_line_width = 4.0
 
 [node name="RayCast2D" type="RayCast2D" parent="."]
 collision_mask = 9

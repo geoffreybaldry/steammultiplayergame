@@ -11,7 +11,9 @@ func _process(_delta: float) -> void:
 	if GameState.current_game_state != GameState.GAME_STATES.PLAYING and GameState.current_game_state != GameState.GAME_STATES.PAUSED:
 		return
 		
-	if Input.is_action_just_pressed("options") or Input.is_action_just_pressed("escape"):
+	#if Input.is_action_just_pressed("options") or Input.is_action_just_pressed("escape"):
+	if Focus.input_is_action_just_pressed("options") or Focus.input_is_action_just_pressed("escape"):
+
 		if GameState.current_game_state == GameState.GAME_STATES.PAUSED:
 			GameState.change_game_state(GameState.GAME_STATES.PLAYING)
 		else:

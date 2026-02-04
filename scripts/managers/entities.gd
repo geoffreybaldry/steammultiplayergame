@@ -6,10 +6,8 @@ enum ENEMY_TYPES {
 
 @onready var player_multiplayer_spawner: MultiplayerSpawner = $spawned_players/player_multiplayer_spawner
 @onready var enemy_multiplayer_spawner: MultiplayerSpawner = $spawned_enemies/enemy_multiplayer_spawner
-@onready var timer: Timer = $Timer
 
 var player_scene = preload("res://scenes/actors/player/player.tscn")
-
 var enemy_scenes = {
 	ENEMY_TYPES.SKELETON: preload("res://scenes/actors/enemies/skeleton/skeleton.tscn"),
 }
@@ -31,8 +29,8 @@ func _ready() -> void:
 	Events.game_events.spawn_enemy_request.connect(_on_spawn_enemy_request)
 	
 	# Custom spawn function(s)
-	player_multiplayer_spawner.spawn_function = spawn_player_instance_function
-	enemy_multiplayer_spawner.spawn_function = spawn_enemy_instance_function
+	player_multiplayer_spawner.spawn_function = instantiate_player
+	enemy_multiplayer_spawner.spawn_function = instantiate_enemy
 	
 
 func _process(_delta: float) -> void:
@@ -78,15 +76,13 @@ func spawn_player_instance(this_peer_id: int) -> void:
 	player_multiplayer_spawner.spawn(spawn_data)
 
 
-func spawn_player_instance_function(data: Variant) -> Node:
-	var this_peer_id = data["peer_id"]
-	var this_global_position = data["global_position"]
-	var this_player_color = data["player_color"]
+#func spawn_player_instance_function(data: Variant) -> Node:
+func instantiate_player(data: Variant) -> Node:
 	var player_instance = player_scene.instantiate()
-	player_instance.peer_id = this_peer_id
-	player_instance.name = str(this_peer_id) 
-	player_instance.global_position = this_global_position
-	player_instance.player_color = this_player_color
+	player_instance.peer_id = data["peer_id"]
+	player_instance.name = str(data["peer_id"]) 
+	player_instance.global_position = data["global_position"]
+	player_instance.player_color = data["player_color"]
 	
 	# Godot automatically adds the node to the scene tree
 	return player_instance
@@ -102,21 +98,18 @@ func _on_spawn_enemy_request(this_enemy_type: int, this_global_position: Vector2
 	enemy_instances[enemy_instance.id] = enemy_instance
 	
 
-func spawn_enemy_instance_function(data: Variant) -> Node:
-	var this_enemy_type = data["enemy_type"]
-	var this_global_position = data["global_position"]
-	var this_id = data["id"]
-	
+#func spawn_enemy_instance_function(data: Variant) -> Node:
+func instantiate_enemy(data: Variant) -> Node:
 	var enemy_instance: Node
-	match this_enemy_type:
+	match data["enemy_type"]:
 		ENEMY_TYPES.SKELETON:
 			enemy_instance = enemy_scenes[ENEMY_TYPES.SKELETON].instantiate()
 		_:
-			Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Trying to instantiate Unknown enemy type " + str(this_enemy_type))
+			Log.pr("[" + str(multiplayer.get_unique_id()) + "]" + " " + "Trying to instantiate Unknown enemy type " + str(data["enemy_type"]))
 	
-	enemy_instance.id = this_id
-	enemy_instance.name = this_id
-	enemy_instance.global_position = this_global_position
+	enemy_instance.id = data["id"]
+	enemy_instance.name = data["id"]
+	enemy_instance.global_position = data["global_position"]
 	
 	# Godot automatically adds the node to the scene tree
 	return enemy_instance

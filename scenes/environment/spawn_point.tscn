@@ -69,6 +69,7 @@ texture = ExtResource("3_vgdas")
 process_material = SubResource("ParticleProcessMaterial_ubud2")
 
 [node name="resident_players_label" type="Label" parent="."]
+visible = false
 offset_left = 4.0
 offset_top = -29.0
 offset_right = 28.0
@@ -78,6 +79,7 @@ theme_override_font_sizes/font_size = 32
 text = "n/a"
 
 [node name="just_selected_label" type="Label" parent="."]
+visible = false
 offset_left = 4.0
 offset_top = -47.0
 offset_right = 28.0

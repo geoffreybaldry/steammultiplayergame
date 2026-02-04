@@ -1,7 +1,8 @@
-[gd_scene load_steps=24 format=3 uid="uid://cdg0vfkaa0w3v"]
+[gd_scene load_steps=26 format=3 uid="uid://cdg0vfkaa0w3v"]
 
 [ext_resource type="Script" uid="uid://g1v38iwbwey" path="res://scripts/actors/player/player.gd" id="1_4iwnj"]
 [ext_resource type="Texture2D" uid="uid://cr63fvns0bj6v" path="res://assets/sprite/players.png" id="2_5gtgg"]
+[ext_resource type="Shader" uid="uid://dvfjf0rl65ehj" path="res://shaders/blink.gdshader" id="2_xducv"]
 [ext_resource type="Script" uid="uid://dlhab88x572jk" path="res://scripts/actors/player/player_input.gd" id="3_gmlin"]
 [ext_resource type="PackedScene" uid="uid://tu8uiu8q5bpe" path="res://scenes/ui/actors/healthbar.tscn" id="4_5gtgg"]
 [ext_resource type="AnimationLibrary" uid="uid://n1n580g3sb2p" path="res://animations/player/player_animations.res" id="4_h17s1"]
@@ -21,6 +22,12 @@ radius = 12.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_qek5x"]
 radius = 18.1108
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yab6n"]
+resource_local_to_scene = true
+shader = ExtResource("2_xducv")
+shader_parameter/blink_color = Color(1, 1, 1, 1)
+shader_parameter/blink_intensity = 0.0
 
 [sub_resource type="Animation" id="Animation_p47bc"]
 length = 0.001
@@ -141,6 +148,7 @@ shape = SubResource("CircleShape2D_qek5x")
 [node name="visual" type="Node2D" parent="."]
 
 [node name="Sprite2D" type="Sprite2D" parent="visual"]
+material = SubResource("ShaderMaterial_yab6n")
 texture = ExtResource("2_5gtgg")
 hframes = 6
 vframes = 4
@@ -154,6 +162,7 @@ libraries = {
 &"player_animations": ExtResource("4_h17s1")
 }
 autoplay = "player_animations/player_idle_yellow"
+speed_scale = 0.2
 
 [node name="healthbar" parent="visual" instance=ExtResource("4_5gtgg")]
 offset_left = -16.0
@@ -168,20 +177,13 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -20.0
-offset_top = -87.0
+offset_top = -57.0
 offset_right = 20.0
 offset_bottom = -31.0
 grow_horizontal = 2
 grow_vertical = 0
 
 [node name="state_label" type="Label" parent="visual/info_vbox"]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("5_gx1jg")
-theme_override_font_sizes/font_size = 32
-text = "n/a"
-horizontal_alignment = 1
-
-[node name="velocity_label" type="Label" parent="visual/info_vbox"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_gx1jg")
 theme_override_font_sizes/font_size = 32
@@ -220,7 +222,7 @@ metadata/_custom_type_script = "uid://d350u8evihs1u"
 [node name="TickInterpolator" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("6_qek5x")
 root = NodePath("..")
-properties = Array[String]([":global_position", "weapon_pivot:rotation"])
+properties = Array[String]([":position", "weapon_pivot:rotation"])
 metadata/_custom_type_script = "uid://dour8fehaaugp"
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
